@@ -10,12 +10,16 @@ kimai/
   config.yaml                App definition: version, port, options and schema
   Dockerfile                 Upstream Kimai image plus jq and MariaDB
   run.sh                     Starts MariaDB and Kimai, and stops them in order
+  kimai-console              Runs Kimai console commands inside the running app
   mariadb.cnf                MariaDB settings, tuned for small devices
   DOCS.md                    User documentation, shown on the Documentation tab
   README.md                  Short description, shown in the app store
   CHANGELOG.md               Release notes, shown when an update is available
   icon.png, logo.png         Artwork, taken from Kimai's own touch icon
   translations/              Option names and descriptions (en, nl)
+  bundles/                   Kimai plugins that ship with the app
+    SummaryBundle/           Toggl-style summary report with charts
+    TimerBarBundle/          Toggl-style timer bar on the dashboard and "My times"
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
@@ -34,21 +38,24 @@ On start, `run.sh`:
    email and password length.
 2. Writes the `TZ` time zone that the Supervisor passes in to a PHP ini file, so new users
    default to the Home Assistant time zone.
-3. Replaces Kimai's `var/data` with a link to `/data/kimai/data` and `var/plugins` with a
-   link to `/config/plugins`, and links `/config/local.yaml` into Kimai's configuration
-   when it exists.
-4. Starts MariaDB on `127.0.0.1:3306` with its data in `/data/mysql`, initialising the data
+3. Replaces Kimai's `var/data` with a link to `/data/kimai/data`, and links
+   `/config/local.yaml` into Kimai's configuration when it exists.
+4. Rebuilds Kimai's `var/plugins` folder from links: one to each plugin bundled in
+   `/opt/kimai-bundles`, then one to each folder in `/config/plugins`. A user's folder with
+   the same name replaces the bundled plugin, which is also how users turn a bundled plugin
+   off (a folder holding only a `.disabled` file).
+5. Starts MariaDB on `127.0.0.1:3306` with its data in `/data/mysql`, initialising the data
    directory on first start and running `mariadb-upgrade` on every start. MariaDB runs in
    its own session (`setsid`), so a stop signal sent to the whole process group cannot
    stop it before Kimai.
-5. Creates the `kimai` database and user. The user's password is generated once and kept
+6. Creates the `kimai` database and user. The user's password is generated once and kept
    in `/data/db_password`.
-6. Refuses to continue when Kimai has no users and no administrator credentials are set.
-7. Exports the Kimai environment variables and starts the upstream `/entrypoint.sh` in the
-   background. That script installs or migrates the database, creates the administrator,
+7. Refuses to continue when Kimai has no users and no administrator credentials are set.
+8. Exports the Kimai environment variables, saves them in `/run/kimai-app/console.env` for
+   `kimai-console`, and starts the upstream `/entrypoint.sh` in the background. That script installs or migrates the database, creates the administrator,
    generates `APP_SECRET` (persisted in `var/data/.appsecret`), and finally replaces itself
    with Apache.
-8. Waits. On `SIGTERM` or `SIGINT` it stops Apache, then shuts MariaDB down cleanly. If
+9. Waits. On `SIGTERM` or `SIGINT` it stops Apache, then shuts MariaDB down cleanly. If
    either process exits on its own, it stops the other and exits with an error, so the
    Supervisor watchdog restarts the app.
 
@@ -63,6 +70,15 @@ fails after the 10-minute start period. It checks the port rather than a page, b
 page request fails when `trusted_hosts` does not include `127.0.0.1`. Do not replace it with
 `HEALTHCHECK NONE`: the image then still carries health check settings, so the Supervisor
 keeps waiting for a result that never comes and shows the app as starting forever.
+
+### Console commands
+
+`docker exec` starts a process that does not inherit `run.sh`'s environment, and the
+upstream image declares `DATABASE_URL` as an empty environment variable, which overrides
+any value in Kimai's `.env` files. A plain `bin/console` call therefore cannot reach the
+database. `kimai-console` loads the settings that `run.sh` saved in
+`/run/kimai-app/console.env` (readable by root only) and runs `bin/console` as `www-data`,
+so files it creates in Kimai's cache keep the right owner.
 
 ### Storage
 
@@ -102,6 +118,35 @@ would make installation faster and is a possible improvement.
 **Upstream versioned tags.** `kimai/kimai2:<version>` is the Apache variant and is
 published for `amd64` and `arm64`, which map to the Supervisor's `amd64` and `aarch64`.
 
+## Bundled plugins
+
+The plugins in `kimai/bundles/` are ordinary Kimai plugins (Symfony bundles in the
+`KimaiPlugin\` namespace) and also work on a Kimai installed without Home Assistant; each
+has its own `README.md`. They use this repository's code style (two-space indentation, braces
+on their own line, spaces inside parentheses), not Kimai's.
+
+They only use Kimai's extension points and services:
+
+| Plugin           | Hooks into                                    | Uses                                                    |
+| ---------------- | --------------------------------------------- | ------------------------------------------------------- |
+| `SummaryBundle`  | `ReportingEvent`, adds a report               | `DateRangeType`, `UserType`, Kimai's Chart.js build     |
+| `TimerBarBundle` | `ThemeEvent::CONTENT_START`, on two routes    | `TimesheetService`, project and activity form queries   |
+
+Both respect Kimai's permissions: the summary report needs `report:user`, and `report:other`
+to pick other users, whose list comes from Kimai's own team-aware user query; amounts need
+the `view_rate_*` permissions. The timer bar needs `create_own_timesheet`, only offers
+projects and activities from Kimai's form queries, checks the posted IDs against those
+lists, and starts and stops records through `TimesheetService`, so Kimai's validation,
+rounding and running-record limit apply.
+
+Each plugin serves its own script and stylesheet through a controller route
+(`/…/assets/{name}`, limited to a fixed list of files), because Kimai has no asset pipeline
+for plugins. A version parameter based on the files' modification time busts browser
+caches after an update.
+
+Both declare `"require": 26700` (Kimai 2.67.0) in `composer.json`, the version they were
+tested with. Raise it when a plugin starts using newer Kimai features.
+
 ## Testing a change
 
 Work through these in order. Each catches problems the previous one cannot.
@@ -109,8 +154,24 @@ Work through these in order. Each catches problems the previous one cannot.
 ### 1. Lint
 
 ```bash
-docker run --rm -v "$PWD/kimai:/mnt" koalaman/shellcheck:stable /mnt/run.sh
+docker run --rm -v "$PWD/kimai:/mnt" koalaman/shellcheck:stable /mnt/run.sh /mnt/kimai-console
 ```
+
+For the plugins, lint the PHP and run [PHPStan](https://phpstan.org/) at level 6 inside the
+Kimai image, which provides Kimai's classes. Download `phpstan.phar` from the PHPStan
+releases first:
+
+```bash
+docker run --rm --entrypoint bash \
+  -v "$PWD/kimai/bundles/SummaryBundle:/opt/kimai/var/plugins/SummaryBundle" \
+  -v "$PWD/phpstan.phar:/phpstan.phar" kimai/kimai2:2.67.0 -c \
+  'cd /opt/kimai && php -d memory_limit=1G /phpstan.phar analyse --level 6 \
+    -a vendor/autoload.php var/plugins/SummaryBundle'
+```
+
+Without Kimai's development dependencies the Symfony stubs are missing, so PHPStan reports
+`argument.templateType` and `generics.notGeneric` on form classes. Kimai's own form classes
+show the same two errors in this setup; anything else is a real finding.
 
 ### 2. Build and run with Docker
 

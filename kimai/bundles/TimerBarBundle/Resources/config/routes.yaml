@@ -1,0 +1,8 @@
+timer_bar_controllers:
+  resource: '@TimerBarBundle/Controller/'
+  type: attribute
+  prefix: /{_locale}
+  requirements:
+    _locale: '%app_locales%'
+  defaults:
+    _locale: '%locale%'

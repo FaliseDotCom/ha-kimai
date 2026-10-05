@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  KimaiPlugin\TimerBarBundle\:
+    resource: '../../*'
+    exclude:
+      - '../../Resources/'
+
+  KimaiPlugin\TimerBarBundle\Controller\:
+    resource: '../../Controller'
+    tags: [ 'controller.service_arguments' ]

@@ -188,6 +188,51 @@ Then:
 
 Never expose port 8001 directly to the internet without HTTPS.
 
+## Extras in this app
+
+The app adds two Toggl-style features to Kimai. Both are Kimai plugins made for this app
+and maintained in the same repository.
+
+### Summary report
+
+**Reporting** > **Summary** shows where your time went, the way Toggl's summary report does:
+
+- totals for the period: total time, billable time and, if you may see rates, the amount;
+- a bar chart of the time per day (for periods up to two months) or per month, coloured by
+  project, customer, activity or user;
+- a doughnut chart and a breakdown per project, customer, activity or user, which opens to
+  show the time per description.
+
+Pick the period with the date field; its menu offers this week, last week, recent months,
+quarters and years. The arrows next to it move one period back or forward. The report starts
+with your own time this week. Users who may see other people's reports can choose a
+colleague or **All users**.
+
+### Timer bar
+
+The dashboard and **My times** start with a bar like Toggl's: type what you are working on,
+pick a project and an activity, and press the green start button. While a record runs, the
+bar shows it with a running clock, which also appears in the browser tab title, and a stop
+button.
+
+Typing in the description field suggests what you worked on recently. Picking a suggestion
+fills in its project and activity. The activity list only offers activities that can be
+booked on the selected project.
+
+The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
+for rounding and for how many records may run at once apply. When only one record may run,
+starting a new one stops the running one.
+
+### Turning an extra off
+
+Create a folder with the extra's name inside the `plugins` folder of the app's
+configuration folder, put an empty file named `.disabled` in it, and restart the app:
+
+- `plugins/SummaryBundle/.disabled` turns off the summary report.
+- `plugins/TimerBarBundle/.disabled` turns off the timer bar.
+
+Remove the folder and restart to turn the extra back on.
+
 ## Customising Kimai
 
 The app has its own configuration folder, which you can reach with the **Samba share** or
@@ -210,8 +255,21 @@ Copy each [Kimai plugin](https://www.kimai.org/store/) into the `plugins` folder
 app's configuration folder, so that you end up with, for example,
 `plugins/ExamplePluginBundle/`. Then restart the app; Kimai rebuilds its cache on every start
 and picks the plugin up. Some plugins also need an install command, described in the
-plugin's own documentation. Run it the same way as the password reset command under
-[Troubleshooting](#troubleshooting).
+plugin's own documentation; see [Running Kimai commands](#running-kimai-commands).
+
+### Running Kimai commands
+
+Kimai has a command line for maintenance tasks, such as resetting a password or installing a
+plugin. The app includes `kimai-console`, which runs those commands with the right user and
+database settings. It needs the **Advanced SSH & Web Terminal** app with *Protection mode*
+turned off. In its terminal, run for example:
+
+```bash
+docker exec -it "$(docker ps --quiet --filter name=kimai)" kimai-console kimai:user:list
+```
+
+Replace `kimai:user:list` with the command you need; `list` shows them all. Turn *Protection
+mode* back on afterwards.
 
 ## Backups
 
@@ -258,15 +316,15 @@ from the app itself start with `[kimai-app]`.
 
 **Forgotten administrator password**
 : If email is configured, use **Forgot password** on the login page. Otherwise, reset it
-  from the command line. This needs the **Advanced SSH & Web Terminal** app with
-  *Protection mode* turned off:
+  from the command line, as described in [Running Kimai commands](#running-kimai-commands):
 
   ```bash
-  docker exec -it --user www-data "$(docker ps --quiet --filter name=kimai)" \
-    /opt/kimai/bin/console kimai:user:password admin
+  docker exec -it "$(docker ps --quiet --filter name=kimai)" kimai-console kimai:user:password admin
   ```
 
-  Turn *Protection mode* back on afterwards.
+**A page breaks after adding a plugin**
+: A broken or incompatible plugin can stop Kimai from loading. Remove it from the `plugins`
+  folder, or [turn it off](#turning-an-extra-off), and restart the app.
 
 ## Security
 

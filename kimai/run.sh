@@ -16,6 +16,8 @@ readonly KIMAI_DIR=/opt/kimai
 readonly KIMAI_DATA_DIR=/data/kimai/data
 readonly KIMAI_WEB_USER=www-data
 readonly APP_CONFIG_DIR=/config
+readonly BUNDLED_PLUGINS_DIR=/opt/kimai-bundles
+readonly CONSOLE_ENV_FILE=/run/kimai-app/console.env
 readonly MIN_PASSWORD_LENGTH=8
 
 DB_PID=0
@@ -88,22 +90,53 @@ configure_timezone()
   log "Time zone: $TZ"
 }
 
-# Points Kimai's data and plugin folders at persistent storage, and loads an
-# optional local.yaml from the app configuration folder.
+# Points Kimai's data folder at persistent storage, links the plugins, and loads
+# an optional local.yaml from the app configuration folder.
 prepare_storage()
 {
-  mkdir -p "$KIMAI_DATA_DIR" "$APP_CONFIG_DIR/plugins"
+  mkdir -p "$KIMAI_DATA_DIR"
   chown -R "$KIMAI_WEB_USER:$KIMAI_WEB_USER" "$KIMAI_DATA_DIR"
 
-  rm -rf "$KIMAI_DIR/var/data" "$KIMAI_DIR/var/plugins"
+  rm -rf "$KIMAI_DIR/var/data"
   ln -s "$KIMAI_DATA_DIR" "$KIMAI_DIR/var/data"
-  ln -s "$APP_CONFIG_DIR/plugins" "$KIMAI_DIR/var/plugins"
+
+  link_plugins
 
   if [ -f "$APP_CONFIG_DIR/local.yaml" ]
   then
     ln -sf "$APP_CONFIG_DIR/local.yaml" "$KIMAI_DIR/config/packages/local.yaml"
     log "Using local.yaml from the app configuration folder."
   fi
+}
+
+# Fills Kimai's plugin folder with links to the plugins bundled with the app and
+# to the plugins in the app configuration folder. A plugin in the configuration
+# folder replaces a bundled plugin with the same name.
+link_plugins()
+{
+  local plugins_dir="$KIMAI_DIR/var/plugins"
+  local plugin
+
+  mkdir -p "$APP_CONFIG_DIR/plugins"
+  rm -rf "$plugins_dir"
+  mkdir -p "$plugins_dir"
+
+  shopt -s nullglob
+  for plugin in "$BUNDLED_PLUGINS_DIR"/*/
+  do
+    ln -s "${plugin%/}" "$plugins_dir/$(basename "$plugin")"
+  done
+
+  for plugin in "$APP_CONFIG_DIR/plugins"/*/
+  do
+    if [ -e "$plugins_dir/$(basename "$plugin")" ]
+    then
+      log "Using $(basename "$plugin") from the app configuration folder instead of the bundled copy."
+    fi
+
+    ln -sfn "${plugin%/}" "$plugins_dir/$(basename "$plugin")"
+  done
+  shopt -u nullglob
 }
 
 start_database()
@@ -219,9 +252,29 @@ start_kimai()
     export MAILER_URL
   fi
 
+  write_console_env
+
   log "Starting Kimai."
   /entrypoint.sh &
   KIMAI_PID=$!
+}
+
+# Stores the settings Kimai needs for the kimai-console command. Commands run
+# with "docker exec" do not inherit this script's environment, and the image
+# sets DATABASE_URL to an empty value that would hide any .env file.
+write_console_env()
+{
+  local name
+
+  mkdir -p "$(dirname "$CONSOLE_ENV_FILE")"
+  ( umask 077 && : > "$CONSOLE_ENV_FILE" )
+  for name in DATABASE_URL TRUSTED_HOSTS TRUSTED_PROXIES MAILER_FROM MAILER_URL
+  do
+    if [ -n "${!name:-}" ]
+    then
+      printf 'export %s=%q\n' "$name" "${!name}" >> "$CONSOLE_ENV_FILE"
+    fi
+  done
 }
 
 # shellcheck disable=SC2329 # Invoked through the trap set in main.

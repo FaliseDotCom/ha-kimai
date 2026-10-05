@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="nl" datatype="plaintext" original="none">
+    <body>
+      <trans-unit id="timer_bar.placeholder" resname="timer_bar.placeholder">
+        <source>timer_bar.placeholder</source>
+        <target>Waar werk je aan?</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.project" resname="timer_bar.project">
+        <source>timer_bar.project</source>
+        <target>Project</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.activity" resname="timer_bar.activity">
+        <source>timer_bar.activity</source>
+        <target>Activiteit</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.start" resname="timer_bar.start">
+        <source>timer_bar.start</source>
+        <target>Starten</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.stop" resname="timer_bar.stop">
+        <source>timer_bar.stop</source>
+        <target>Stoppen</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.no_description" resname="timer_bar.no_description">
+        <source>timer_bar.no_description</source>
+        <target>(geen omschrijving)</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

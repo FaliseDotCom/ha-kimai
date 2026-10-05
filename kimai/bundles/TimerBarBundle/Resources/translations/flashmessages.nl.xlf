@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="nl" datatype="plaintext" original="none">
+    <body>
+      <trans-unit id="timer_bar.invalid_selection" resname="timer_bar.invalid_selection">
+        <source>timer_bar.invalid_selection</source>
+        <target>Kies een project en een activiteit die daarbij hoort.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

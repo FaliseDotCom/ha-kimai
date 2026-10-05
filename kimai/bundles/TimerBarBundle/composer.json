@@ -1,0 +1,29 @@
+{
+  "name": "falisedotcom/kimai-timer-bar-bundle",
+  "description": "Toggl-style timer bar for Kimai: type what you are working on, pick a project and press start",
+  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "type": "kimai-plugin",
+  "version": "1.0.0",
+  "keywords": [ "kimai", "kimai-plugin" ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sander Falise"
+    }
+  ],
+  "extra":
+  {
+    "kimai":
+    {
+      "require": 26700,
+      "name": "Timer bar"
+    }
+  },
+  "autoload":
+  {
+    "psr-4":
+    {
+      "KimaiPlugin\\TimerBarBundle\\": ""
+    }
+  }
+}

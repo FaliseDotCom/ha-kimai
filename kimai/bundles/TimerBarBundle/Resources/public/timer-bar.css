@@ -1,0 +1,78 @@
+/* Timer bar for Kimai. Builds on Kimai's Tabler theme and its colour variables. */
+
+/* One row: description, project, activity, start button */
+.timer-bar-form
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.timer-bar-description
+{
+  flex: 1 1 16rem;
+  min-width: 0;
+  font-size: 1rem;
+}
+
+.timer-bar-project,
+.timer-bar-activity
+{
+  flex: 0 1 14rem;
+  min-width: 8rem;
+}
+
+.timer-bar-button
+{
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+}
+
+/* Running entry: what is running, its clock, and the stop button */
+.timer-bar-running
+{
+  border-left: 4px solid var(--tblr-success);
+}
+
+.timer-bar-current
+{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.timer-bar-current-description
+{
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.timer-bar-elapsed
+{
+  flex: 0 0 auto;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+@media (max-width: 767.98px)
+{
+  .timer-bar-form
+  {
+    flex-wrap: wrap;
+  }
+
+  .timer-bar-description
+  {
+    flex-basis: 100%;
+  }
+
+  .timer-bar-project,
+  .timer-bar-activity
+  {
+    flex: 1 1 8rem;
+  }
+}

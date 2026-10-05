@@ -15,6 +15,8 @@ else to set up.
 - Kimai with a bundled database; no separate database app needed.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
+- Toggl-style extras: a **timer bar** on the dashboard ("what are you working on?", project,
+  start) and a **summary report** with charts per day, week, month or year.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -47,10 +49,16 @@ to a new Kimai version.
 
 ## AI coding guidelines
 
-This project is shell, YAML, Docker and Markdown only. None of the language skills (`php`,
-`phpstan`, `wordpress`, `wordpress-translations`, `javascript`, `svelte`, `css`) apply. The
-global guidelines for formatting (two-space indentation, braces on their own line) and Git
-still do, and shell scripts must pass [ShellCheck](https://www.shellcheck.net/).
+The app itself is shell, YAML and Docker; the Kimai plugins in `kimai/bundles/` are PHP,
+Twig, JavaScript and CSS. These skills apply:
+
+- `php` and `phpstan` for the plugins' PHP code (PHPStan level 6, run as described in
+  [Development](.docs/development.md#1-lint)).
+- `javascript` and `css` for the plugins' scripts and stylesheets.
+
+`wordpress`, `wordpress-translations` and `svelte` do not apply. The global guidelines for
+formatting (two-space indentation, braces on their own line) and Git apply everywhere, and
+shell scripts must pass [ShellCheck](https://www.shellcheck.net/).
 
 ## License
 

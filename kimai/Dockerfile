@@ -11,8 +11,11 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* /var/lib/mysql/*
 
 COPY mariadb.cnf /etc/mysql/mariadb.conf.d/90-kimai.cnf
+# Plugins that ship with the app; run.sh links them into Kimai's plugin folder.
+COPY bundles/ /opt/kimai-bundles/
 COPY run.sh /run.sh
-RUN chmod 0755 /run.sh
+COPY kimai-console /usr/local/bin/kimai-console
+RUN chmod 0755 /run.sh /usr/local/bin/kimai-console
 
 # The upstream image stops Apache with SIGWINCH. run.sh needs SIGTERM so it
 # can shut Kimai and MariaDB down in the right order.

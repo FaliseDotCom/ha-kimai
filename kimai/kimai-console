@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Runs a Kimai console command inside the running app, as the web server user and
+# with the app's database settings, for example:
+#   docker exec -it <container> kimai-console kimai:user:password admin
+
+set -euo pipefail
+
+readonly CONSOLE_ENV_FILE=/run/kimai-app/console.env
+
+if [ ! -r "$CONSOLE_ENV_FILE" ]
+then
+  echo "kimai-console: Kimai is not running yet, or this is not run as root." >&2
+  exit 1
+fi
+
+# shellcheck source=/dev/null
+source "$CONSOLE_ENV_FILE"
+
+cd /opt/kimai
+exec setpriv --reuid=www-data --regid=www-data --init-groups /opt/kimai/bin/console "$@"

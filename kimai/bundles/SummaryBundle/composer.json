@@ -1,0 +1,29 @@
+{
+  "name": "falisedotcom/kimai-summary-bundle",
+  "description": "Toggl-style summary report for Kimai: charts and totals per day, week, month and year",
+  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "type": "kimai-plugin",
+  "version": "1.0.0",
+  "keywords": [ "kimai", "kimai-plugin" ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sander Falise"
+    }
+  ],
+  "extra":
+  {
+    "kimai":
+    {
+      "require": 26700,
+      "name": "Summary"
+    }
+  },
+  "autoload":
+  {
+    "psr-4":
+    {
+      "KimaiPlugin\\SummaryBundle\\": ""
+    }
+  }
+}

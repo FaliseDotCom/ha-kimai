@@ -1,0 +1,75 @@
+{% trans_default_domain 'timer_bar' %}
+<link rel="stylesheet" href="{{ path('timer_bar_asset', { 'name': 'timer-bar.css', 'v': timer_bar_version }) }}">
+<script src="{{ path('timer_bar_asset', { 'name': 'timer-bar.js', 'v': timer_bar_version }) }}" defer></script>
+
+<div class="card mb-3 timer-bar{% if timer_bar.running is not empty %} timer-bar-running{% endif %}">
+  {% if timer_bar.running is not empty %}
+    {% set running = timer_bar.running %}
+    <form method="post" action="{{ path('timer_bar_stop') }}" class="card-body timer-bar-form">
+      <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
+      <input type="hidden" name="_target_path" value="{{ target_path }}">
+      <input type="hidden" name="timesheet" value="{{ running.id }}">
+
+      <div class="timer-bar-current">
+        <div class="timer-bar-current-description">
+          {% if running.description is not empty %}
+            {{ running.description }}
+          {% else %}
+            <em class="text-secondary">{{ 'timer_bar.no_description'|trans }}</em>
+          {% endif %}
+        </div>
+        <div class="timer-bar-current-project text-secondary">
+          {{ running.project }}
+          {% if running.customer is not empty %}&middot; {{ running.customer }}{% endif %}
+          {% if running.activity is not empty %}&middot; {{ running.activity }}{% endif %}
+        </div>
+      </div>
+
+      <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}">0:00:00</time>
+
+      <button type="submit" class="btn btn-danger btn-icon timer-bar-button" title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}">
+        <i class="{{ 'stop'|icon(true) }}"></i>
+      </button>
+    </form>
+  {% else %}
+    <form method="post" action="{{ path('timer_bar_start') }}" class="card-body timer-bar-form" data-timer-bar-form>
+      <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
+      <input type="hidden" name="_target_path" value="{{ target_path }}">
+
+      <input type="text" name="description" class="form-control timer-bar-description" list="timer-bar-suggestions"
+        placeholder="{{ 'timer_bar.placeholder'|trans }}" aria-label="{{ 'timer_bar.placeholder'|trans }}"
+        autocomplete="off" maxlength="1000" data-timer-bar-description>
+      <datalist id="timer-bar-suggestions">
+        {% for suggestion in timer_bar.suggestions %}
+          <option value="{{ suggestion.description }}" label="{{ suggestion.projectName }}"></option>
+        {% endfor %}
+      </datalist>
+
+      <select name="project" class="form-select timer-bar-project" required aria-label="{{ 'timer_bar.project'|trans }}" data-timer-bar-project>
+        <option value="">{{ 'timer_bar.project'|trans }}</option>
+        {% for customer in timer_bar.customers %}
+          <optgroup label="{{ customer.name }}">
+            {% for project in customer.projects %}
+              <option value="{{ project.id }}" data-global-activities="{{ project.globalActivities ? '1' : '0' }}"
+                {% if project.id == timer_bar.defaultProjectId %}selected{% endif %}>{{ project.name }}</option>
+            {% endfor %}
+          </optgroup>
+        {% endfor %}
+      </select>
+
+      <select name="activity" class="form-select timer-bar-activity" required aria-label="{{ 'timer_bar.activity'|trans }}" data-timer-bar-activity>
+        <option value="">{{ 'timer_bar.activity'|trans }}</option>
+        {% for activity in timer_bar.activities %}
+          <option value="{{ activity.id }}" data-project="{{ activity.projectId }}"
+            {% if activity.id == timer_bar.defaultActivityId %}selected{% endif %}>{{ activity.name }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="btn btn-success btn-icon timer-bar-button" title="{{ 'timer_bar.start'|trans }}" aria-label="{{ 'timer_bar.start'|trans }}">
+        <i class="{{ 'start'|icon(true) }}"></i>
+      </button>
+
+      <script type="application/json" data-timer-bar-suggestions>{{ timer_bar.suggestions|json_encode|raw }}</script>
+    </form>
+  {% endif %}
+</div>

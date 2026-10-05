@@ -4,6 +4,17 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.3
+
+- New: a Toggl-style timer bar on the dashboard and **My times**. Type what you are working
+  on, pick a project and press start; recent descriptions are suggested and fill in their
+  project and activity. A running record shows a live clock and a stop button.
+- New: a Toggl-style summary report under **Reporting** > **Summary**, with totals, a bar
+  chart per day or month, a doughnut chart and a breakdown per project, customer, activity
+  or user, down to each description.
+- New: `kimai-console` runs Kimai console commands inside the app. The previously
+  documented `docker exec ... bin/console` command could not reach the database.
+
 ## 2.67.0.2
 
 - Always stop Kimai before its database when the app stops, and log the shutdown once.
