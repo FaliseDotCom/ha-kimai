@@ -14,7 +14,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
- * Shows the timer bar at the top of the dashboard and the "My times" page.
+ * Shows the timer bar at the top of the dashboard and the "My times" page, and enables the
+ * continue buttons on "My times".
  */
 final class ContentSubscriber implements EventSubscriberInterface
 {
@@ -23,7 +24,14 @@ final class ContentSubscriber implements EventSubscriberInterface
    *
    * @var array<int, string>
    */
-  private const ROUTES = [ 'dashboard', 'timesheet' ];
+  private const ROUTES = [ 'dashboard', self::LIST_ROUTE ];
+
+  /**
+   * The "My times" page, whose entries get a continue button.
+   *
+   * @var string
+   */
+  private const LIST_ROUTE = 'timesheet';
 
   /**
    * @param RequestStack $requestStack Tells which page is being rendered.
@@ -68,7 +76,9 @@ final class ContentSubscriber implements EventSubscriberInterface
       return;
     }
 
-    if ( !in_array( $request->attributes->get( '_route' ), self::ROUTES, true ) || !$this->security->isGranted( 'create_own_timesheet' ) )
+    $route = $request->attributes->get( '_route' );
+
+    if ( !in_array( $route, self::ROUTES, true ) || !$this->security->isGranted( 'create_own_timesheet' ) )
     {
       return;
     }
@@ -77,6 +87,7 @@ final class ContentSubscriber implements EventSubscriberInterface
       'timer_bar' => $this->viewFactory->create( $user ),
       'target_path' => $request->getRequestUri(),
       'timer_bar_version' => TimerBarBundle::getAssetVersion(),
+      'show_continue' => $route === self::LIST_ROUTE,
     ] ) );
   }
 }

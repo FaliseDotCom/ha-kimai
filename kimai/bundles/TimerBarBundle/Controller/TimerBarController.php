@@ -7,9 +7,11 @@ namespace KimaiPlugin\TimerBarBundle\Controller;
 use App\Controller\AbstractController;
 use App\Entity\Activity;
 use App\Entity\Project;
+use App\Entity\Tag;
 use App\Timesheet\TimesheetService;
 use App\Validator\ValidationFailedException;
 use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
+use KimaiPlugin\TimerBarBundle\Service\TimerStarter;
 use KimaiPlugin\TimerBarBundle\TimerBarBundle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -30,6 +32,7 @@ final class TimerBarController extends AbstractController
   public const CSRF_TOKEN_ID = 'timer_bar';
   public const ROUTE_START = 'timer_bar_start';
   public const ROUTE_STOP = 'timer_bar_stop';
+  public const ROUTE_CONTINUE = 'timer_bar_continue';
   public const ROUTE_ASSET = 'timer_bar_asset';
 
   /**
@@ -47,12 +50,14 @@ final class TimerBarController extends AbstractController
   private const ASSET_MAX_AGE = 86400;
 
   /**
-   * @param TimerBarRepository $repository Finds bookable projects, activities and running entries.
-   * @param TimesheetService $timesheetService Creates and stops time records the way Kimai does.
+   * @param TimerBarRepository $repository Finds bookable projects, activities, tags and entries.
+   * @param TimesheetService $timesheetService Stops time records the way Kimai does.
+   * @param TimerStarter $starter Starts new and continued time records.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
-    private readonly TimesheetService $timesheetService
+    private readonly TimesheetService $timesheetService,
+    private readonly TimerStarter $starter
   )
   {
   }
@@ -84,24 +89,39 @@ final class TimerBarController extends AbstractController
       return $this->redirectBack( $request );
     }
 
-    $timesheet = $this->timesheetService->createNewTimesheet( $user );
-    $this->timesheetService->prepareNewTimesheet( $timesheet );
-    $timesheet->setProject( $project );
-    $timesheet->setActivity( $activity );
-    $timesheet->setDescription( trim( (string) $request->request->get( 'description' ) ) );
+    $this->runStart( fn() => $this->starter->start(
+      $user,
+      $project,
+      $activity,
+      trim( (string) $request->request->get( 'description' ) ),
+      $this->getPostedTags( $request ),
+      $this->starter->parseTagNames( (string) $request->request->get( 'new_tags' ) ),
+      $this->getPostedBillable( $request )
+    ) );
 
-    try
-    {
-      $this->timesheetService->saveTimesheet( $timesheet );
-    }
-    catch ( ValidationFailedException $exception )
-    {
-      $this->flashError( 'action.update.error', $this->describeViolations( $exception ) );
-    }
-    catch ( AccessDeniedException $exception )
+    return $this->redirectBack( $request );
+  }
+
+  /**
+   * Starts a new record now that copies one of the user's past records.
+   *
+   * @param Request $request The posted continue form.
+   * @return Response
+   */
+  #[Route( path: '/continue', name: self::ROUTE_CONTINUE, methods: [ 'POST' ] )]
+  public function continueEntry( Request $request ) : Response
+  {
+    $user = $this->getUser();
+    $source = $this->repository->findOwnEntry( $user, $request->request->getInt( 'timesheet' ) );
+
+    if ( $source === null || !$this->isCsrfTokenValid( self::CSRF_TOKEN_ID, (string) $request->request->get( '_token' ) ) )
     {
       $this->flashError( 'timesheet.start.error' );
+
+      return $this->redirectBack( $request );
     }
+
+    $this->runStart( fn() => $this->starter->continueEntry( $user, $source ) );
 
     return $this->redirectBack( $request );
   }
@@ -156,6 +176,65 @@ final class TimerBarController extends AbstractController
     $response->setMaxAge( self::ASSET_MAX_AGE );
 
     return $response;
+  }
+
+  /**
+   * Runs a start action and turns Kimai's refusals into error messages.
+   *
+   * @param callable(): mixed $start Starts the record.
+   * @return void
+   */
+  private function runStart( callable $start ) : void
+  {
+    try
+    {
+      $start();
+    }
+    catch ( ValidationFailedException $exception )
+    {
+      $this->flashError( 'action.update.error', $this->describeViolations( $exception ) );
+    }
+    catch ( AccessDeniedException $exception )
+    {
+      $this->flashError( 'timesheet.start.error' );
+    }
+  }
+
+  /**
+   * Returns the posted existing tags that are visible; unknown IDs are ignored.
+   *
+   * @param Request $request The posted timer bar form.
+   * @return array<int, Tag>
+   */
+  private function getPostedTags( Request $request ) : array
+  {
+    $posted = $request->request->all( 'tags' );
+    $tags = $this->repository->findTags();
+
+    $selected = [];
+    foreach ( $posted as $id )
+    {
+      if ( is_scalar( $id ) && isset( $tags[ (int) $id ] ) )
+      {
+        $selected[] = $tags[ (int) $id ];
+      }
+    }
+
+    return $selected;
+  }
+
+  /**
+   * Returns the posted billable choice, falling back to Kimai's automatic setting.
+   *
+   * @param Request $request The posted timer bar form.
+   * @return string One of the TimerStarter::BILLABLE_ constants.
+   */
+  private function getPostedBillable( Request $request ) : string
+  {
+    $billable = (string) $request->request->get( 'billable' );
+    $choices = [ TimerStarter::BILLABLE_YES, TimerStarter::BILLABLE_NO ];
+
+    return in_array( $billable, $choices, true ) ? $billable : TimerStarter::BILLABLE_AUTOMATIC;
   }
 
   /**

@@ -26,6 +26,22 @@
         <source>timer_bar.no_description</source>
         <target>(geen omschrijving)</target>
       </trans-unit>
+      <trans-unit id="timer_bar.tags" resname="timer_bar.tags">
+        <source>timer_bar.tags</source>
+        <target>Tags</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.new_tags" resname="timer_bar.new_tags">
+        <source>timer_bar.new_tags</source>
+        <target>Nieuwe tags, gescheiden door komma's</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.billable" resname="timer_bar.billable">
+        <source>timer_bar.billable</source>
+        <target>Declarabel</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.continue" resname="timer_bar.continue">
+        <source>timer_bar.continue</source>
+        <target>Nu verdergaan</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

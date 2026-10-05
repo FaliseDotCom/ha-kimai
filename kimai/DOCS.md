@@ -219,9 +219,34 @@ Typing in the description field suggests what you worked on recently. Picking a 
 fills in its project and activity. The activity list only offers activities that can be
 booked on the selected project.
 
+Next to the pickers are two toggles:
+
+- **Tags** (tag icon) opens a list of your tags to tick. If you may create tags, you can also
+  type new ones there, separated by commas. The icon shows how many tags are chosen.
+- **Billable** (coins icon) shows whether the record will be billable. It follows Kimai's
+  rule (billable when the customer, project and activity all are) until you press it; then
+  your choice counts. It only appears if you may change the billable setting.
+
+On **My times**, every record has a green play button next to its menu. It continues that
+record, the way Toggl's continue button does: a new record starts now with the same
+description, project, activity, tags and billable setting.
+
 The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
 for rounding and for how many records may run at once apply. When only one record may run,
 starting a new one stops the running one.
+
+Kimai rounds start times down to the minute by default, so a new record's clock can start at
+up to 59 seconds. To record exact seconds, the way Toggl does, turn rounding off in
+[`local.yaml`](#localyaml):
+
+```yaml
+kimai:
+  timesheet:
+    rounding:
+      default:
+        begin: 0
+        end: 0
+```
 
 ### Turning an extra off
 

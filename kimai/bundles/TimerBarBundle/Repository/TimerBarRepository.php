@@ -6,12 +6,14 @@ namespace KimaiPlugin\TimerBarBundle\Repository;
 
 use App\Entity\Activity;
 use App\Entity\Project;
+use App\Entity\Tag;
 use App\Entity\Timesheet;
 use App\Entity\User;
 use App\Repository\ActivityRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\Query\ActivityFormTypeQuery;
 use App\Repository\Query\ProjectFormTypeQuery;
+use App\Repository\TagRepository;
 use App\Repository\TimesheetRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,13 +44,15 @@ final class TimerBarRepository
    * @param EntityManagerInterface $entityManager Runs the suggestion query.
    * @param ProjectRepository $projectRepository Finds the projects a user may book on.
    * @param ActivityRepository $activityRepository Finds the activities a user may book on.
-   * @param TimesheetRepository $timesheetRepository Finds running entries.
+   * @param TimesheetRepository $timesheetRepository Finds running and past entries.
+   * @param TagRepository $tagRepository Finds and stores tags.
    */
   public function __construct(
     private readonly EntityManagerInterface $entityManager,
     private readonly ProjectRepository $projectRepository,
     private readonly ActivityRepository $activityRepository,
-    private readonly TimesheetRepository $timesheetRepository
+    private readonly TimesheetRepository $timesheetRepository,
+    private readonly TagRepository $tagRepository
   )
   {
   }
@@ -98,6 +102,65 @@ final class TimerBarRepository
     }
 
     return $activities;
+  }
+
+  /**
+   * Returns the visible tags, ordered by name.
+   *
+   * @return array<int, Tag>
+   */
+  public function findTags() : array
+  {
+    $tags = [];
+    foreach ( $this->tagRepository->findAllTags() as $tag )
+    {
+      if ( $tag->getId() !== null )
+      {
+        $tags[ $tag->getId() ] = $tag;
+      }
+    }
+
+    return $tags;
+  }
+
+  /**
+   * Returns the tag with the given name, creating it when it does not exist yet.
+   *
+   * @param string $name The tag name.
+   * @return Tag
+   */
+  public function findOrCreateTag( string $name ) : Tag
+  {
+    $tag = $this->tagRepository->findTagByName( $name );
+    if ( $tag !== null )
+    {
+      return $tag;
+    }
+
+    $tag = new Tag();
+    $tag->setName( $name );
+    $this->tagRepository->saveTag( $tag );
+
+    return $tag;
+  }
+
+  /**
+   * Returns one of the user's own time records by ID, or null when it is not theirs.
+   *
+   * @param User $user The logged-in user.
+   * @param int $id The record ID.
+   * @return Timesheet|null
+   */
+  public function findOwnEntry( User $user, int $id ) : ?Timesheet
+  {
+    $entry = $this->timesheetRepository->find( $id );
+
+    if ( $entry === null || $entry->getUser()?->getId() !== $user->getId() )
+    {
+      return null;
+    }
+
+    return $entry;
   }
 
   /**

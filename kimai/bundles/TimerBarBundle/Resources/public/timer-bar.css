@@ -31,6 +31,76 @@
   border-radius: 50%;
 }
 
+/* Tag and billable toggles: quiet until something is chosen */
+.timer-bar-toggle
+{
+  position: relative;
+  flex: 0 0 auto;
+  color: var(--tblr-secondary);
+}
+
+.timer-bar-toggle.active,
+.timer-bar-toggle[aria-pressed="true"]
+{
+  color: var(--tblr-success);
+}
+
+.timer-bar-count
+{
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+}
+
+.timer-bar-tag-menu
+{
+  min-width: 14rem;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.timer-bar-tag-option
+{
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.timer-bar-tag
+{
+  margin-left: 0.25rem;
+}
+
+.timer-bar-billable-flag
+{
+  flex: 0 0 auto;
+}
+
+/* Keep the open tag menu above the sticky header of the entry table below the bar */
+.timer-bar
+{
+  position: relative;
+  z-index: 1025;
+}
+
+/* Continue button in each "My times" row, next to Kimai's actions menu */
+.timer-bar-continue
+{
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+
+td:has(> .timer-bar-continue)
+{
+  white-space: nowrap;
+}
+
+.timer-bar-continue + .dropdown
+{
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* Running entry: what is running, its clock, and the stop button */
 .timer-bar-running
 {
@@ -73,6 +143,12 @@
   .timer-bar-project,
   .timer-bar-activity
   {
-    flex: 1 1 8rem;
+    flex: 1 1 calc(50% - 0.25rem);
+  }
+
+  /* Tags, billable and start share the last row, aligned to the right */
+  .timer-bar-activity + *
+  {
+    margin-left: auto;
   }
 }

@@ -22,8 +22,18 @@
           {{ running.project }}
           {% if running.customer is not empty %}&middot; {{ running.customer }}{% endif %}
           {% if running.activity is not empty %}&middot; {{ running.activity }}{% endif %}
+          {% for tag in running.tags %}
+            <span class="badge timer-bar-tag">{{ tag }}</span>
+          {% endfor %}
         </div>
       </div>
+
+      {% if running.billable %}
+        <span class="timer-bar-billable-flag text-success" title="{{ 'timer_bar.billable'|trans }}">
+          <i class="{{ 'money'|icon(true) }}"></i>
+          <span class="visually-hidden">{{ 'timer_bar.billable'|trans }}</span>
+        </span>
+      {% endif %}
 
       <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}">0:00:00</time>
 
@@ -51,6 +61,7 @@
           <optgroup label="{{ customer.name }}">
             {% for project in customer.projects %}
               <option value="{{ project.id }}" data-global-activities="{{ project.globalActivities ? '1' : '0' }}"
+                data-billable="{{ project.billable ? '1' : '0' }}"
                 {% if project.id == timer_bar.defaultProjectId %}selected{% endif %}>{{ project.name }}</option>
             {% endfor %}
           </optgroup>
@@ -60,16 +71,57 @@
       <select name="activity" class="form-select timer-bar-activity" required aria-label="{{ 'timer_bar.activity'|trans }}" data-timer-bar-activity>
         <option value="">{{ 'timer_bar.activity'|trans }}</option>
         {% for activity in timer_bar.activities %}
-          <option value="{{ activity.id }}" data-project="{{ activity.projectId }}"
+          <option value="{{ activity.id }}" data-project="{{ activity.projectId }}" data-billable="{{ activity.billable ? '1' : '0' }}"
             {% if activity.id == timer_bar.defaultActivityId %}selected{% endif %}>{{ activity.name }}</option>
         {% endfor %}
       </select>
+
+      {% if timer_bar.tags is not empty or timer_bar.canCreateTags %}
+        <div class="dropdown timer-bar-tags">
+          <button type="button" class="btn btn-icon timer-bar-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+            aria-expanded="false" title="{{ 'timer_bar.tags'|trans }}" aria-label="{{ 'timer_bar.tags'|trans }}">
+            <i class="{{ 'tag'|icon(true) }}"></i>
+            <span class="badge bg-primary text-primary-fg timer-bar-count" data-timer-bar-tag-count hidden></span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end timer-bar-tag-menu">
+            {% for tag in timer_bar.tags %}
+              <label class="dropdown-item timer-bar-tag-option">
+                <input type="checkbox" class="form-check-input m-0 me-2" name="tags[]" value="{{ tag.id }}" data-timer-bar-tag>
+                {{ tag.name }}
+              </label>
+            {% endfor %}
+            {% if timer_bar.canCreateTags %}
+              <div class="dropdown-item-text">
+                <input type="text" name="new_tags" class="form-control form-control-sm" maxlength="500" autocomplete="off"
+                  placeholder="{{ 'timer_bar.new_tags'|trans }}" aria-label="{{ 'timer_bar.new_tags'|trans }}" data-timer-bar-new-tags>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if timer_bar.canEditBillable %}
+        <input type="hidden" name="billable" value="auto" data-timer-bar-billable-value>
+        <button type="button" class="btn btn-icon timer-bar-toggle timer-bar-billable" aria-pressed="false"
+          title="{{ 'timer_bar.billable'|trans }}" aria-label="{{ 'timer_bar.billable'|trans }}" data-timer-bar-billable>
+          <i class="{{ 'money'|icon(true) }}"></i>
+        </button>
+      {% endif %}
 
       <button type="submit" class="btn btn-success btn-icon timer-bar-button" title="{{ 'timer_bar.start'|trans }}" aria-label="{{ 'timer_bar.start'|trans }}">
         <i class="{{ 'start'|icon(true) }}"></i>
       </button>
 
       <script type="application/json" data-timer-bar-suggestions>{{ timer_bar.suggestions|json_encode|raw }}</script>
+    </form>
+  {% endif %}
+
+  {% if show_continue %}
+    <form method="post" action="{{ path('timer_bar_continue') }}" hidden data-timer-bar-continue
+      data-label="{{ 'timer_bar.continue'|trans }}">
+      <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
+      <input type="hidden" name="_target_path" value="{{ target_path }}">
+      <input type="hidden" name="timesheet" value="" data-timer-bar-continue-id>
     </form>
   {% endif %}
 </div>

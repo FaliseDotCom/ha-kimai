@@ -6,24 +6,30 @@ namespace KimaiPlugin\TimerBarBundle\Service;
 
 use App\Entity\Activity;
 use App\Entity\Project;
+use App\Entity\Tag;
 use App\Entity\Timesheet;
 use App\Entity\User;
 use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Collects everything the timer bar template shows.
  *
  * @phpstan-import-type Suggestion from TimerBarRepository
  * @phpstan-type SuggestionOption array{description: string, projectId: int, activityId: int, projectName: string}
- * @phpstan-type ProjectOption array{id: int, name: string, globalActivities: bool}
+ * @phpstan-type ProjectOption array{id: int, name: string, globalActivities: bool, billable: bool}
  * @phpstan-type CustomerGroup array{name: string, projects: array<int, ProjectOption>}
- * @phpstan-type ActivityOption array{id: int, name: string, projectId: int}
- * @phpstan-type RunningEntry array{id: int, description: string, project: string, customer: string, activity: string, begin: string}
+ * @phpstan-type ActivityOption array{id: int, name: string, projectId: int, billable: bool}
+ * @phpstan-type TagOption array{id: int, name: string}
+ * @phpstan-type RunningEntry array{id: int, description: string, project: string, customer: string, activity: string, begin: string, tags: array<int, string>, billable: bool}
  * @phpstan-type TimerBarView array{
  *   running: RunningEntry|array{},
  *   customers: array<int, CustomerGroup>,
  *   activities: array<int, ActivityOption>,
  *   suggestions: array<int, SuggestionOption>,
+ *   tags: array<int, TagOption>,
+ *   canCreateTags: bool,
+ *   canEditBillable: bool,
  *   defaultProjectId: int,
  *   defaultActivityId: int
  * }
@@ -31,9 +37,13 @@ use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
 final class TimerBarViewFactory
 {
   /**
-   * @param TimerBarRepository $repository Reads projects, activities, suggestions and running entries.
+   * @param TimerBarRepository $repository Reads projects, activities, tags, suggestions and running entries.
+   * @param AuthorizationCheckerInterface $security Checks the tag and billable permissions.
    */
-  public function __construct( private readonly TimerBarRepository $repository )
+  public function __construct(
+    private readonly TimerBarRepository $repository,
+    private readonly AuthorizationCheckerInterface $security
+  )
   {
   }
 
@@ -55,6 +65,9 @@ final class TimerBarViewFactory
       'customers' => $this->groupProjectsByCustomer( $projects ),
       'activities' => $this->describeActivities( $activities ),
       'suggestions' => $suggestions,
+      'tags' => $this->describeTags( $this->repository->findTags() ),
+      'canCreateTags' => $this->security->isGranted( 'create_tag' ),
+      'canEditBillable' => $this->security->isGranted( 'edit_billable_own_timesheet' ),
       'defaultProjectId' => $suggestions[ 0 ][ 'projectId' ] ?? 0,
       'defaultActivityId' => $suggestions[ 0 ][ 'activityId' ] ?? 0,
     ];
@@ -104,6 +117,8 @@ final class TimerBarViewFactory
       'customer' => $project?->getCustomer()?->getName() ?? '',
       'activity' => $entry->getActivity()?->getName() ?? '',
       'begin' => $entry->getBegin()?->format( DATE_ATOM ) ?? '',
+      'tags' => $entry->getTagsAsArray(),
+      'billable' => $entry->isBillable(),
     ];
   }
 
@@ -126,6 +141,7 @@ final class TimerBarViewFactory
         'id' => $id,
         'name' => (string) $project->getName(),
         'globalActivities' => $project->isGlobalActivities(),
+        'billable' => $project->isBillable() && ( $customer === null || $customer->isBillable() ),
       ];
     }
 
@@ -147,7 +163,25 @@ final class TimerBarViewFactory
         'id' => $id,
         'name' => (string) $activity->getName(),
         'projectId' => (int) $activity->getProject()?->getId(),
+        'billable' => $activity->isBillable(),
       ];
+    }
+
+    return $options;
+  }
+
+  /**
+   * Describes the tags for the tag picker.
+   *
+   * @param array<int, Tag> $tags Visible tags by ID.
+   * @return array<int, TagOption>
+   */
+  private function describeTags( array $tags ) : array
+  {
+    $options = [];
+    foreach ( $tags as $id => $tag )
+    {
+      $options[] = [ 'id' => $id, 'name' => (string) $tag->getName() ];
     }
 
     return $options;
