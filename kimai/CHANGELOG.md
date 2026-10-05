@@ -4,6 +4,16 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.7
+
+- Graphs: short records stay visible. Bars have a minimum height and doughnut slices a
+  minimum size; tooltips still show the exact time.
+- Graphs: projects with near-identical colours, such as two projects that inherit the same
+  customer colour, now get clearly different colours, with a small gap between segments.
+- Graphs: the time axis shows hours and minutes (1:30) instead of decimal hours.
+- Graphs: the user reports show a legend with each project's total, and charts with more
+  than eight groups combine the smallest into "Other".
+
 ## 2.67.0.6
 
 - Quick start bar: in the top navigation, the description field now takes all the width

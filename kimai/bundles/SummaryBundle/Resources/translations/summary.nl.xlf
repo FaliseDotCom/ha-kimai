@@ -58,6 +58,10 @@
         <source>summary.chart.doughnut</source>
         <target>Aandeel in de totale tijd</target>
       </trans-unit>
+      <trans-unit id="summary.other" resname="summary.other">
+        <source>summary.other</source>
+        <target>Overig</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

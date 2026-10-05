@@ -2,10 +2,11 @@
 {% trans_default_domain 'summary' %}
 {% set chart_data = {
   'buckets': summary.buckets|map(bucket => bucket.label),
-  'series': summary.groups|map(group => {
-    'label': group.name,
-    'color': group.color,
-    'data': group.perBucket
+  'series': summary.chartSeries|map(series => {
+    'label': series.other ? 'summary.other'|trans : series.name,
+    'color': series.color,
+    'colorDark': series.colorDark,
+    'data': series.perBucket
   }),
   'gridColor': config('theme.chart.grid_color'),
   'labels': {

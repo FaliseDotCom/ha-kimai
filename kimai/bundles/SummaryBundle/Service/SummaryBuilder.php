@@ -23,6 +23,7 @@ use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
  *   name: string,
  *   subtitle: string,
  *   color: string,
+ *   colorDark: string,
  *   duration: int,
  *   billableDuration: int,
  *   rate: float,
@@ -30,11 +31,13 @@ use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
  *   perBucket: array<int, int>,
  *   descriptions: array<int, Description>
  * }
+ * @phpstan-type ChartSeries array{name: string, other: bool, color: string, colorDark: string, duration: int, perBucket: array<int, int>}
  * @phpstan-type Summary array{
  *   granularity: string,
  *   totals: array{duration: int, billableDuration: int, rate: float},
  *   buckets: array<int, Bucket>,
- *   groups: array<int, Group>
+ *   groups: array<int, Group>,
+ *   chartSeries: array<int, ChartSeries>
  * }
  */
 final class SummaryBuilder
@@ -55,6 +58,20 @@ final class SummaryBuilder
    * @var int
    */
   private const MAX_WEEKDAY_LABELS = 7;
+
+  /**
+   * Most series a chart shows; beyond this the smallest groups are combined into "other".
+   *
+   * @var int
+   */
+  private const MAX_CHART_SERIES = 8;
+
+  /**
+   * @param ChartColors $chartColors Picks colours that can be told apart.
+   */
+  public function __construct( private readonly ChartColors $chartColors )
+  {
+  }
 
   /**
    * Builds the summary for the given rows and period.
@@ -112,12 +129,86 @@ final class SummaryBuilder
       $groups[ $key ][ 'descriptions' ] = $this->sortByDuration( array_values( $descriptions[ $key ] ?? [] ) );
     }
 
+    $groups = $this->applyColors( $this->sortByDuration( array_values( $groups ) ) );
+
     return [
       'granularity' => $granularity,
       'totals' => $totals,
       'buckets' => $buckets,
-      'groups' => $this->sortByDuration( array_values( $groups ) ),
+      'groups' => $groups,
+      'chartSeries' => $this->createChartSeries( $groups, count( $buckets ) ),
     ];
+  }
+
+  /**
+   * Gives each group a colour that can be told apart from the larger groups before it.
+   *
+   * @param array<int, Group> $groups Groups, largest first.
+   * @return array<int, Group>
+   */
+  private function applyColors( array $groups ) : array
+  {
+    $colors = $this->chartColors->assign( array_column( $groups, 'color' ) );
+
+    foreach ( $groups as $index => $group )
+    {
+      $groups[ $index ][ 'color' ] = $colors[ $index ][ 0 ];
+      $groups[ $index ][ 'colorDark' ] = $colors[ $index ][ 1 ];
+    }
+
+    return $groups;
+  }
+
+  /**
+   * Returns the series to chart: every group, or the largest ones plus one "other" series
+   * that combines the rest when there are too many to tell apart.
+   *
+   * @param array<int, Group> $groups Groups, largest first.
+   * @param int $bucketCount The number of buckets in the period.
+   * @return array<int, ChartSeries>
+   */
+  private function createChartSeries( array $groups, int $bucketCount ) : array
+  {
+    $series = [];
+    $other = [
+      'name' => '',
+      'other' => true,
+      'color' => ChartColors::OTHER[ 0 ],
+      'colorDark' => ChartColors::OTHER[ 1 ],
+      'duration' => 0,
+      'perBucket' => array_fill( 0, $bucketCount, 0 ),
+    ];
+    $keep = count( $groups ) <= self::MAX_CHART_SERIES ? count( $groups ) : self::MAX_CHART_SERIES - 1;
+
+    foreach ( $groups as $index => $group )
+    {
+      if ( $index < $keep )
+      {
+        $series[] = [
+          'name' => $group[ 'name' ],
+          'other' => false,
+          'color' => $group[ 'color' ],
+          'colorDark' => $group[ 'colorDark' ],
+          'duration' => $group[ 'duration' ],
+          'perBucket' => $group[ 'perBucket' ],
+        ];
+
+        continue;
+      }
+
+      $other[ 'duration' ] += $group[ 'duration' ];
+      foreach ( $group[ 'perBucket' ] as $bucket => $duration )
+      {
+        $other[ 'perBucket' ][ $bucket ] += $duration;
+      }
+    }
+
+    if ( $other[ 'duration' ] > 0 )
+    {
+      $series[] = $other;
+    }
+
+    return $series;
   }
 
   /**
@@ -234,6 +325,7 @@ final class SummaryBuilder
       'name' => $name,
       'subtitle' => $subtitle,
       'color' => $color !== '' ? $color : ( new Color() )->getRandomFromPalette( $name ),
+      'colorDark' => '',
       'duration' => 0,
       'billableDuration' => 0,
       'rate' => 0.0,

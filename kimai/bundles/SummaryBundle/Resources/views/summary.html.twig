@@ -114,7 +114,7 @@
             {% for group in summary.groups %}
               <details class="list-group-item summary-group">
                 <summary class="summary-group-header">
-                  <span class="summary-swatch" data-color="{{ group.color }}"></span>
+                  <span class="summary-swatch" data-color="{{ group.color }}" data-color-dark="{{ group.colorDark }}"></span>
                   <span class="summary-group-name">
                     {{ group.name }}
                     {% if group.subtitle is not empty %}

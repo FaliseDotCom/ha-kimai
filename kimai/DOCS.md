@@ -247,6 +247,13 @@ week, month, year and user picked in the report.
 - a doughnut chart and a breakdown per project, customer, activity or user, which opens to
   show the time per description.
 
+**Colours and short records.** The charts use the colours of your projects, customers and
+activities in Kimai. When two of them are too alike to tell apart, for example two projects
+that both take their customer's red, the smaller one gets a clearly different colour, and the
+legend or breakdown shows which is which. Bars of a few minutes are drawn at a minimum height
+and small slices at a minimum size, so even a 15-minute record stays visible; hover over them
+for the exact time. Charts with more than eight groups combine the smallest into **Other**.
+
 Pick the period with the date field; its menu offers this week, last week, recent months,
 quarters and years. The arrows next to it move one period back or forward. The report starts
 with your own time this week. Users who may see other people's reports can choose a

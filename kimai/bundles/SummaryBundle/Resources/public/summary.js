@@ -56,6 +56,28 @@
   const SECONDS_PER_HOUR = 3600;
 
   /**
+   * Width, in pixels, of the gap in the surface colour between stacked segments and slices.
+   *
+   * @type {number}
+   */
+  const SEGMENT_GAP = 2;
+
+  /**
+   * Shortest bar segment, in pixels, so short records stay visible next to long ones.
+   *
+   * @type {number}
+   */
+  const MIN_BAR_LENGTH = 6;
+
+  /**
+   * Smallest share of the doughnut a group is drawn with, so short records stay visible.
+   * Tooltips always show the real duration and percentage.
+   *
+   * @type {number}
+   */
+  const MIN_DOUGHNUT_SHARE = 0.03;
+
+  /**
    * Formats a number of seconds as hours and minutes, for example 1:05.
    *
    * @param {number} seconds The duration in seconds.
@@ -73,7 +95,7 @@
   /**
    * Reads the chart data that the page embeds as JSON.
    *
-   * @returns {?{buckets: string[], series: {label: string, color: string, data: number[]}[], gridColor: string, labels: {total: string}}}
+   * @returns {?{buckets: string[], series: {label: string, color: string, colorDark: string, data: number[]}[], gridColor: string, labels: {total: string}}}
    */
   function readChartData()
   {
@@ -92,6 +114,41 @@
       console.error( 'Summary report: invalid chart data', error );
       return null;
     }
+  }
+
+  /**
+   * Returns whether Kimai shows its dark theme.
+   *
+   * @returns {boolean}
+   */
+  function isDarkTheme()
+  {
+    return document.documentElement.dataset.bsTheme === 'dark';
+  }
+
+  /**
+   * Returns the colour for the current theme; groups without a dark step use their own colour.
+   *
+   * @param {string} color The colour for the light theme.
+   * @param {string|undefined} colorDark The colour for the dark theme.
+   * @returns {string}
+   */
+  function themeColor( color, colorDark )
+  {
+    return isDarkTheme() && colorDark ? colorDark : color;
+  }
+
+  /**
+   * Returns the background colour of the card a chart sits on, for the gaps between segments.
+   *
+   * @param {HTMLElement} canvas The chart canvas.
+   * @returns {string}
+   */
+  function surfaceColor( canvas )
+  {
+    const card = canvas.closest( '.card' ) ?? document.body;
+
+    return window.getComputedStyle( card ).backgroundColor;
   }
 
   /**
@@ -114,14 +171,14 @@
   {
     document.querySelectorAll( SWATCH_SELECTOR ).forEach( ( swatch ) =>
     {
-      swatch.style.backgroundColor = swatch.dataset.color;
+      swatch.style.backgroundColor = themeColor( swatch.dataset.color, swatch.dataset.colorDark );
     } );
   }
 
   /**
    * Draws the stacked bar chart with the time per day or month.
    *
-   * @param {{buckets: string[], series: {label: string, color: string, data: number[]}[], gridColor: string, labels: {total: string}}} data The chart data.
+   * @param {{buckets: string[], series: {label: string, color: string, colorDark: string, data: number[]}[], gridColor: string, labels: {total: string}}} data The chart data.
    * @returns {void}
    */
   function renderBarChart( data )
@@ -140,9 +197,13 @@
         labels: data.buckets,
         datasets: data.series.map( ( series ) => ( {
           label: series.label,
-          backgroundColor: series.color,
-          data: series.data.map( ( seconds ) => seconds / SECONDS_PER_HOUR ),
+          backgroundColor: themeColor( series.color, series.colorDark ),
+          borderColor: surfaceColor( canvas ),
+          borderWidth: { top: SEGMENT_GAP },
+          // Empty days get no value at all, so the minimum length only applies to real records.
+          data: series.data.map( ( seconds ) => seconds > 0 ? seconds / SECONDS_PER_HOUR : null ),
           seconds: series.data,
+          minBarLength: MIN_BAR_LENGTH,
         } ) ),
       },
       options: {
@@ -157,7 +218,7 @@
             stacked: true,
             beginAtZero: true,
             grid: { color: data.gridColor },
-            ticks: { callback: ( value ) => value + 'h' },
+            ticks: { callback: ( value ) => formatDuration( value * SECONDS_PER_HOUR ) },
           },
         },
         plugins: {
@@ -177,7 +238,7 @@
   /**
    * Draws the doughnut chart with each group's share of the total time.
    *
-   * @param {{series: {label: string, color: string, data: number[]}[]}} data The chart data.
+   * @param {{series: {label: string, color: string, colorDark: string, data: number[]}[]}} data The chart data.
    * @returns {void}
    */
   function renderDoughnutChart( data )
@@ -190,14 +251,17 @@
 
     const durations = data.series.map( ( series ) => sum( series.data ) );
     const total = sum( durations );
+    const drawn = durations.map( ( duration ) => duration > 0 ? Math.max( duration, total * MIN_DOUGHNUT_SHARE ) : 0 );
 
     new Chart( canvas, {
       type: 'doughnut',
       data: {
         labels: data.series.map( ( series ) => series.label ),
         datasets: [ {
-          backgroundColor: data.series.map( ( series ) => series.color ),
-          data: durations,
+          backgroundColor: data.series.map( ( series ) => themeColor( series.color, series.colorDark ) ),
+          borderColor: surfaceColor( canvas ),
+          borderWidth: SEGMENT_GAP,
+          data: drawn,
         } ],
       },
       options: {
@@ -210,9 +274,10 @@
             callbacks: {
               label: ( item ) =>
               {
-                const percent = total > 0 ? ( item.raw / total * 100 ).toFixed( 1 ) : '0.0';
+                const duration = durations[ item.dataIndex ];
+                const percent = total > 0 ? ( duration / total * 100 ).toFixed( 1 ) : '0.0';
 
-                return ' ' + formatDuration( item.raw ) + ' (' + percent + '%)';
+                return ' ' + formatDuration( duration ) + ' (' + percent + '%)';
               },
             },
           },

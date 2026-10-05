@@ -102,6 +102,29 @@
   text-align: right;
 }
 
+/* Legend under the doughnut chart on the user reports */
+.summary-legend
+{
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary-legend-item
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.125rem 0;
+}
+
+.summary-legend-name
+{
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .summary-descriptions
 {
   margin: 0.5rem 0 0;
