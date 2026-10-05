@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.8
+
+- Weekly, monthly and yearly user reports: projects are indented under their customer, and
+  activities under their project, so the levels of the table are easier to tell apart.
+
 ## 2.67.0.7
 
 - Graphs: short records stay visible. Bars have a minimum height and doughnut slices a

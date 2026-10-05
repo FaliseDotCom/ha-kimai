@@ -157,3 +157,15 @@
     display: none;
   }
 }
+
+/* Kimai's weekly, monthly and yearly user reports: indent projects under their customer and
+   activities under their project, so the levels of the table stand apart */
+#reporting-content .dataTable tr.project > td:first-child
+{
+  padding-left: 2rem;
+}
+
+#reporting-content .dataTable tr.activity > td:first-child
+{
+  padding-left: 3.5rem;
+}
