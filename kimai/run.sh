@@ -118,7 +118,9 @@ start_database()
   fi
 
   log "Starting MariaDB."
-  mariadbd --user=mysql &
+  # A separate session keeps MariaDB out of the process group, so a stop signal
+  # sent to the whole group cannot stop it before Kimai.
+  setsid mariadbd --user=mysql &
   DB_PID=$!
 
   local waited=0
@@ -225,6 +227,8 @@ start_kimai()
 # shellcheck disable=SC2329 # Invoked through the trap set in main.
 shutdown()
 {
+  # Ignore repeated stop signals so the shutdown runs only once.
+  trap '' TERM INT
   log "Shutting down."
 
   if [ "$KIMAI_PID" -ne 0 ]

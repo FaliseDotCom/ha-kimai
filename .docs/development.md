@@ -38,7 +38,9 @@ On start, `run.sh`:
    link to `/config/plugins`, and links `/config/local.yaml` into Kimai's configuration
    when it exists.
 4. Starts MariaDB on `127.0.0.1:3306` with its data in `/data/mysql`, initialising the data
-   directory on first start and running `mariadb-upgrade` on every start.
+   directory on first start and running `mariadb-upgrade` on every start. MariaDB runs in
+   its own session (`setsid`), so a stop signal sent to the whole process group cannot
+   stop it before Kimai.
 5. Creates the `kimai` database and user. The user's password is generated once and kept
    in `/data/db_password`.
 6. Refuses to continue when Kimai has no users and no administrator credentials are set.

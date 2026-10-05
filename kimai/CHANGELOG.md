@@ -4,6 +4,10 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.2
+
+- Always stop Kimai before its database when the app stops, and log the shutdown once.
+
 ## 2.67.0.1
 
 - Fix the app showing as starting forever in Home Assistant, with no Stop or Restart
