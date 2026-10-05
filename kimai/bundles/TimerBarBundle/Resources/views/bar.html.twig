@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{ path('timer_bar_asset', { 'name': 'timer-bar.css', 'v': timer_bar_version }) }}">
 <script src="{{ path('timer_bar_asset', { 'name': 'timer-bar.js', 'v': timer_bar_version }) }}" defer></script>
 
-<div class="card mb-3 timer-bar{% if timer_bar.running is not empty %} timer-bar-running{% endif %}{% if not show_in_content %} timer-bar-navbar-only{% endif %}" data-timer-bar>
+<div class="card mb-3 timer-bar{% if timer_bar.running is not empty %} timer-bar-running{% endif %}" data-timer-bar>
   {% if timer_bar.running is not empty %}
     {% set running = timer_bar.running %}
     <form method="post" action="{{ path('timer_bar_stop') }}" class="card-body timer-bar-form">

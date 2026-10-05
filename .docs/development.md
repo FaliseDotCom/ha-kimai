@@ -132,9 +132,9 @@ They only use Kimai's extension points and services:
 | `SummaryBundle`  | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
 | `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService`, project, activity and tag queries   |
 
-The quick start bar is rendered at the top of the page content. Its script moves it into
-the top navigation on screens of 1200 pixels and wider and hides Kimai's own start button
-(`.ticktac`) there; Kimai offers no event for the navigation itself. The charts on the user
+The quick start bar is rendered at the top of the page content and hides Kimai's own start
+button (`.ticktac`). On screens of 1200 pixels and wider its script moves it into the top
+navigation; Kimai offers no event for the navigation itself. The charts on the user
 reports are rendered the same way and moved into the report's `#reporting-content`, below
 its filters.
 

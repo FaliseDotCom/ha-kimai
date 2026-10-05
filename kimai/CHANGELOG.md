@@ -4,6 +4,12 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.9
+
+- Quick start bar: on phones and narrow windows it now shows on every page, on its own row
+  above the content, instead of only on the dashboard and **My times**. It replaces Kimai's
+  own start button there too.
+
 ## 2.67.0.8
 
 - Weekly, monthly and yearly user reports: projects are indented under their customer, and

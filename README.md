@@ -54,8 +54,8 @@ start. While a record runs, the bar shows it with a live clock and a stop button
 descriptions are suggested as you type, and every record on **My times** gets a play button
 that starts the same work again.
 
-On wide screens the bar sits in Kimai's top navigation on every page; on phones it appears
-above the dashboard and **My times**.
+It replaces Kimai's own start button on every page: in the top navigation on wide screens,
+and on its own row above the page content on phones and narrow windows.
 
 [How it works](kimai/bundles/TimerBarBundle/README.md)
 

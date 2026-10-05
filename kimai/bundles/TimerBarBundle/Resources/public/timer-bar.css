@@ -188,12 +188,6 @@ td:has(> .timer-bar-continue)
   display: none !important;
 }
 
-/* Pages other than the dashboard and "My times" only show the bar in the navigation */
-.timer-bar-navbar-only:not(.timer-bar-navbar)
-{
-  display: none;
-}
-
 @media (max-width: 767.98px)
 {
   .timer-bar-form

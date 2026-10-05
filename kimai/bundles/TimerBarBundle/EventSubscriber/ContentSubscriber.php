@@ -14,19 +14,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
- * Adds the quick start bar to every page. Its script moves it into the top navigation on wide
- * screens, in place of Kimai's own start button; on narrow screens it stays above the content
- * of the dashboard and "My times". Also enables the continue buttons on "My times".
+ * Adds the quick start bar to every page, in place of Kimai's own start button. Its script
+ * moves it into the top navigation on wide screens; on narrow screens it stays on its own row
+ * above the page content. Also enables the continue buttons on "My times".
  */
 final class ContentSubscriber implements EventSubscriberInterface
 {
-  /**
-   * The pages that show the bar above their content on narrow screens, by route name.
-   *
-   * @var array<int, string>
-   */
-  private const CONTENT_ROUTES = [ 'dashboard', self::LIST_ROUTE ];
-
   /**
    * The "My times" page, whose entries get a continue button.
    *
@@ -89,7 +82,6 @@ final class ContentSubscriber implements EventSubscriberInterface
       'target_path' => $request->getRequestUri(),
       'timer_bar_version' => TimerBarBundle::getAssetVersion(),
       'show_continue' => $route === self::LIST_ROUTE,
-      'show_in_content' => in_array( $route, self::CONTENT_ROUTES, true ),
     ] ) );
   }
 }

@@ -195,10 +195,9 @@ quick start bar and graphs.
 
 ### Quick start bar
 
-A bar to start and stop time recording without opening a form. On wide screens it sits in the
-top navigation of every page, in place of Kimai's own start button. On phones and narrow
-windows Kimai's own button stays in the navigation, and the bar appears above the content of
-the dashboard and **My times**.
+A bar to start and stop time recording without opening a form. It replaces Kimai's own
+start button on every page: on wide screens it sits in the top navigation, and on phones and
+narrow windows it gets its own row above the page content.
 
 - **Description:** type what you are working on. Recent descriptions are suggested; picking
   one fills in the project and activity it was last booked on.

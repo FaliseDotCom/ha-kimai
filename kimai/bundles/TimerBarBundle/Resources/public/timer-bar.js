@@ -437,8 +437,8 @@
   }
 
   /**
-   * Shows the bar in the top navigation on wide screens, in place of Kimai's own start
-   * button, and above the page content on narrow screens.
+   * Shows the bar in place of Kimai's own start button: in the top navigation on wide
+   * screens, and on its own row above the page content on narrow screens.
    *
    * @param {HTMLElement} bar The quick start bar.
    * @returns {void}
@@ -454,7 +454,7 @@
       const navbarTimer = Array.from( document.querySelectorAll( NAVBAR_TIMER_SELECTOR ) ).find( ( timer ) => timer.closest( 'header' ) !== null );
       const inNavbar = wide.matches && navbarTimer !== undefined;
 
-      document.querySelectorAll( NAVBAR_TIMER_SELECTOR ).forEach( ( timer ) => timer.classList.toggle( REPLACED_CLASS, inNavbar ) );
+      document.querySelectorAll( NAVBAR_TIMER_SELECTOR ).forEach( ( timer ) => timer.classList.add( REPLACED_CLASS ) );
       bar.classList.toggle( NAVBAR_CLASS, inNavbar );
       navbarTimer?.parentElement?.classList.toggle( HOST_CLASS, inNavbar );
       navbarTimer?.closest( 'header' )?.classList.toggle( HEADER_CLASS, inNavbar );
