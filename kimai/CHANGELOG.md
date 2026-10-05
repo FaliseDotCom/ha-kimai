@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.10
+
+- Quick start bar: on phones and narrow windows it now sits directly below the top bar, above
+  the page's own buttons and filters, instead of between those and the list.
+
 ## 2.67.0.9
 
 - Quick start bar: on phones and narrow windows it now shows on every page, on its own row

@@ -76,6 +76,17 @@
   flex: 0 0 auto;
 }
 
+/* Row directly below the top bar that holds the bar on narrow screens */
+.timer-bar-row
+{
+  padding-top: 1rem;
+}
+
+.timer-bar-row:empty
+{
+  display: none;
+}
+
 /* Keep the open tag menu above the sticky header of the entry table below the bar */
 .timer-bar
 {

@@ -55,7 +55,7 @@ descriptions are suggested as you type, and every record on **My times** gets a 
 that starts the same work again.
 
 It replaces Kimai's own start button on every page: in the top navigation on wide screens,
-and on its own row above the page content on phones and narrow windows.
+and on its own row directly below the top bar on phones and narrow windows.
 
 [How it works](kimai/bundles/TimerBarBundle/README.md)
 

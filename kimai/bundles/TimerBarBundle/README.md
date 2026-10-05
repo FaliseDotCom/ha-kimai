@@ -4,8 +4,8 @@ A quick start bar for [Kimai](https://www.kimai.org/): start and stop time recor
 bar, without opening a form.
 
 The bar replaces Kimai's own start button on every page. On screens at least 1200 pixels wide
-it sits in the top navigation; on narrower screens it gets its own row above the page
-content.
+it sits in the top navigation; on narrower screens it gets its own row directly below the top
+bar, above the page's own buttons and filters.
 
 - **Idle:** "What are you working on?", a project picker grouped by customer, an activity
   picker, a tag picker (which can create tags, with permission), a billable toggle (with

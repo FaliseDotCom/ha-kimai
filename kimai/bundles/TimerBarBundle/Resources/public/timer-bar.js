@@ -29,6 +29,21 @@
   const WIDE_SCREEN_QUERY = '(min-width: 1200px)';
 
   /**
+   * Selector of the page area below the top bar, which holds the page title and content.
+   *
+   * @type {string}
+   */
+  const PAGE_WRAPPER_SELECTOR = '.page-wrapper';
+
+  /**
+   * Classes of the row that holds the bar on narrow screens; container-fluid gives it the
+   * same side margins as the page.
+   *
+   * @type {string}
+   */
+  const ROW_CLASS = 'container-fluid timer-bar-row';
+
+  /**
    * Class of the bar while it sits in the top navigation.
    *
    * @type {string}
@@ -50,7 +65,7 @@
   const HEADER_CLASS = 'timer-bar-header';
 
   /**
-   * Spacing utility class the bar only needs above the page content.
+   * Spacing utility class the bar is rendered with, for pages without the usual layout.
    *
    * @type {string}
    */
@@ -437,17 +452,41 @@
   }
 
   /**
+   * Creates the row the bar uses on narrow screens: directly below the top bar, above the
+   * page title and the page's own buttons. Falls back to where the bar was rendered.
+   *
+   * @param {HTMLElement} bar The quick start bar.
+   * @returns {HTMLElement}
+   */
+  function createRow( bar )
+  {
+    const row = document.createElement( 'div' );
+    row.className = ROW_CLASS;
+
+    const pageWrapper = document.querySelector( PAGE_WRAPPER_SELECTOR );
+    if ( pageWrapper !== null )
+    {
+      pageWrapper.prepend( row );
+    }
+    else
+    {
+      bar.before( row );
+    }
+
+    return row;
+  }
+
+  /**
    * Shows the bar in place of Kimai's own start button: in the top navigation on wide
-   * screens, and on its own row above the page content on narrow screens.
+   * screens, and on its own row directly below the top bar on narrow screens.
    *
    * @param {HTMLElement} bar The quick start bar.
    * @returns {void}
    */
   function initPlacement( bar )
   {
-    const home = document.createComment( 'quick start bar' );
+    const home = createRow( bar );
     const wide = window.matchMedia( WIDE_SCREEN_QUERY );
-    bar.before( home );
 
     const place = () =>
     {
@@ -458,7 +497,7 @@
       bar.classList.toggle( NAVBAR_CLASS, inNavbar );
       navbarTimer?.parentElement?.classList.toggle( HOST_CLASS, inNavbar );
       navbarTimer?.closest( 'header' )?.classList.toggle( HEADER_CLASS, inNavbar );
-      bar.classList.toggle( CONTENT_SPACING_CLASS, !inNavbar );
+      bar.classList.remove( CONTENT_SPACING_CLASS );
 
       if ( inNavbar )
       {
@@ -466,7 +505,7 @@
       }
       else
       {
-        home.after( bar );
+        home.append( bar );
       }
     };
 
