@@ -15,10 +15,8 @@ else to set up.
 - Kimai with a bundled database; no separate database app needed.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
-- A **quick start bar** in the top navigation: type what you are working on, pick a project,
-  add tags and press start. Past records can be continued with one click.
-- **Graphs**: charts per day and per project on the weekly, monthly and yearly reports, and a
-  summary report with charts and totals for any period.
+- Two extra [plugins](#plugins): a **quick start bar** for starting and stopping time
+  recording, and **graphs** on Kimai's reports.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -43,24 +41,56 @@ Assistant.
 | ------------------ | --------------------------------------------------------------- |
 | [Kimai](kimai/)    | Self-hosted time tracking for freelancers and teams.            |
 
+## Plugins
+
+The app ships with two Kimai plugins, written for this app. Both are optional: each can be
+turned off without affecting the rest of Kimai.
+
+### Quick start bar
+
+Start and stop time recording from one bar instead of a form. Type what you are working on,
+pick a project and activity, optionally add tags and mark the record billable, and press
+start. While a record runs, the bar shows it with a live clock and a stop button. Recent
+descriptions are suggested as you type, and every record on **My times** gets a play button
+that starts the same work again.
+
+On wide screens the bar sits in Kimai's top navigation on every page; on phones it appears
+above the dashboard and **My times**.
+
+[How it works](kimai/bundles/TimerBarBundle/README.md)
+
+### Graphs
+
+- The **weekly, monthly and yearly report for one user** get a bar chart of the hours per day
+  (or month), stacked by project, and a doughnut chart per project, above Kimai's table.
+- A **Summary** report shows any period on one page: totals, a bar chart over time, a
+  doughnut chart, and a breakdown per project, customer, activity or user down to each
+  description.
+
+[How it works](kimai/bundles/SummaryBundle/README.md)
+
+The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use both, and how
+to turn them off.
+
 ## Contributing
 
 Bug reports and pull requests are welcome. [Development](.docs/development.md) explains how
-the app works and how to test changes, and [Releasing](.docs/releasing.md) covers updating
-to a new Kimai version.
+the app and the plugins work and how to test changes, and [Releasing](.docs/releasing.md)
+covers updating to a new Kimai version.
 
-## AI coding guidelines
+The app itself is shell scripts, YAML and a Dockerfile. The plugins in `kimai/bundles/` are
+PHP, Twig, JavaScript and CSS. Pull requests should follow these conventions:
 
-The app itself is shell, YAML and Docker; the Kimai plugins in `kimai/bundles/` are PHP,
-Twig, JavaScript and CSS. These skills apply:
-
-- `php` and `phpstan` for the plugins' PHP code (PHPStan level 6, run as described in
-  [Development](.docs/development.md#1-lint)).
-- `javascript` and `css` for the plugins' scripts and stylesheets.
-
-`wordpress`, `wordpress-translations` and `svelte` do not apply. The global guidelines for
-formatting (two-space indentation, braces on their own line) and Git apply everywhere, and
-shell scripts must pass [ShellCheck](https://www.shellcheck.net/).
+- **Formatting:** two spaces per indentation level, opening braces on their own line, and
+  spaces inside parentheses and brackets, as in the existing code. `.editorconfig` sets the
+  basics for most editors.
+- **Documentation:** every function and class property has a short comment describing what
+  it does, in PHPDoc or JSDoc form.
+- **Checks:** shell scripts pass [ShellCheck](https://www.shellcheck.net/), and the plugins'
+  PHP passes [PHPStan](https://phpstan.org/) at level 6.
+  [Development](.docs/development.md#1-lint) shows how to run both with Docker.
+- **User-facing changes:** update [`kimai/DOCS.md`](kimai/DOCS.md) and add an entry to
+  [`kimai/CHANGELOG.md`](kimai/CHANGELOG.md).
 
 ## License
 
