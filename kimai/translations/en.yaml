@@ -1,0 +1,31 @@
+configuration:
+  admin_email:
+    name: Administrator email
+    description: >-
+      Email address of the first Kimai administrator (user name "admin").
+      Only used when Kimai has no users yet; you can clear it after the first start.
+  admin_password:
+    name: Administrator password
+    description: >-
+      Password for the first Kimai administrator, at least 8 characters.
+      Only used when Kimai has no users yet; change it later inside Kimai.
+  trusted_hosts:
+    name: Trusted hosts
+    description: >-
+      Regular expression of the host names Kimai may be reached on, for example
+      homeassistant\.local|192\.168\.1\.10|kimai\.example\.com. Leave empty to accept any host name.
+  trusted_proxies:
+    name: Trusted proxies
+    description: >-
+      Comma-separated IP addresses or ranges of reverse proxies whose X-Forwarded-* headers Kimai
+      may trust. The default covers proxies running as other Home Assistant apps.
+  mailer_from:
+    name: Sender email address
+    description: Address Kimai sends emails from, for example password reset emails.
+  mailer_url:
+    name: Mail server
+    description: >-
+      Mail server connection in Symfony Mailer format, for example
+      smtp://user:password@smtp.example.com:587. Leave empty to disable email.
+network:
+  8001/tcp: Kimai web interface

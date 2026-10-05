@@ -1,0 +1,31 @@
+configuration:
+  admin_email:
+    name: E-mailadres beheerder
+    description: >-
+      E-mailadres van de eerste Kimai-beheerder (gebruikersnaam "admin").
+      Wordt alleen gebruikt zolang Kimai nog geen gebruikers heeft; na de eerste start mag je het leegmaken.
+  admin_password:
+    name: Wachtwoord beheerder
+    description: >-
+      Wachtwoord van de eerste Kimai-beheerder, minimaal 8 tekens.
+      Wordt alleen gebruikt zolang Kimai nog geen gebruikers heeft; wijzig het daarna in Kimai zelf.
+  trusted_hosts:
+    name: Vertrouwde hostnamen
+    description: >-
+      Reguliere expressie met de hostnamen waarop Kimai bereikbaar is, bijvoorbeeld
+      homeassistant\.local|192\.168\.1\.10|kimai\.example\.com. Laat leeg om elke hostnaam te accepteren.
+  trusted_proxies:
+    name: Vertrouwde proxy's
+    description: >-
+      Kommagescheiden IP-adressen of reeksen van reverse proxy's waarvan Kimai de X-Forwarded-*-headers
+      mag vertrouwen. De standaardwaarde dekt proxy's die als andere Home Assistant-app draaien.
+  mailer_from:
+    name: Afzenderadres
+    description: Adres waarvandaan Kimai e-mails verstuurt, bijvoorbeeld voor het herstellen van wachtwoorden.
+  mailer_url:
+    name: Mailserver
+    description: >-
+      Verbinding met de mailserver in Symfony Mailer-formaat, bijvoorbeeld
+      smtp://gebruiker:wachtwoord@smtp.example.com:587. Laat leeg om e-mail uit te schakelen.
+network:
+  8001/tcp: Kimai-webinterface
