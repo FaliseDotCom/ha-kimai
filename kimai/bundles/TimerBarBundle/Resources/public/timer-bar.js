@@ -36,6 +36,20 @@
   const NAVBAR_CLASS = 'timer-bar-navbar';
 
   /**
+   * Class of the navigation group that holds the bar, so it can take the free width.
+   *
+   * @type {string}
+   */
+  const HOST_CLASS = 'timer-bar-host';
+
+  /**
+   * Class of the top navigation while it holds the bar.
+   *
+   * @type {string}
+   */
+  const HEADER_CLASS = 'timer-bar-header';
+
+  /**
    * Spacing utility class the bar only needs above the page content.
    *
    * @type {string}
@@ -442,6 +456,8 @@
 
       document.querySelectorAll( NAVBAR_TIMER_SELECTOR ).forEach( ( timer ) => timer.classList.toggle( REPLACED_CLASS, inNavbar ) );
       bar.classList.toggle( NAVBAR_CLASS, inNavbar );
+      navbarTimer?.parentElement?.classList.toggle( HOST_CLASS, inNavbar );
+      navbarTimer?.closest( 'header' )?.classList.toggle( HEADER_CLASS, inNavbar );
       bar.classList.toggle( CONTENT_SPACING_CLASS, !inNavbar );
 
       if ( inNavbar )

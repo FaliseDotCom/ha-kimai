@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.6
+
+- Quick start bar: in the top navigation, the description field now takes all the width
+  between the page title and the other buttons.
+
 ## 2.67.0.5
 
 - The quick start bar now sits in the top navigation of every page on wide screens, in place
