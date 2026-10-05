@@ -18,7 +18,13 @@ RUN chmod 0755 /run.sh
 # can shut Kimai and MariaDB down in the right order.
 STOPSIGNAL SIGTERM
 
-# The upstream health check is replaced by the Supervisor watchdog.
-HEALTHCHECK NONE
+# The Supervisor shows the app as starting until this check passes, and its
+# watchdog restarts the app when the check fails. Apache only starts listening
+# once Kimai is installed or migrated, so an open port means Kimai is ready.
+# The upstream check requests a page, which fails when trusted_hosts excludes
+# 127.0.0.1. Disabling the check is no option either: the image then still
+# carries health check settings, and the Supervisor waits forever for a result.
+HEALTHCHECK --start-period=10m --interval=30s --timeout=10s --retries=3 \
+  CMD [ "bash", "-c", "exec 3<> /dev/tcp/127.0.0.1/8001" ]
 
 CMD [ "/run.sh" ]

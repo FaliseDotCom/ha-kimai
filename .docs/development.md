@@ -54,6 +54,14 @@ The Dockerfile sets `STOPSIGNAL SIGTERM`, because the upstream image uses `SIGWI
 Apache gracefully and `run.sh` would otherwise never see the stop request. `timeout: 60`
 in `config.yaml` gives MariaDB time to flush before Docker kills the container.
 
+The Dockerfile also defines a health check that tests whether Apache accepts connections
+on port 8001. Apache only starts once Kimai is installed or migrated, so the Supervisor shows
+the app as *starting* until Kimai is ready, and its watchdog restarts the app if the check
+fails after the 10-minute start period. It checks the port rather than a page, because a
+page request fails when `trusted_hosts` does not include `127.0.0.1`. Do not replace it with
+`HEALTHCHECK NONE`: the image then still carries health check settings, so the Supervisor
+keeps waiting for a result that never comes and shows the app as starting forever.
+
 ### Storage
 
 | Path in the container | Contents                                  | In backups |
