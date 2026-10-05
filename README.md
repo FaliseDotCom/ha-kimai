@@ -54,9 +54,14 @@ still do, and shell scripts must pass [ShellCheck](https://www.shellcheck.net/).
 
 ## License
 
-The files in this repository are released under the [MIT License](LICENSE). Kimai itself is
-licensed under the [AGPL-3.0](https://github.com/kimai/kimai/blob/main/LICENSE) and is not
-affiliated with this project.
+The files in this repository are released under the [MIT License](LICENSE), except for
+`kimai/icon.png` and `kimai/logo.png`. Kimai itself is licensed under the
+[AGPL-3.0](https://github.com/kimai/kimai/blob/main/LICENSE) and is not affiliated with this
+project.
+
+The Kimai name and the icon images (`kimai/icon.png` and `kimai/logo.png`, resized from
+Kimai's own icon) belong to the Kimai project. They are used only to identify the app, and
+remain under the Kimai project's terms.
 
 [repository-badge]: https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg
 [repository-url]: https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FFaliseDotCom%2Fha-kimai
