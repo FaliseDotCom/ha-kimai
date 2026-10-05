@@ -1,0 +1,15 @@
+{# The chart data for summary.js, as JSON. Expects `summary` from SummaryBuilder. #}
+{% trans_default_domain 'summary' %}
+{% set chart_data = {
+  'buckets': summary.buckets|map(bucket => bucket.label),
+  'series': summary.groups|map(group => {
+    'label': group.name,
+    'color': group.color,
+    'data': group.perBucket
+  }),
+  'gridColor': config('theme.chart.grid_color'),
+  'labels': {
+    'total': 'summary.total'|trans
+  }
+} %}
+<script type="application/json" id="summary-chart-data">{{ chart_data|json_encode|raw }}</script>

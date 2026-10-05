@@ -14,17 +14,18 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
- * Shows the timer bar at the top of the dashboard and the "My times" page, and enables the
- * continue buttons on "My times".
+ * Adds the quick start bar to every page. Its script moves it into the top navigation on wide
+ * screens, in place of Kimai's own start button; on narrow screens it stays above the content
+ * of the dashboard and "My times". Also enables the continue buttons on "My times".
  */
 final class ContentSubscriber implements EventSubscriberInterface
 {
   /**
-   * The pages that show the timer bar, by route name.
+   * The pages that show the bar above their content on narrow screens, by route name.
    *
    * @var array<int, string>
    */
-  private const ROUTES = [ 'dashboard', self::LIST_ROUTE ];
+  private const CONTENT_ROUTES = [ 'dashboard', self::LIST_ROUTE ];
 
   /**
    * The "My times" page, whose entries get a continue button.
@@ -61,7 +62,7 @@ final class ContentSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the timer bar above the page content on supported pages.
+   * Adds the quick start bar to the page.
    *
    * @param ThemeEvent $event The event that collects content for the top of the page.
    * @return void
@@ -78,7 +79,7 @@ final class ContentSubscriber implements EventSubscriberInterface
 
     $route = $request->attributes->get( '_route' );
 
-    if ( !in_array( $route, self::ROUTES, true ) || !$this->security->isGranted( 'create_own_timesheet' ) )
+    if ( !$this->security->isGranted( 'create_own_timesheet' ) )
     {
       return;
     }
@@ -88,6 +89,7 @@ final class ContentSubscriber implements EventSubscriberInterface
       'target_path' => $request->getRequestUri(),
       'timer_bar_version' => TimerBarBundle::getAssetVersion(),
       'show_continue' => $route === self::LIST_ROUTE,
+      'show_in_content' => in_array( $route, self::CONTENT_ROUTES, true ),
     ] ) );
   }
 }

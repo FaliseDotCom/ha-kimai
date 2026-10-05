@@ -7,8 +7,8 @@ namespace KimaiPlugin\SummaryBundle\Service;
 use DateTimeImmutable;
 
 /**
- * Calculates the period before or after a period, the way Toggl's arrows do: whole months
- * and whole years move by a month or a year, any other period moves by its own length.
+ * Calculates the period before or after a period: whole months and whole years move by a
+ * month or a year, any other period moves by its own length.
  */
 final class PeriodNavigator
 {

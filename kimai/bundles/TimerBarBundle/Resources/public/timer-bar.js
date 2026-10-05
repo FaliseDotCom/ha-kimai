@@ -1,11 +1,60 @@
 /**
- * Behaviour of the Kimai timer bar: fills in project and activity from recent entries,
+ * Behaviour of the Kimai quick start bar: fills in project and activity from recent entries,
  * offers only the activities that fit the chosen project, and runs the clock of the
  * running entry.
  */
 ( function ()
 {
   'use strict';
+
+  /**
+   * Selector of the quick start bar.
+   *
+   * @type {string}
+   */
+  const BAR_SELECTOR = '[data-timer-bar]';
+
+  /**
+   * Selector of Kimai's own start button and running clock in the top navigation.
+   *
+   * @type {string}
+   */
+  const NAVBAR_TIMER_SELECTOR = '.ticktac';
+
+  /**
+   * Screens at least this wide show the bar in the top navigation.
+   *
+   * @type {string}
+   */
+  const WIDE_SCREEN_QUERY = '(min-width: 1200px)';
+
+  /**
+   * Class of the bar while it sits in the top navigation.
+   *
+   * @type {string}
+   */
+  const NAVBAR_CLASS = 'timer-bar-navbar';
+
+  /**
+   * Spacing utility class the bar only needs above the page content.
+   *
+   * @type {string}
+   */
+  const CONTENT_SPACING_CLASS = 'mb-3';
+
+  /**
+   * Class that hides Kimai's own start button while the bar replaces it.
+   *
+   * @type {string}
+   */
+  const REPLACED_CLASS = 'timer-bar-replaced';
+
+  /**
+   * Events Kimai dispatches when it starts or stops a record without reloading the page.
+   *
+   * @type {string[]}
+   */
+  const KIMAI_RECORD_EVENTS = [ 'kimai.timesheetStart', 'kimai.timesheetStop' ];
 
   /**
    * Selector of the start form.
@@ -86,7 +135,8 @@
   }
 
   /**
-   * Keeps the clock of the running entry, and the browser tab title, up to date.
+   * Keeps the clock of the running entry up to date. Kimai itself keeps the duration in the
+   * browser tab title.
    *
    * @param {HTMLElement} clock The element that shows the elapsed time.
    * @returns {void}
@@ -94,7 +144,6 @@
   function startClock( clock )
   {
     const begin = Date.parse( clock.dataset.timerBarBegin );
-    const title = document.title;
 
     if ( Number.isNaN( begin ) )
     {
@@ -103,9 +152,7 @@
 
     const update = () =>
     {
-      const elapsed = formatClock( ( Date.now() - begin ) / 1000 );
-      clock.textContent = elapsed;
-      document.title = elapsed + ' · ' + title;
+      clock.textContent = formatClock( ( Date.now() - begin ) / 1000 );
     };
 
     update();
@@ -128,7 +175,7 @@
     }
     catch ( error )
     {
-      console.error( 'Timer bar: invalid suggestions', error );
+      console.error( 'Quick start bar: invalid suggestions', error );
       return [];
     }
   }
@@ -375,8 +422,61 @@
     new MutationObserver( () => addContinueButtons( form ) ).observe( document.body, { childList: true, subtree: true } );
   }
 
+  /**
+   * Shows the bar in the top navigation on wide screens, in place of Kimai's own start
+   * button, and above the page content on narrow screens.
+   *
+   * @param {HTMLElement} bar The quick start bar.
+   * @returns {void}
+   */
+  function initPlacement( bar )
+  {
+    const home = document.createComment( 'quick start bar' );
+    const wide = window.matchMedia( WIDE_SCREEN_QUERY );
+    bar.before( home );
+
+    const place = () =>
+    {
+      const navbarTimer = Array.from( document.querySelectorAll( NAVBAR_TIMER_SELECTOR ) ).find( ( timer ) => timer.closest( 'header' ) !== null );
+      const inNavbar = wide.matches && navbarTimer !== undefined;
+
+      document.querySelectorAll( NAVBAR_TIMER_SELECTOR ).forEach( ( timer ) => timer.classList.toggle( REPLACED_CLASS, inNavbar ) );
+      bar.classList.toggle( NAVBAR_CLASS, inNavbar );
+      bar.classList.toggle( CONTENT_SPACING_CLASS, !inNavbar );
+
+      if ( inNavbar )
+      {
+        navbarTimer.before( bar );
+      }
+      else
+      {
+        home.after( bar );
+      }
+    };
+
+    place();
+    wide.addEventListener( 'change', place );
+  }
+
+  /**
+   * Reloads the page when Kimai starts or stops a record elsewhere on the page, for example
+   * with its "repeat" action, so the bar shows the right state.
+   *
+   * @returns {void}
+   */
+  function followKimaiEvents()
+  {
+    KIMAI_RECORD_EVENTS.forEach( ( name ) => document.addEventListener( name, () => window.location.reload() ) );
+  }
+
   document.addEventListener( 'DOMContentLoaded', () =>
   {
+    document.querySelectorAll( BAR_SELECTOR ).forEach( initPlacement );
+    if ( document.querySelector( BAR_SELECTOR ) !== null )
+    {
+      followKimaiEvents();
+    }
+
     document.querySelectorAll( FORM_SELECTOR ).forEach( initForm );
     document.querySelectorAll( CLOCK_SELECTOR ).forEach( startClock );
     document.querySelectorAll( CONTINUE_FORM_SELECTOR ).forEach( initContinue );

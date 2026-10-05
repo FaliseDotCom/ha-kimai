@@ -1,7 +1,21 @@
-# Summary report for Kimai
+# Graphs for Kimai
 
-A Toggl-style summary report for [Kimai](https://www.kimai.org/). It adds **Summary** to
-Kimai's **Reporting** page:
+Charts for [Kimai](https://www.kimai.org/)'s reports.
+
+## Charts on the user reports
+
+Kimai's **Weekly view for one user**, **Monthly view for one user** and **Yearly view for one
+user** get two charts above their table:
+
+- a bar chart of the hours per day (per month in the yearly view), stacked by project;
+- a doughnut chart of each project's share of the period.
+
+The charts follow the period and user picked in the report, including a financial year when
+one is configured.
+
+## Summary report
+
+**Reporting** > **Summary** shows a period on one page:
 
 - totals for the period: total time, billable time and, with permission, the amount;
 - a stacked bar chart of the time per day (periods up to 62 days) or per month;
@@ -30,7 +44,7 @@ There are no database changes.
 
 ## Permissions
 
-| Who                                          | Sees                                            |
+| Who                                          | Sees in the summary report                      |
 | -------------------------------------------- | ----------------------------------------------- |
 | Users with `view_reporting`                  | Their own time                                  |
 | Users who may see other users' reports       | A user picker with every user they may see, and **All users** |

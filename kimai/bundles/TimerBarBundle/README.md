@@ -1,13 +1,20 @@
-# Timer bar for Kimai
+# Quick start bar for Kimai
 
-A Toggl-style timer bar for [Kimai](https://www.kimai.org/). It adds a bar to the top of the
-dashboard and **My times**:
+A quick start bar for [Kimai](https://www.kimai.org/): start and stop time recording from one
+bar, without opening a form.
+
+On screens at least 1200 pixels wide the bar sits in the top navigation of every page, in
+place of Kimai's own start button. On narrower screens Kimai's own button stays, and the bar
+appears above the content of the dashboard and **My times**.
 
 - **Idle:** "What are you working on?", a project picker grouped by customer, an activity
   picker, a tag picker (which can create tags, with permission), a billable toggle (with
   permission) and a start button.
 - **Running:** the description, project, customer, activity, tags and billable state of the
-  running record, a live clock (also shown in the browser tab title) and a stop button.
+  running record, a live clock and a stop button.
+
+When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
+action, the page reloads so the bar shows the current state.
 
 On **My times** each record gets a play button that continues it: a new record starts now
 with the same description, project, activity, tags and billable setting.

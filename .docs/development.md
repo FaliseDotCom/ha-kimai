@@ -18,8 +18,8 @@ kimai/
   icon.png, logo.png         Artwork, taken from Kimai's own touch icon
   translations/              Option names and descriptions (en, nl)
   bundles/                   Kimai plugins that ship with the app
-    SummaryBundle/           Toggl-style summary report with charts
-    TimerBarBundle/          Toggl-style timer bar on the dashboard and "My times"
+    SummaryBundle/           Graphs: summary report, and charts on the user reports
+    TimerBarBundle/          Quick start bar in the top navigation
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
@@ -129,8 +129,14 @@ They only use Kimai's extension points and services:
 
 | Plugin           | Hooks into                                    | Uses                                                    |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
-| `SummaryBundle`  | `ReportingEvent`, adds a report               | `DateRangeType`, `UserType`, Kimai's Chart.js build     |
-| `TimerBarBundle` | `ThemeEvent::CONTENT_START`, on two routes    | `TimesheetService`, project and activity form queries   |
+| `SummaryBundle`  | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
+| `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService`, project, activity and tag queries   |
+
+The quick start bar is rendered at the top of the page content. Its script moves it into
+the top navigation on screens of 1200 pixels and wider and hides Kimai's own start button
+(`.ticktac`) there; Kimai offers no event for the navigation itself. The charts on the user
+reports are rendered the same way and moved into the report's `#reporting-content`, below
+its filters.
 
 Both respect Kimai's permissions: the summary report needs `report:user`, and `report:other`
 to pick other users, whose list comes from Kimai's own team-aware user query; amounts need

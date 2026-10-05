@@ -15,6 +15,7 @@ use KimaiPlugin\SummaryBundle\Model\SummaryQuery;
 use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
 use KimaiPlugin\SummaryBundle\Service\PeriodNavigator;
 use KimaiPlugin\SummaryBundle\Service\SummaryBuilder;
+use KimaiPlugin\SummaryBundle\SummaryBundle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,16 +32,6 @@ final class SummaryController extends AbstractController
 {
   public const ROUTE = 'summary_report';
   public const ROUTE_ASSET = 'summary_report_asset';
-
-  /**
-   * The files that may be served as assets, with their content type.
-   *
-   * @var array<string, string>
-   */
-  private const ASSETS = [
-    'summary.js' => 'text/javascript',
-    'summary.css' => 'text/css',
-  ];
 
   /**
    * How long browsers may cache the assets, in seconds.
@@ -100,26 +91,26 @@ final class SummaryController extends AbstractController
       'show_rates' => $this->canSeeRates( $userIds, $viewer ),
       'previous_query' => $this->createPeriodQuery( $request, $this->navigator->getPrevious( $begin, $end ) ),
       'next_query' => $this->createPeriodQuery( $request, $this->navigator->getNext( $begin, $end ) ),
-      'asset_version' => $this->getAssetVersion(),
+      'asset_version' => SummaryBundle::getAssetVersion(),
     ] );
   }
 
   /**
    * Serves the report's script or stylesheet.
    *
-   * @param string $name The file name, one of the keys of ASSETS.
+   * @param string $name The file name, one of the keys of SummaryBundle::ASSETS.
    * @return Response
    */
   #[Route( path: '/assets/{name}', name: self::ROUTE_ASSET, methods: [ 'GET' ] )]
   public function asset( string $name ) : Response
   {
-    if ( !isset( self::ASSETS[ $name ] ) )
+    if ( !isset( SummaryBundle::ASSETS[ $name ] ) )
     {
       throw new NotFoundHttpException();
     }
 
-    $response = new BinaryFileResponse( $this->getAssetDirectory() . '/' . $name );
-    $response->headers->set( 'Content-Type', self::ASSETS[ $name ] );
+    $response = new BinaryFileResponse( SummaryBundle::ASSET_DIRECTORY . '/' . $name );
+    $response->headers->set( 'Content-Type', SummaryBundle::ASSETS[ $name ] );
     $response->setPublic();
     $response->setMaxAge( self::ASSET_MAX_AGE );
 
@@ -232,31 +223,5 @@ final class SummaryController extends AbstractController
     return array_merge( $request->query->all(), [
       'daterange' => $period[ 0 ]->format( 'Y-m-d' ) . ' - ' . $period[ 1 ]->format( 'Y-m-d' ),
     ] );
-  }
-
-  /**
-   * Returns the directory that holds the report's script and stylesheet.
-   *
-   * @return string
-   */
-  private function getAssetDirectory() : string
-  {
-    return dirname( __DIR__ ) . '/Resources/public';
-  }
-
-  /**
-   * Returns a value that changes whenever an asset changes, for cache busting.
-   *
-   * @return string
-   */
-  private function getAssetVersion() : string
-  {
-    $version = 0;
-    foreach ( array_keys( self::ASSETS ) as $name )
-    {
-      $version = max( $version, (int) filemtime( $this->getAssetDirectory() . '/' . $name ) );
-    }
-
-    return (string) $version;
   }
 }

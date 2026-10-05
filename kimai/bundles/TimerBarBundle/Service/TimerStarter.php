@@ -14,7 +14,7 @@ use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Starts time records from the timer bar: new ones from the bar's fields, and continued ones
+ * Starts time records from the quick start bar: new ones from the bar's fields, and continued ones
  * that copy a past record. Both start now, and go through Kimai's TimesheetService so its
  * validation, rounding and running-record limit apply.
  */
@@ -75,7 +75,7 @@ final class TimerStarter
 
   /**
    * Starts a new record now with the project, activity, description, tags and billable
-   * setting of a past record, like Toggl's continue button.
+   * setting of a past record.
    *
    * @param User $user The logged-in user.
    * @param Timesheet $source The record to continue.

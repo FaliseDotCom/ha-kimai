@@ -15,8 +15,10 @@ else to set up.
 - Kimai with a bundled database; no separate database app needed.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
-- Toggl-style extras: a **timer bar** on the dashboard ("what are you working on?", project,
-  start) and a **summary report** with charts per day, week, month or year.
+- A **quick start bar** in the top navigation: type what you are working on, pick a project,
+  add tags and press start. Past records can be continued with one click.
+- **Graphs**: charts per day and per project on the weekly, monthly and yearly reports, and a
+  summary report with charts and totals for any period.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.

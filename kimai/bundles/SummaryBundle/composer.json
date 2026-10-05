@@ -1,9 +1,9 @@
 {
   "name": "falisedotcom/kimai-summary-bundle",
-  "description": "Toggl-style summary report for Kimai: charts and totals per day, week, month and year",
+  "description": "Graphs for Kimai: a summary report with charts, and charts on the weekly, monthly and yearly user reports",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [
@@ -16,7 +16,7 @@
     "kimai":
     {
       "require": 26700,
-      "name": "Summary"
+      "name": "Graphs"
     }
   },
   "autoload":

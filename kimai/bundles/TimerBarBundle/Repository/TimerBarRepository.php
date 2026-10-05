@@ -19,7 +19,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Reads what the timer bar offers: the projects and activities a user may book on, their
+ * Reads what the quick start bar offers: the projects and activities a user may book on, their
  * recent entries for suggestions, and their running entry.
  *
  * @phpstan-type Suggestion array{description: string, projectId: int, activityId: int}

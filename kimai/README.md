@@ -9,8 +9,8 @@ Self-hosted time tracking for freelancers and teams, running on your Home Assist
 and turns it into reports, exports and invoices. This app bundles Kimai with its own
 MariaDB database, so it works on its own with no other apps required.
 
-- Toggl-style timer bar: type what you are working on, pick a project, press start.
-- Toggl-style summary report with charts per day, week, month or year.
+- Quick start bar: type what you are working on, pick a project, press start.
+- Graphs on the weekly, monthly and yearly reports, and a summary report with charts.
 - Creates the first administrator account for you.
 - Keeps all data in Home Assistant backups.
 - Supports Kimai plugins and `local.yaml` customisation.

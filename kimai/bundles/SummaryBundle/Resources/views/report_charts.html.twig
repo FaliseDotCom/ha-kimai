@@ -1,0 +1,30 @@
+{# Charts added to Kimai's weekly, monthly and yearly report for one user. #}
+{% trans_default_domain 'summary' %}
+{{ encore_entry_link_tags('chart') }}
+{{ encore_entry_script_tags('chart') }}
+<link rel="stylesheet" href="{{ path('summary_report_asset', { 'name': 'summary.css', 'v': asset_version }) }}">
+<script src="{{ path('summary_report_asset', { 'name': 'summary.js', 'v': asset_version }) }}"></script>
+
+{% if summary.groups is not empty %}
+  <div class="row row-cards mb-3 summary-report-charts" data-summary-move-to="reporting-content">
+    {% include '@Summary/chart_data.html.twig' %}
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <div class="summary-chart summary-chart-bar">
+            <canvas id="summary-bar-chart" aria-label="{{ 'summary.chart.bar'|trans }}" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="summary-chart summary-chart-bar">
+            <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

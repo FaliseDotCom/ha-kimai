@@ -190,12 +190,56 @@ Never expose port 8001 directly to the internet without HTTPS.
 
 ## Extras in this app
 
-The app adds two Toggl-style features to Kimai. Both are Kimai plugins made for this app
-and maintained in the same repository.
+The app adds two Kimai plugins, made for this app and maintained in the same repository: a
+quick start bar and graphs.
 
-### Summary report
+### Quick start bar
 
-**Reporting** > **Summary** shows where your time went, the way Toggl's summary report does:
+A bar to start and stop time recording without opening a form. On wide screens it sits in the
+top navigation of every page, in place of Kimai's own start button. On phones and narrow
+windows Kimai's own button stays in the navigation, and the bar appears above the content of
+the dashboard and **My times**.
+
+- **Description:** type what you are working on. Recent descriptions are suggested; picking
+  one fills in the project and activity it was last booked on.
+- **Project and activity:** projects are grouped by customer, and the activity list only
+  offers activities that can be booked on the selected project.
+- **Tags** (tag icon): tick existing tags, or type new ones separated by commas if you may
+  create tags. The icon shows how many tags are chosen.
+- **Billable** (coins icon): shows whether the record will be billable. It follows Kimai's rule
+  (billable when the customer, project and activity all are) until you press it; then your
+  choice counts. It only appears if you may change the billable setting.
+- **Start** (green button) starts recording now. While a record runs, the bar shows its
+  description, project, tags and a running clock, and the red button stops it.
+
+On **My times**, every record has a green play button next to its menu. It continues that
+record: a new record starts now with the same description, project, activity, tags and
+billable setting.
+
+The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
+for rounding and for how many records may run at once apply. When only one record may run,
+starting a new one stops the running one.
+
+Kimai rounds start times down to the minute by default, so a new record's clock can start at
+up to 59 seconds. To record exact seconds, turn rounding off in [`local.yaml`](#localyaml):
+
+```yaml
+kimai:
+  timesheet:
+    rounding:
+      default:
+        begin: 0
+        end: 0
+```
+
+### Graphs
+
+**Weekly, monthly and yearly view for one user.** Kimai's own reports under **Reporting** get
+two charts above their table: a bar chart of the hours per day (per month in the yearly
+view), stacked by project, and a doughnut chart of each project's share. They follow the
+week, month, year and user picked in the report.
+
+**Summary report.** **Reporting** > **Summary** shows where your time went in one page:
 
 - totals for the period: total time, billable time and, if you may see rates, the amount;
 - a bar chart of the time per day (for periods up to two months) or per month, coloured by
@@ -208,53 +252,13 @@ quarters and years. The arrows next to it move one period back or forward. The r
 with your own time this week. Users who may see other people's reports can choose a
 colleague or **All users**.
 
-### Timer bar
-
-The dashboard and **My times** start with a bar like Toggl's: type what you are working on,
-pick a project and an activity, and press the green start button. While a record runs, the
-bar shows it with a running clock, which also appears in the browser tab title, and a stop
-button.
-
-Typing in the description field suggests what you worked on recently. Picking a suggestion
-fills in its project and activity. The activity list only offers activities that can be
-booked on the selected project.
-
-Next to the pickers are two toggles:
-
-- **Tags** (tag icon) opens a list of your tags to tick. If you may create tags, you can also
-  type new ones there, separated by commas. The icon shows how many tags are chosen.
-- **Billable** (coins icon) shows whether the record will be billable. It follows Kimai's
-  rule (billable when the customer, project and activity all are) until you press it; then
-  your choice counts. It only appears if you may change the billable setting.
-
-On **My times**, every record has a green play button next to its menu. It continues that
-record, the way Toggl's continue button does: a new record starts now with the same
-description, project, activity, tags and billable setting.
-
-The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
-for rounding and for how many records may run at once apply. When only one record may run,
-starting a new one stops the running one.
-
-Kimai rounds start times down to the minute by default, so a new record's clock can start at
-up to 59 seconds. To record exact seconds, the way Toggl does, turn rounding off in
-[`local.yaml`](#localyaml):
-
-```yaml
-kimai:
-  timesheet:
-    rounding:
-      default:
-        begin: 0
-        end: 0
-```
-
 ### Turning an extra off
 
 Create a folder with the extra's name inside the `plugins` folder of the app's
 configuration folder, put an empty file named `.disabled` in it, and restart the app:
 
-- `plugins/SummaryBundle/.disabled` turns off the summary report.
-- `plugins/TimerBarBundle/.disabled` turns off the timer bar.
+- `plugins/SummaryBundle/.disabled` turns off the graphs.
+- `plugins/TimerBarBundle/.disabled` turns off the quick start bar.
 
 Remove the folder and restart to turn the extra back on.
 

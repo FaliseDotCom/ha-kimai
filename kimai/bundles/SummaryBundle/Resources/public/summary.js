@@ -42,6 +42,13 @@
   const READY_EVENT = 'kimai.initialized';
 
   /**
+   * Attribute naming the element that charts added to another report should move into.
+   *
+   * @type {string}
+   */
+  const MOVE_ATTRIBUTE = 'data-summary-move-to';
+
+  /**
    * Number of seconds in an hour.
    *
    * @type {number}
@@ -215,12 +222,31 @@
   }
 
   /**
+   * Moves charts that were added to another report to the top of that report's content,
+   * below its filters.
+   *
+   * @returns {void}
+   */
+  function placeCharts()
+  {
+    document.querySelectorAll( '[' + MOVE_ATTRIBUTE + ']' ).forEach( ( charts ) =>
+    {
+      const target = document.getElementById( charts.getAttribute( MOVE_ATTRIBUTE ) );
+      if ( target !== null )
+      {
+        target.prepend( charts );
+      }
+    } );
+  }
+
+  /**
    * Draws everything once Kimai is ready.
    *
    * @returns {void}
    */
   function init()
   {
+    placeCharts();
     paintSwatches();
 
     const data = readChartData();

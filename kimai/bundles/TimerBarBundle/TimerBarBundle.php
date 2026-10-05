@@ -8,7 +8,7 @@ use App\Plugin\PluginInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Toggl-style timer bar for Kimai.
+ * Quick start bar for Kimai: start, stop and continue time records from one bar.
  */
 final class TimerBarBundle extends Bundle implements PluginInterface
 {

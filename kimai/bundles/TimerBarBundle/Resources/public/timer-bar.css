@@ -1,4 +1,4 @@
-/* Timer bar for Kimai. Builds on Kimai's Tabler theme and its colour variables. */
+/* Quick start bar for Kimai. Builds on Kimai's Tabler theme and its colour variables. */
 
 /* One row: description, project, activity, start button */
 .timer-bar-form
@@ -126,6 +126,60 @@ td:has(> .timer-bar-continue)
   font-size: 1.25rem;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+}
+
+/* In the top navigation, on wide screens: a compact bar without the card around it */
+.timer-bar.timer-bar-navbar
+{
+  /* Leaves room for the page title, the other navigation buttons and the user menu */
+  width: clamp(28rem, calc(100vw - 50rem), 54rem);
+  margin: 0 0.5rem 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.timer-bar-navbar .timer-bar-form
+{
+  padding: 0;
+}
+
+.timer-bar-navbar .timer-bar-project,
+.timer-bar-navbar .timer-bar-activity
+{
+  flex-basis: 9rem;
+}
+
+.timer-bar-navbar .timer-bar-button
+{
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.timer-bar-navbar.timer-bar-running
+{
+  border-left: 0;
+}
+
+.timer-bar-navbar .timer-bar-current-description,
+.timer-bar-navbar .timer-bar-current-project
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Kimai's own start button, while the bar takes its place. !important is needed to beat
+   the d-flex utility class on it. */
+.timer-bar-replaced
+{
+  display: none !important;
+}
+
+/* Pages other than the dashboard and "My times" only show the bar in the navigation */
+.timer-bar-navbar-only:not(.timer-bar-navbar)
+{
+  display: none;
 }
 
 @media (max-width: 767.98px)

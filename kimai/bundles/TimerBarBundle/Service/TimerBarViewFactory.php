@@ -13,7 +13,7 @@ use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Collects everything the timer bar template shows.
+ * Collects everything the quick start bar template shows.
  *
  * @phpstan-import-type Suggestion from TimerBarRepository
  * @phpstan-type SuggestionOption array{description: string, projectId: int, activityId: int, projectName: string}

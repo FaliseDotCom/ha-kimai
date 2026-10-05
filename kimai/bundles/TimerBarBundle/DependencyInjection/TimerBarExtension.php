@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
- * Registers the services of the timer bar.
+ * Registers the services of the quick start bar.
  */
 final class TimerBarExtension extends Extension
 {

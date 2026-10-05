@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Starts and stops time records from the timer bar, and serves its script and stylesheet.
+ * Starts and stops time records from the quick start bar, and serves its script and stylesheet.
  */
 #[Route( path: '/timer-bar' )]
 #[IsGranted( 'create_own_timesheet' )]
@@ -65,7 +65,7 @@ final class TimerBarController extends AbstractController
   /**
    * Starts a new time record for the posted description, project and activity.
    *
-   * @param Request $request The posted timer bar form.
+   * @param Request $request The posted quick start bar form.
    * @return Response
    */
   #[Route( path: '/start', name: self::ROUTE_START, methods: [ 'POST' ] )]
@@ -157,7 +157,7 @@ final class TimerBarController extends AbstractController
   }
 
   /**
-   * Serves the timer bar's script or stylesheet.
+   * Serves the quick start bar's script or stylesheet.
    *
    * @param string $name The file name, one of the keys of TimerBarBundle::ASSETS.
    * @return Response
@@ -203,7 +203,7 @@ final class TimerBarController extends AbstractController
   /**
    * Returns the posted existing tags that are visible; unknown IDs are ignored.
    *
-   * @param Request $request The posted timer bar form.
+   * @param Request $request The posted quick start bar form.
    * @return array<int, Tag>
    */
   private function getPostedTags( Request $request ) : array
@@ -226,7 +226,7 @@ final class TimerBarController extends AbstractController
   /**
    * Returns the posted billable choice, falling back to Kimai's automatic setting.
    *
-   * @param Request $request The posted timer bar form.
+   * @param Request $request The posted quick start bar form.
    * @return string One of the TimerStarter::BILLABLE_ constants.
    */
   private function getPostedBillable( Request $request ) : string
