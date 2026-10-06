@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.19
+
+- Rebuilds the app so installations that already showed 2.67.0.18 pick up the split of the
+  UI improvements into **Short time entries** and **Inline timesheet editing** (see below).
+
 ## 2.67.0.18
 
 - The UI improvements plugin is split in two: **Short time entries** (typing `945` for 9:45)
