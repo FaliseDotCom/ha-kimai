@@ -1,6 +1,6 @@
 # UI improvements for Kimai
 
-Small improvements to [Kimai](https://www.kimai.org/)'s forms. It ships with the
+Small improvements to [Kimai](https://www.kimai.org/)'s forms and record lists. It ships with the
 [Kimai app for Home Assistant](../../DOCS.md), but works in any Kimai installation.
 
 ## Quicker time and duration entry
@@ -37,13 +37,43 @@ whole number is minutes (`175` becomes 2:55).
 Every other duration format Kimai supports, such as `1:30`, `1.5` or `1h30m`, is passed on
 unchanged. A plain number used to mean hours in Kimai; with this plugin it means minutes.
 
+## Editing records in the list
+
+On **My times** and **All times**, the cells of the user's own records can be edited in
+place: date, start, end, duration, break, customer and project (a project picker grouped by
+customer), activity, description, tags (comma-separated) and billable (toggles on click).
+Enter or leaving the field saves, Escape cancels; Kimai then reloads the list. When a new
+project does not allow the record's activity, an activity picker follows and both are saved
+together.
+
+Only records the user owns and may edit are offered, and only the fields Kimai's tracking
+mode and permissions allow (billable needs `edit_billable`, new tags need `create_tag`).
+Other cells, and other users' records, keep opening Kimai's edit dialog. Every change goes
+through `TimesheetService`, so Kimai's validation, rounding and rate calculation apply, and a
+refusal is shown with Kimai's own message.
+
+Each user can turn this off with the **Edit records directly in the list** preference
+(`inline_edit_enabled`, on by default).
+
 ## How it works
 
-One script, added to every page for logged-in users through Kimai's `ThemeEvent::JAVASCRIPT`.
-It listens for `change` events in the capture phase, so it also works in forms that Kimai
+**Short time and duration entry:** one module script, added to every page for logged-in
+users through Kimai's `ThemeEvent::JAVASCRIPT`. It listens for `change` events in the capture phase, so it also works in forms that Kimai
 loads into dialogs later, and runs before Kimai's own handlers. Fields are recognised by
 Kimai's own markup: `input[data-timepicker="on"]` for times and `input.duration-input` for
 durations. Before a form is submitted, all its time and duration fields are completed too.
+The parsing lives in `input-parsing.js`, which the scripts import with their own version
+query, so a release never mixes old and new files from the browser cache.
+
+**Editing in the list:** on the `timesheet` and `admin_timesheet` routes, and only when the
+preference is on, `inline-edit.js` and `inline-edit.css` are added too. The script reads the
+record IDs from the rows' edit links, asks `InlineEditController` which of them the user owns
+and may edit (with their raw values and editable fields), and marks those cells by Kimai's
+`col_*` column classes. Clicks on a marked cell are handled in the capture phase and kept
+from Kimai's row handler, which would open the edit dialog. A change is posted as one field
+and value; times are sent as 24-hour `HH:MM`, durations in minutes. After a save the script
+dispatches `kimai.timesheetUpdate`, Kimai reloads the list, and `kimai.reloadedContent`
+marks the new rows.
 
 ## Requirements and installation
 

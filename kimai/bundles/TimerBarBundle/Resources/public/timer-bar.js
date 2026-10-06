@@ -38,6 +38,21 @@
   const ROW_CLASS = 'container-fluid timer-bar-row';
 
   /**
+   * Selector of the row that holds the placed bar.
+   *
+   * @type {string}
+   */
+  const ROW_SELECTOR = '.timer-bar-row';
+
+  /**
+   * Event Kimai dispatches after it replaced the page content with a freshly fetched copy,
+   * for example when the entry table is filtered or reloaded.
+   *
+   * @type {string}
+   */
+  const KIMAI_RELOADED_EVENT = 'kimai.reloadedContent';
+
+  /**
    * Spacing utility class the bar is rendered with, for pages without the usual layout.
    *
    * @type {string}
@@ -642,12 +657,30 @@
     KIMAI_RECORD_EVENTS.forEach( ( name ) => document.addEventListener( name, () => window.location.reload() ) );
   }
 
+  /**
+   * Removes the copies of the bar that come with content Kimai reloads into the page; the bar
+   * already placed below the top bar stays.
+   *
+   * @returns {void}
+   */
+  function removeReloadedBars()
+  {
+    document.querySelectorAll( BAR_SELECTOR ).forEach( ( bar ) =>
+    {
+      if ( bar.closest( ROW_SELECTOR ) === null )
+      {
+        bar.remove();
+      }
+    } );
+  }
+
   document.addEventListener( 'DOMContentLoaded', () =>
   {
     document.querySelectorAll( BAR_SELECTOR ).forEach( initPlacement );
     if ( document.querySelector( BAR_SELECTOR ) !== null )
     {
       followKimaiEvents();
+      document.addEventListener( KIMAI_RELOADED_EVENT, removeReloadedBars );
     }
 
     document.querySelectorAll( FORM_SELECTOR ).forEach( initForm );

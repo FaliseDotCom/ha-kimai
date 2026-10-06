@@ -23,6 +23,9 @@ action, the page reloads so the bar shows the current state.
 On **My times** each record gets a play button that continues it: a new record starts now
 with the same description, project, activity, tags and billable setting.
 
+Each user can turn the bar off with **Show quick start bar** in their preferences; Kimai's
+own start button then returns. The bar is on by default.
+
 Typing in the description field suggests the user's recent descriptions (last 120 days).
 Picking one fills in the project and activity it was last booked on. The activity picker
 only offers activities that can be booked on the selected project, and selects the one used

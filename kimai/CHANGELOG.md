@@ -6,11 +6,19 @@ version the app contains; see the
 
 ## 2.67.0.17
 
+- UI improvements: your own records on **My times** and **All times** can be edited directly
+  in the list. Click a date, time, duration, break, customer, project, activity, description,
+  tags or billable cell to change it. An **Edit records directly in the list** preference
+  turns this off per user.
 - Quick start bar: always on its own row directly below the top bar, on every screen size,
   instead of inside the top navigation on wide screens.
 - Quick start bar: date, start time and end time are always shown; the clock button is gone.
   No times start a timer now, a start time alone starts a timer from that time, and a start
   and end time add a finished record. The running record's date can be changed too.
+- Quick start bar: a **Show quick start bar** preference lets each user turn the bar off and
+  get Kimai's own start button back.
+- Quick start bar: no longer appears a second time on **My times** after the entry table
+  reloads, for example after filtering or adding a record.
 
 ## 2.67.0.16
 

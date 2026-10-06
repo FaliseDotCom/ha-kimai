@@ -14,9 +14,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
- * Adds the quick start bar to every page, in place of Kimai's own start button. Its script
- * moves it into the top navigation on wide screens; on narrow screens it stays on its own row
- * above the page content. Also enables the continue buttons on "My times".
+ * Adds the quick start bar to every page, in place of Kimai's own start button, unless the
+ * user turned it off in their preferences. Its script moves it to its own row directly below
+ * the top bar, and removes the copy that comes along when Kimai reloads the page content. Also
+ * enables the continue buttons on "My times".
  */
 final class ContentSubscriber implements EventSubscriberInterface
 {
@@ -55,7 +56,7 @@ final class ContentSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the quick start bar to the page.
+   * Adds the quick start bar to the page, when the user has it turned on.
    *
    * @param ThemeEvent $event The event that collects content for the top of the page.
    * @return void
@@ -65,7 +66,7 @@ final class ContentSubscriber implements EventSubscriberInterface
     $user = $event->getUser();
     $request = $this->requestStack->getMainRequest();
 
-    if ( !$user instanceof User || $request === null )
+    if ( !$user instanceof User || $request === null || !PreferenceSubscriber::isEnabled( $user ) )
     {
       return;
     }

@@ -17,7 +17,7 @@ else to set up.
 - All data is included in Home Assistant backups.
 - Three extra [plugins](#plugins): a **quick start bar** for starting and stopping time
   recording, **reporting extras** with charts on Kimai's reports, and **UI improvements** such
-  as typing `945` for 9:45.
+  as typing `945` for 9:45 and editing records directly in the list.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -82,6 +82,10 @@ Small changes that make Kimai's forms quicker to use. Times and durations can be
 short form and are completed as soon as you leave the field: `945` becomes 9:45 as a start
 or end time, and `10` becomes ten minutes as a duration. This works in the record dialog and
 on **Weekly hours**.
+
+Your own records on **My times** and **All times** can be edited right in the list: click a
+date, time, duration, project, activity, description, tags or billable cell, change it, and
+press Enter. Each user can turn this off in their preferences.
 
 [How it works](kimai/bundles/UiImprovementsBundle/README.md)
 
