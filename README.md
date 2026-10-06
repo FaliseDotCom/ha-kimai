@@ -16,7 +16,7 @@ else to set up.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
 - Two extra [plugins](#plugins): a **quick start bar** for starting and stopping time
-  recording, and **graphs** on Kimai's reports.
+  recording, and **reporting extras** with charts on Kimai's reports.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -59,15 +59,19 @@ and on its own row directly below the top bar on phones and narrow windows.
 
 [How it works](kimai/bundles/TimerBarBundle/README.md)
 
-### Graphs
+### Reporting extras
+
+Additions to Kimai's **Reporting** section:
 
 - The **weekly, monthly and yearly report for one user** get a bar chart of the hours per day
-  (or month), stacked by project, and a doughnut chart per project, above Kimai's table.
+  (or month), stacked by project, and a doughnut chart with a legend, above Kimai's table. In
+  the table, projects are indented under their customer, and customer and project names link
+  to their detail pages.
 - A **Summary** report shows any period on one page: totals, a bar chart over time, a
   doughnut chart, and a breakdown per project, customer, activity or user down to each
   description.
 
-[How it works](kimai/bundles/SummaryBundle/README.md)
+[How it works](kimai/bundles/ReportingBundle/README.md)
 
 The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use both, and how
 to turn them off.

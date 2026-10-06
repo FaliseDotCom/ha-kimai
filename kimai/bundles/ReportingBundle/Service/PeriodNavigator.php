@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Service;
+namespace KimaiPlugin\ReportingBundle\Service;
 
 use DateTimeImmutable;
 

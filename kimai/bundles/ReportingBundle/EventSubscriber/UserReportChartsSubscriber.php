@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\EventSubscriber;
+namespace KimaiPlugin\ReportingBundle\EventSubscriber;
 
 use App\Configuration\SystemConfiguration;
 use App\Entity\User;
@@ -10,11 +10,11 @@ use App\Event\ThemeEvent;
 use App\Timesheet\DateTimeFactory;
 use DateTimeImmutable;
 use DateTimeInterface;
-use KimaiPlugin\SummaryBundle\Model\SummaryQuery;
-use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
-use KimaiPlugin\SummaryBundle\Service\DetailLinks;
-use KimaiPlugin\SummaryBundle\Service\SummaryBuilder;
-use KimaiPlugin\SummaryBundle\SummaryBundle;
+use KimaiPlugin\ReportingBundle\Model\SummaryQuery;
+use KimaiPlugin\ReportingBundle\ReportingBundle;
+use KimaiPlugin\ReportingBundle\Repository\SummaryRepository;
+use KimaiPlugin\ReportingBundle\Service\DetailLinks;
+use KimaiPlugin\ReportingBundle\Service\SummaryBuilder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -91,10 +91,10 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     [ $begin, $end ] = $this->getPeriod( (string) $route, $request, $viewer );
     $rows = $this->repository->findRows( $begin, $end, [ $userId ] );
 
-    $event->addContent( $this->twig->render( '@Summary/report_charts.html.twig', [
+    $event->addContent( $this->twig->render( '@Reporting/report_charts.html.twig', [
       'summary' => $this->builder->build( $rows, $begin, $end, SummaryQuery::GROUP_PROJECT, $request->getLocale() ),
       'detail_links' => $this->detailLinks->create( $rows ),
-      'asset_version' => SummaryBundle::getAssetVersion(),
+      'asset_version' => ReportingBundle::getAssetVersion(),
     ] ) );
   }
 

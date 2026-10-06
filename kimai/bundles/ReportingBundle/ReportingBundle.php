@@ -2,15 +2,16 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle;
+namespace KimaiPlugin\ReportingBundle;
 
 use App\Plugin\PluginInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Charts for Kimai: a summary report, and charts on the weekly, monthly and yearly user reports.
+ * Reporting extras for Kimai: a summary report, and charts, indentation and detail links on the
+ * weekly, monthly and yearly user reports.
  */
-final class SummaryBundle extends Bundle implements PluginInterface
+final class ReportingBundle extends Bundle implements PluginInterface
 {
   public const TRANSLATION_DOMAIN = 'summary';
   public const ASSET_DIRECTORY = __DIR__ . '/Resources/public';
@@ -21,8 +22,8 @@ final class SummaryBundle extends Bundle implements PluginInterface
    * @var array<string, string>
    */
   public const ASSETS = [
-    'summary.js' => 'text/javascript',
-    'summary.css' => 'text/css',
+    'reporting.js' => 'text/javascript',
+    'reporting.css' => 'text/css',
   ];
 
   /**

@@ -191,7 +191,7 @@ Never expose port 8001 directly to the internet without HTTPS.
 ## Extras in this app
 
 The app adds two Kimai plugins, made for this app and maintained in the same repository: a
-quick start bar and graphs.
+quick start bar and reporting extras.
 
 ### Quick start bar
 
@@ -232,7 +232,7 @@ kimai:
         end: 0
 ```
 
-### Graphs
+### Reporting extras
 
 **Weekly, monthly and yearly view for one user.** Kimai's own reports under **Reporting** get
 two charts above their table: a bar chart of the hours per day (per month in the yearly
@@ -266,7 +266,7 @@ colleague or **All users**.
 Create a folder with the extra's name inside the `plugins` folder of the app's
 configuration folder, put an empty file named `.disabled` in it, and restart the app:
 
-- `plugins/SummaryBundle/.disabled` turns off the graphs.
+- `plugins/ReportingBundle/.disabled` turns off the reporting extras.
 - `plugins/TimerBarBundle/.disabled` turns off the quick start bar.
 
 Remove the folder and restart to turn the extra back on.

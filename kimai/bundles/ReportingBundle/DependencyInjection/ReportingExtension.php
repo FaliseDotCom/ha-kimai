@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\DependencyInjection;
+namespace KimaiPlugin\ReportingBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -10,9 +10,9 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
- * Registers the services of the summary report.
+ * Registers the services of the reporting extras.
  */
-final class SummaryExtension extends Extension
+final class ReportingExtension extends Extension
 {
   /**
    * Loads the service definitions of the bundle.

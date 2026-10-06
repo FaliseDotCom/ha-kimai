@@ -13,7 +13,7 @@
 {% block stylesheets %}
   {{ parent() }}
   {{ encore_entry_link_tags('chart') }}
-  <link rel="stylesheet" href="{{ path('summary_report_asset', { 'name': 'summary.css', 'v': asset_version }) }}">
+  <link rel="stylesheet" href="{{ path('reporting_bundle_asset', { 'name': 'reporting.css', 'v': asset_version }) }}">
 {% endblock %}
 
 {% block head %}
@@ -23,7 +23,7 @@
 
 {% block javascripts %}
   {{ parent() }}
-  <script src="{{ path('summary_report_asset', { 'name': 'summary.js', 'v': asset_version }) }}"></script>
+  <script src="{{ path('reporting_bundle_asset', { 'name': 'reporting.js', 'v': asset_version }) }}"></script>
 {% endblock %}
 
 {% block report_form_layout %}
@@ -82,7 +82,7 @@
       </div>
     </div>
   {% else %}
-    {% include '@Summary/chart_data.html.twig' %}
+    {% include '@Reporting/chart_data.html.twig' %}
 
     <div class="card mb-3">
       <div class="card-header">

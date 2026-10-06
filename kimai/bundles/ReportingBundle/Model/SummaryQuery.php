@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Model;
+namespace KimaiPlugin\ReportingBundle\Model;
 
 use App\Entity\User;
 use App\Form\Model\DateRange;

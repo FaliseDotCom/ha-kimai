@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Controller;
+namespace KimaiPlugin\ReportingBundle\Controller;
 
 use App\Controller\AbstractController;
 use App\Entity\User;
@@ -10,35 +10,25 @@ use App\Form\Model\DateRange;
 use App\Timesheet\DateTimeFactory;
 use DateTimeImmutable;
 use DateTimeInterface;
-use KimaiPlugin\SummaryBundle\Form\SummaryForm;
-use KimaiPlugin\SummaryBundle\Model\SummaryQuery;
-use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
-use KimaiPlugin\SummaryBundle\Service\PeriodNavigator;
-use KimaiPlugin\SummaryBundle\Service\SummaryBuilder;
-use KimaiPlugin\SummaryBundle\SummaryBundle;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use KimaiPlugin\ReportingBundle\Form\SummaryForm;
+use KimaiPlugin\ReportingBundle\Model\SummaryQuery;
+use KimaiPlugin\ReportingBundle\ReportingBundle;
+use KimaiPlugin\ReportingBundle\Repository\SummaryRepository;
+use KimaiPlugin\ReportingBundle\Service\PeriodNavigator;
+use KimaiPlugin\ReportingBundle\Service\SummaryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Shows the summary report and serves its script and stylesheet.
+ * Shows the summary report.
  */
 #[Route( path: '/reporting/summary' )]
 #[IsGranted( 'report:user' )]
 final class SummaryController extends AbstractController
 {
   public const ROUTE = 'summary_report';
-  public const ROUTE_ASSET = 'summary_report_asset';
-
-  /**
-   * How long browsers may cache the assets, in seconds.
-   *
-   * @var int
-   */
-  private const ASSET_MAX_AGE = 86400;
 
   /**
    * @param SummaryRepository $repository Reads the aggregated time records.
@@ -82,7 +72,7 @@ final class SummaryController extends AbstractController
     [ $begin, $end ] = $this->getPeriod( $query->getDateRange(), $userIds, $factory );
     $rows = $this->repository->findRows( $begin, $end, $userIds );
 
-    return $this->render( '@Summary/summary.html.twig', [
+    return $this->render( '@Reporting/summary.html.twig', [
       'form' => $form->createView(),
       'summary' => $this->builder->build( $rows, $begin, $end, $query->getGroupBy(), $request->getLocale() ),
       'begin' => $begin,
@@ -91,30 +81,8 @@ final class SummaryController extends AbstractController
       'show_rates' => $this->canSeeRates( $userIds, $viewer ),
       'previous_query' => $this->createPeriodQuery( $request, $this->navigator->getPrevious( $begin, $end ) ),
       'next_query' => $this->createPeriodQuery( $request, $this->navigator->getNext( $begin, $end ) ),
-      'asset_version' => SummaryBundle::getAssetVersion(),
+      'asset_version' => ReportingBundle::getAssetVersion(),
     ] );
-  }
-
-  /**
-   * Serves the report's script or stylesheet.
-   *
-   * @param string $name The file name, one of the keys of SummaryBundle::ASSETS.
-   * @return Response
-   */
-  #[Route( path: '/assets/{name}', name: self::ROUTE_ASSET, methods: [ 'GET' ] )]
-  public function asset( string $name ) : Response
-  {
-    if ( !isset( SummaryBundle::ASSETS[ $name ] ) )
-    {
-      throw new NotFoundHttpException();
-    }
-
-    $response = new BinaryFileResponse( SummaryBundle::ASSET_DIRECTORY . '/' . $name );
-    $response->headers->set( 'Content-Type', SummaryBundle::ASSETS[ $name ] );
-    $response->setPublic();
-    $response->setMaxAge( self::ASSET_MAX_AGE );
-
-    return $response;
   }
 
   /**

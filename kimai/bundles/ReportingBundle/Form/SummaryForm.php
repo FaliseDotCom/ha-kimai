@@ -2,12 +2,12 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Form;
+namespace KimaiPlugin\ReportingBundle\Form;
 
 use App\Form\Type\DateRangeType;
 use App\Form\Type\UserType;
-use KimaiPlugin\SummaryBundle\Model\SummaryQuery;
-use KimaiPlugin\SummaryBundle\SummaryBundle;
+use KimaiPlugin\ReportingBundle\Model\SummaryQuery;
+use KimaiPlugin\ReportingBundle\ReportingBundle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -53,7 +53,7 @@ final class SummaryForm extends AbstractType
       'required' => true,
       'placeholder' => false,
       'choices' => $this->getGroupChoices( $options[ 'include_user' ] === true ),
-      'choice_translation_domain' => SummaryBundle::TRANSLATION_DOMAIN,
+      'choice_translation_domain' => ReportingBundle::TRANSLATION_DOMAIN,
     ] );
   }
 
@@ -71,7 +71,7 @@ final class SummaryForm extends AbstractType
       'include_user' => false,
       'csrf_protection' => false,
       'method' => 'GET',
-      'translation_domain' => SummaryBundle::TRANSLATION_DOMAIN,
+      'translation_domain' => ReportingBundle::TRANSLATION_DOMAIN,
     ] );
 
     $resolver->setAllowedTypes( 'timezone', 'string' );

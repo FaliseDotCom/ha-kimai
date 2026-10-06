@@ -1,6 +1,7 @@
-# Graphs for Kimai
+# Reporting extras for Kimai
 
-Charts for [Kimai](https://www.kimai.org/)'s reports.
+Additions to [Kimai](https://www.kimai.org/)'s **Reporting** section: charts and detail links
+on the user reports, and a summary report.
 
 ## Charts on the user reports
 
@@ -38,7 +39,7 @@ its own beyond one script and one stylesheet, which the plugin serves itself.
 
 ## Installation
 
-1. Copy this `SummaryBundle` folder to `var/plugins/SummaryBundle/` in your Kimai installation.
+1. Copy this `ReportingBundle` folder to `var/plugins/ReportingBundle/` in your Kimai installation.
 2. Rebuild Kimai's cache: `bin/console kimai:reload --env=prod`.
 
 There are no database changes.

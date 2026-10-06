@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Service;
+namespace KimaiPlugin\ReportingBundle\Service;
 
 /**
  * Gives every group in a chart a colour that can be told apart from the others.

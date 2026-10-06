@@ -18,7 +18,7 @@ kimai/
   icon.png, logo.png         Artwork, taken from Kimai's own touch icon
   translations/              Option names and descriptions (en, nl)
   bundles/                   Kimai plugins that ship with the app
-    SummaryBundle/           Graphs: summary report, and charts on the user reports
+    ReportingBundle/         Reporting extras: summary report, and charts on the user reports
     TimerBarBundle/          Quick start bar in the top navigation
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
@@ -129,7 +129,7 @@ They only use Kimai's extension points and services:
 
 | Plugin           | Hooks into                                    | Uses                                                    |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
-| `SummaryBundle`  | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
+| `ReportingBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
 | `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService`, project, activity and tag queries   |
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
@@ -170,10 +170,10 @@ releases first:
 
 ```bash
 docker run --rm --entrypoint bash \
-  -v "$PWD/kimai/bundles/SummaryBundle:/opt/kimai/var/plugins/SummaryBundle" \
+  -v "$PWD/kimai/bundles/ReportingBundle:/opt/kimai/var/plugins/ReportingBundle" \
   -v "$PWD/phpstan.phar:/phpstan.phar" kimai/kimai2:2.67.0 -c \
   'cd /opt/kimai && php -d memory_limit=1G /phpstan.phar analyse --level 6 \
-    -a vendor/autoload.php var/plugins/SummaryBundle'
+    -a vendor/autoload.php var/plugins/ReportingBundle'
 ```
 
 Without Kimai's development dependencies the Symfony stubs are missing, so PHPStan reports

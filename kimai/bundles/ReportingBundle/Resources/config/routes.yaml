@@ -1,5 +1,5 @@
 summary_controllers:
-  resource: '@SummaryBundle/Controller/'
+  resource: '@ReportingBundle/Controller/'
   type: attribute
   prefix: /{_locale}
   requirements:

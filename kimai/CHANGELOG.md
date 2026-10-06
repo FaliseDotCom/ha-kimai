@@ -4,6 +4,13 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.13
+
+- The Graphs plugin is now called **Reporting extras** (`ReportingBundle`), since it covers
+  more of Kimai's Reporting section than graphs. Nothing changes in how it works.
+- If you turned the plugin off with `plugins/SummaryBundle/.disabled`, rename that folder to
+  `plugins/ReportingBundle`; the old folder no longer has any effect.
+
 ## 2.67.0.12
 
 - Weekly, monthly and yearly user reports: customer and project names link to their detail

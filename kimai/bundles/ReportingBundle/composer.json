@@ -1,9 +1,9 @@
 {
-  "name": "falisedotcom/kimai-summary-bundle",
-  "description": "Graphs for Kimai: a summary report with charts, and charts on the weekly, monthly and yearly user reports",
+  "name": "falisedotcom/kimai-reporting-bundle",
+  "description": "Reporting extras for Kimai: a summary report with charts, and charts and detail links on the weekly, monthly and yearly user reports",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [
@@ -16,14 +16,14 @@
     "kimai":
     {
       "require": 26700,
-      "name": "Graphs"
+      "name": "Reporting extras"
     }
   },
   "autoload":
   {
     "psr-4":
     {
-      "KimaiPlugin\\SummaryBundle\\": ""
+      "KimaiPlugin\\ReportingBundle\\": ""
     }
   }
 }

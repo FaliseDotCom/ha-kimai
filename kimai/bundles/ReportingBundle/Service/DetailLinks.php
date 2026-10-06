@@ -2,11 +2,11 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Service;
+namespace KimaiPlugin\ReportingBundle\Service;
 
 use App\Repository\CustomerRepository;
 use App\Repository\ProjectRepository;
-use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
+use KimaiPlugin\ReportingBundle\Repository\SummaryRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 

@@ -2,12 +2,12 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\EventSubscriber;
+namespace KimaiPlugin\ReportingBundle\EventSubscriber;
 
 use App\Event\ReportingEvent;
 use App\Reporting\Report;
-use KimaiPlugin\SummaryBundle\Controller\SummaryController;
-use KimaiPlugin\SummaryBundle\SummaryBundle;
+use KimaiPlugin\ReportingBundle\Controller\SummaryController;
+use KimaiPlugin\ReportingBundle\ReportingBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -67,7 +67,7 @@ final class ReportingSubscriber implements EventSubscriberInterface
       SummaryController::ROUTE,
       'summary.title',
       self::REPORT_ICON,
-      SummaryBundle::TRANSLATION_DOMAIN
+      ReportingBundle::TRANSLATION_DOMAIN
     ) );
   }
 }

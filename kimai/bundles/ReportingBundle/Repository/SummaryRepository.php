@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Repository;
+namespace KimaiPlugin\ReportingBundle\Repository;
 
 use App\Entity\Timesheet;
 use App\Entity\User;

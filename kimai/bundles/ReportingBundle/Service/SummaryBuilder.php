@@ -2,15 +2,15 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\SummaryBundle\Service;
+namespace KimaiPlugin\ReportingBundle\Service;
 
 use App\Utils\Color;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use IntlDateFormatter;
-use KimaiPlugin\SummaryBundle\Model\SummaryQuery;
-use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
+use KimaiPlugin\ReportingBundle\Model\SummaryQuery;
+use KimaiPlugin\ReportingBundle\Repository\SummaryRepository;
 
 /**
  * Turns aggregated time records into the totals, chart series and table of the summary report.
