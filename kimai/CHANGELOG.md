@@ -4,13 +4,8 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
-## 2.67.0.20
+## 2.67.0.21
 
-- The quick start bar and reporting extras plugins get more distinctive folder names, so they
-  cannot clash with other Kimai plugins: `QuickTimerBarBundle` and `ReportingGraphsBundle`.
-  If you turned either off with `plugins/TimerBarBundle/.disabled` or
-  `plugins/ReportingBundle/.disabled`, rename that folder; the old one can be removed. The
-  **Show quick start bar** preference keeps its setting.
 - Reporting extras: a **Your working hours by project** dashboard widget, in the style of the
   report charts: hours per day stacked by project, a doughnut chart of the projects, and
   totals for today, the week, the month and the year that open the user reports. Add it
@@ -22,6 +17,14 @@ version the app contains; see the
 - Reporting extras: the icons of the dashboard's duration cards open the matching report:
   **Today**, **This week**, **This month** and **This year** (everyone's hours) the reports for
   all users, and the **My working hours ...** cards your own user reports.
+
+## 2.67.0.20
+
+- The quick start bar and reporting extras plugins get more distinctive folder names, so they
+  cannot clash with other Kimai plugins: `QuickTimerBarBundle` and `ReportingGraphsBundle`.
+  If you turned either off with `plugins/TimerBarBundle/.disabled` or
+  `plugins/ReportingBundle/.disabled`, rename that folder; the old one can be removed. The
+  **Show quick start bar** preference keeps its setting.
 - Quick start bar and inline timesheet editing: **+** buttons next to the project and
   activity pickers add a new project (with a new or existing customer) or activity from just
   its name, and select it. Kimai's defaults apply; everything can be changed later.
