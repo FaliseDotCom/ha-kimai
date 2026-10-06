@@ -57,10 +57,10 @@ published to its own GitHub repository, a read-only mirror of its folder, so it 
 installed in any Kimai installation and listed in the
 [Kimai Store](https://www.kimai.org/documentation/store.html):
 
-| Folder                 | Mirror                                                                               |
-| ---------------------- | ------------------------------------------------------------------------------------ |
-| `ReportingBundle`      | [kimai-reporting-bundle](https://github.com/FaliseDotCom/kimai-reporting-bundle)           |
-| `TimerBarBundle`       | [kimai-timerbar-bundle](https://github.com/FaliseDotCom/kimai-timerbar-bundle)             |
+| Folder | Mirror |
+| --- | --- |
+| `ReportingGraphsBundle` | [kimai-reporting-graphs-bundle](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle) |
+| `QuickTimerBarBundle` | [kimai-quick-timer-bar-bundle](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle) |
 | `ShortTimeEntriesBundle` | [kimai-short-time-entries-bundle](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle) |
 | `InlineTimesheetEditBundle` | [kimai-inline-timesheet-edit-bundle](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle) |
 
@@ -73,7 +73,7 @@ mirror: the next publish would refuse to overwrite it.
 
    ```bash
    scripts/mirror-plugins.sh                  # all plugins
-   scripts/mirror-plugins.sh TimerBarBundle   # one plugin
+   scripts/mirror-plugins.sh QuickTimerBarBundle   # one plugin
    ```
 
    For each plugin, the script uses `git subtree split` to extract the folder's history,

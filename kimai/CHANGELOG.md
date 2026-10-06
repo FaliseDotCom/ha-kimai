@@ -4,6 +4,14 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.20
+
+- The quick start bar and reporting extras plugins get more distinctive folder names, so they
+  cannot clash with other Kimai plugins: `QuickTimerBarBundle` and `ReportingGraphsBundle`.
+  If you turned either off with `plugins/TimerBarBundle/.disabled` or
+  `plugins/ReportingBundle/.disabled`, rename that folder; the old one can be removed. The
+  **Show quick start bar** preference keeps its setting.
+
 ## 2.67.0.19
 
 - Rebuilds the app so installations that already showed 2.67.0.18 pick up the split of the

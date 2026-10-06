@@ -346,8 +346,8 @@ Each user can turn this off with **Edit records directly in the list** in their 
 Create a folder with the extra's name inside the `plugins` folder of the app's
 configuration folder, put an empty file named `.disabled` in it, and restart the app:
 
-- `plugins/ReportingBundle/.disabled` turns off the reporting extras.
-- `plugins/TimerBarBundle/.disabled` turns off the quick start bar for everyone; to hide it
+- `plugins/ReportingGraphsBundle/.disabled` turns off the reporting extras.
+- `plugins/QuickTimerBarBundle/.disabled` turns off the quick start bar for everyone; to hide it
   for one user only, see [Quick start bar](#quick-start-bar).
 - `plugins/ShortTimeEntriesBundle/.disabled` turns off the short time entries.
 - `plugins/InlineTimesheetEditBundle/.disabled` turns off inline editing for everyone; to

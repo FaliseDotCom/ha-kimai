@@ -18,9 +18,9 @@ kimai/
   icon.png, logo.png         Artwork, taken from Kimai's own touch icon
   translations/              Option names and descriptions (en, nl)
   bundles/                   Kimai plugins that ship with the app
-    ReportingBundle/         Reporting extras: summary report, and charts on the user reports
-    TimerBarBundle/          Quick start bar below the top bar
-    ShortTimeEntriesBundle/  Short time and duration entry in Kimai's forms
+    ReportingGraphsBundle/      Reporting extras: summary report, and charts on the user reports
+    QuickTimerBarBundle/        Quick start bar below the top bar
+    ShortTimeEntriesBundle/     Short time and duration entry in Kimai's forms
     InlineTimesheetEditBundle/  Editing records directly in the record list
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
@@ -132,8 +132,8 @@ They only use Kimai's extension points and services:
 
 | Plugin           | Hooks into                                    | Uses                                                    |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
-| `ReportingBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
-| `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
+| `ReportingGraphsBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
+| `QuickTimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
 | `ShortTimeEntriesBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
 | `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
 
@@ -186,10 +186,10 @@ releases first:
 
 ```bash
 docker run --rm --entrypoint bash \
-  -v "$PWD/kimai/bundles/ReportingBundle:/opt/kimai/var/plugins/ReportingBundle" \
+  -v "$PWD/kimai/bundles/ReportingGraphsBundle:/opt/kimai/var/plugins/ReportingGraphsBundle" \
   -v "$PWD/phpstan.phar:/phpstan.phar" kimai/kimai2:2.67.0 -c \
   'cd /opt/kimai && php -d memory_limit=1G /phpstan.phar analyse --level 6 \
-    -a vendor/autoload.php var/plugins/ReportingBundle'
+    -a vendor/autoload.php var/plugins/ReportingGraphsBundle'
 ```
 
 Without Kimai's development dependencies the Symfony stubs are missing, so PHPStan reports

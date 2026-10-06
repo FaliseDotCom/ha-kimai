@@ -60,7 +60,7 @@ that starts the same work again.
 It replaces Kimai's own start button and sits on its own row directly below the top bar of
 every page.
 
-[How it works](kimai/bundles/TimerBarBundle/README.md)
+[How it works](kimai/bundles/QuickTimerBarBundle/README.md)
 
 ### Reporting extras
 
@@ -74,7 +74,7 @@ Additions to Kimai's **Reporting** section:
   doughnut chart, and a breakdown per project, customer, activity or user down to each
   description.
 
-[How it works](kimai/bundles/ReportingBundle/README.md)
+[How it works](kimai/bundles/ReportingGraphsBundle/README.md)
 
 ### Short time entries
 

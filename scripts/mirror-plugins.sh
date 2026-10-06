@@ -7,12 +7,12 @@
 # creates a release with a zip that unzips straight into Kimai's var/plugins/.
 #
 # Mirrors are named after the package in composer.json, under the owner of
-# this repository: falisedotcom/kimai-timerbar-bundle becomes
-# github.com/<owner>/kimai-timerbar-bundle. Create each one empty on GitHub
+# this repository: falisedotcom/kimai-quick-timer-bar-bundle becomes
+# github.com/<owner>/kimai-quick-timer-bar-bundle. Create each one empty on GitHub
 # before its first run. Pushes use your normal Git login.
 #
 # Usage: scripts/mirror-plugins.sh [bundle...]
-#   bundle  Folder name in kimai/bundles/, such as TimerBarBundle. Defaults to all.
+#   bundle  Folder name in kimai/bundles/, such as QuickTimerBarBundle. Defaults to all.
 
 set -euo pipefail
 

@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  KimaiPlugin\QuickTimerBarBundle\:
+    resource: '../../*'
+    exclude:
+      - '../../Resources/'
+      - '../../Model/'
+
+  KimaiPlugin\QuickTimerBarBundle\Controller\:
+    resource: '../../Controller'
+    tags: [ 'controller.service_arguments' ]
