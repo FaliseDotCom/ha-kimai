@@ -22,6 +22,7 @@ readonly BUNDLES_DIR=kimai/bundles
 readonly BRANCH=main
 readonly CHANGELOG_URL_PATH=blob/main/kimai/CHANGELOG.md
 readonly VERSION_PATTERN='^[0-9]+\.[0-9]+\.[0-9]+$'
+readonly GH_WINDOWS='/c/Program Files/GitHub CLI/gh.exe'
 
 fatal()
 {
@@ -53,9 +54,25 @@ remote_tag()
   git ls-remote --tags "$1" "refs/tags/$2" | cut -f 1
 }
 
+# The GitHub CLI: from PATH, or from its default Windows install folder, which
+# terminals opened before the install do not have on their PATH yet.
+find_gh()
+{
+  if command -v gh > /dev/null 2>&1
+  then
+    command -v gh
+  elif [ -x "$GH_WINDOWS" ]
+  then
+    echo "$GH_WINDOWS"
+  fi
+}
+
+GH=$(find_gh)
+readonly GH
+
 has_gh()
 {
-  command -v gh > /dev/null 2>&1
+  [ -n "$GH" ]
 }
 
 # Creates a GitHub release with a zip whose top folder is the bundle name, so
@@ -68,7 +85,7 @@ create_release()
   local commit="$4"
   local title="$5"
 
-  if gh release view "$version" --repo "$repo" > /dev/null 2>&1
+  if "$GH" release view "$version" --repo "$repo" > /dev/null 2>&1
   then
     return
   fi
@@ -78,7 +95,7 @@ create_release()
   local zip="$workdir/$bundle-$version.zip"
 
   git -C "$REPO_ROOT" archive --format=zip --prefix="$bundle/" -o "$zip" "$commit"
-  gh release create "$version" "$zip" --repo "$repo" --title "$title $version" \
+  "$GH" release create "$version" "$zip" --repo "$repo" --title "$title $version" \
     --notes "Unzip into Kimai's \`var/plugins/\` folder and run \`bin/console kimai:reload --env=prod\`. Changes are listed in the [changelog]($(repo_url)/$CHANGELOG_URL_PATH)."
   rm -rf "$workdir"
   echo "  Released $version."
