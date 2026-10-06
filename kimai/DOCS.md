@@ -311,10 +311,11 @@ Other ways of writing a duration that Kimai already understood, such as `1:30`, 
 hours); with this plugin it means minutes. This applies to the record dialog, to
 **Weekly hours** and to every other form with a time or duration field.
 
-**Editing records in the list.** On **My times** and **All times**, the cells of your own
-records can be changed in place: click a cell, change the value, and press Enter or click
-elsewhere to save; Escape cancels. Kimai then reloads the list, so day totals and prices stay
-right.
+**Editing records in the list.** On **My times** and **All times**, your own records can be
+changed in place: click a record and all its cells become fields, with the cell you clicked
+ready for typing. Tab moves to the next field. Press Enter, or leave the record with Tab or a
+click elsewhere, to save all changes at once; Escape cancels. Kimai then reloads the list, so
+day totals and prices stay right.
 
 | Column | How it is edited |
 | ------ | ---------------- |
@@ -322,18 +323,19 @@ right.
 | Begin | Changes the start; the end stays, so the duration changes. |
 | End | Changes the end; an end before the start is on the next day. |
 | Duration, Break | Type `1:30`, `90`, `1.5` or `1h30m`; a new duration moves the end. |
-| Customer, Project | Pick a project, grouped by customer. If the activity does not fit the new project, pick an activity next; both are saved together. |
+| Customer, Project | Pick a project, grouped by customer. The activity list then shows that project's activities; if the record's activity does not fit, pick a new one. |
 | Activity | Pick from the activities of the record's project. |
 | Description | Enter saves, Shift+Enter starts a new line. |
 | Tags | Type tag names separated by commas. New tags are created if you may create tags. |
-| Billable | A click switches between yes and no. |
+| Billable | A checkbox. |
 
 Only your own records can be edited this way, also on **All times**, and only the fields
 Kimai lets you change: exported or locked records, and times in a tracking mode that does not
-allow editing them, are left alone. Clicking any other cell, or someone else's record, still
-opens Kimai's edit dialog, as does **Edit** in the record's menu. Changing the project or
-activity recalculates billable and the rates, as in Kimai's own dialog. If Kimai refuses a
-change, its reason is shown and the cell goes back to its old value.
+allow editing them, are left alone. Clicking a record no longer opens Kimai's edit dialog,
+also not for someone else's record: use **Edit** in the record's actions menu for that.
+Changing the project or activity recalculates billable and the rates, as in Kimai's own
+dialog. If Kimai refuses a change, its reason is shown and the record stays open so you can
+correct it.
 
 Each user can turn this off with **Edit records directly in the list** in their preferences
 (click your name, then **Preferences**).

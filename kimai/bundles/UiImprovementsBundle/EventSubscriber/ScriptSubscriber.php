@@ -56,6 +56,7 @@ final class ScriptSubscriber implements EventSubscriberInterface
    */
   private const MESSAGES = [
     'hint' => 'inline_edit.hint',
+    'invalidDate' => 'inline_edit.invalid_date',
     'invalidTime' => 'inline_edit.invalid_time',
     'invalidDuration' => 'inline_edit.invalid_duration',
     'chooseActivity' => 'inline_edit.choose_activity',

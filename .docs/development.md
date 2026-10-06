@@ -132,14 +132,14 @@ They only use Kimai's extension points and services:
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
 | `ReportingBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
 | `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
-| `UiImprovementsBundle` | `ThemeEvent::JAVASCRIPT` on every page; `ThemeEvent::STYLESHEET` and `UserPreferenceEvent` for inline editing | Kimai's form markup: `input[data-timepicker]` and `input.duration-input`; for inline editing the list markup (`tr[data-href]`, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
+| `UiImprovementsBundle` | `ThemeEvent::JAVASCRIPT` on every page; `ThemeEvent::STYLESHEET` and `UserPreferenceEvent` for inline editing | Kimai's form markup: `input[data-timepicker]` and `input.duration-input`; for inline editing the list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
 button (`.ticktac`). Its script moves it into a row at the start of `.page-wrapper`, directly
 below the top bar; Kimai offers no event for that place. Kimai's entry tables reload by
 fetching the whole page and swapping in its content area, which brings along a fresh copy of
 the bar; the script removes that copy on `kimai.reloadedContent`. The inline editing script
-listens for the same event to mark the cells of the reloaded rows, and dispatches
+listens for the same event to mark the reloaded rows, and dispatches
 `kimai.timesheetUpdate` after a save so Kimai reloads the list. The charts on the user
 reports are rendered the same way and moved into the report's `#reporting-content`, below
 its filters.

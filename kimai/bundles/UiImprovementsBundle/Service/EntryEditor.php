@@ -17,7 +17,7 @@ use KimaiPlugin\UiImprovementsBundle\Exception\InvalidInputException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Changes one field of a time record edited in the list, and saves it through Kimai's
+ * Changes the fields of a time record edited in the list, and saves it through Kimai's
  * TimesheetService, so its validation, rounding and rate calculation apply.
  *
  * Times arrive as 24-hour HH:MM and dates as YYYY-MM-DD, in the user's time zone; durations
@@ -35,6 +35,25 @@ final class EntryEditor
   public const FIELD_ACTIVITY = 'activity';
   public const FIELD_TAGS = 'tags';
   public const FIELD_BILLABLE = 'billable';
+
+  /**
+   * The order changes are applied in: the day before the times, the times before the
+   * duration, and the project before the activity, so each change builds on the previous.
+   *
+   * @var array<int, string>
+   */
+  private const FIELD_ORDER = [
+    self::FIELD_DATE,
+    self::FIELD_BEGIN,
+    self::FIELD_END,
+    self::FIELD_DURATION,
+    self::FIELD_BREAK,
+    self::FIELD_PROJECT,
+    self::FIELD_ACTIVITY,
+    self::FIELD_DESCRIPTION,
+    self::FIELD_TAGS,
+    self::FIELD_BILLABLE,
+  ];
 
   /**
    * A 24-hour time as the script sends it.
@@ -119,26 +138,50 @@ final class EntryEditor
   }
 
   /**
-   * Changes one field and saves the record.
+   * Changes one or more fields and saves the record once.
    *
    * @param Timesheet $entry The record, owned by the user.
    * @param User $user The logged-in user.
-   * @param string $field One of the FIELD_ constants.
-   * @param array<string, string> $values The posted values: "value", and "activity" with a project.
+   * @param array<string, string> $changes The new values, by FIELD_ constant. A new project
+   *   takes the activity from the same changes, when given.
    * @return void
-   * @throws InvalidInputException When a value cannot be used.
+   * @throws InvalidInputException When a field cannot be changed or a value cannot be used.
    * @throws ValidationFailedException When Kimai refuses the changed record.
    */
-  public function update( Timesheet $entry, User $user, string $field, array $values ) : void
+  public function update( Timesheet $entry, User $user, array $changes ) : void
   {
-    if ( !in_array( $field, $this->getEditableFields( $entry ), true ) )
+    $editable = $this->getEditableFields( $entry );
+    if ( empty( $changes ) || !empty( array_diff( array_keys( $changes ), $editable ) ) )
     {
       throw new InvalidInputException( 'inline_edit.not_editable' );
     }
 
-    $value = trim( $values[ 'value' ] ?? '' );
     $timezone = DateTimeFactory::createByUser( $user )->getTimezone();
+    foreach ( self::FIELD_ORDER as $field )
+    {
+      if ( array_key_exists( $field, $changes ) )
+      {
+        $this->changeField( $entry, $user, $field, trim( $changes[ $field ] ), $changes, $timezone );
+      }
+    }
 
+    $this->timesheetService->validateTimesheet( $entry );
+    $this->timesheetService->saveTimesheet( $entry );
+  }
+
+  /**
+   * Changes one field of the record, without saving it.
+   *
+   * @param Timesheet $entry The record.
+   * @param User $user The logged-in user.
+   * @param string $field One of the FIELD_ constants.
+   * @param string $value The new value.
+   * @param array<string, string> $changes All changes, for the activity of a new project.
+   * @param DateTimeZone $timezone The user's time zone.
+   * @return void
+   */
+  private function changeField( Timesheet $entry, User $user, string $field, string $value, array $changes, DateTimeZone $timezone ) : void
+  {
     match ( $field )
     {
       self::FIELD_DATE => $this->changeDate( $entry, $value, $timezone ),
@@ -147,15 +190,12 @@ final class EntryEditor
       self::FIELD_DURATION => $this->changeDuration( $entry, $value ),
       self::FIELD_BREAK => $this->changeBreak( $entry, $value ),
       self::FIELD_DESCRIPTION => $entry->setDescription( $value === '' ? null : $value ),
-      self::FIELD_PROJECT => $this->changeProject( $entry, $user, $value, trim( $values[ self::FIELD_ACTIVITY ] ?? '' ) ),
+      self::FIELD_PROJECT => $this->changeProject( $entry, $user, $value, trim( $changes[ self::FIELD_ACTIVITY ] ?? '' ) ),
       self::FIELD_ACTIVITY => $this->changeActivity( $entry, $user, $value ),
       self::FIELD_TAGS => $this->changeTags( $entry, $value ),
       self::FIELD_BILLABLE => $this->changeBillable( $entry, $value === '1' ),
       default => throw new InvalidInputException( 'inline_edit.not_editable' ),
     };
-
-    $this->timesheetService->validateTimesheet( $entry );
-    $this->timesheetService->saveTimesheet( $entry );
   }
 
   /**

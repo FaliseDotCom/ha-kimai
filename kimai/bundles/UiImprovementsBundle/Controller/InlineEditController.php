@@ -33,6 +33,13 @@ final class InlineEditController extends AbstractController
   public const ROUTE_SAVE = 'ui_improvements_inline_edit_save';
 
   /**
+   * Name of the posted array of changed values, by field.
+   *
+   * @var string
+   */
+  private const CHANGES_PARAMETER = 'changes';
+
+  /**
    * Translation domain of the error messages.
    *
    * @var string
@@ -81,9 +88,9 @@ final class InlineEditController extends AbstractController
   }
 
   /**
-   * Changes one field of a record.
+   * Changes one or more fields of a record and saves it once.
    *
-   * @param Request $request The posted change: _token, timesheet, field, value and, with a project, activity.
+   * @param Request $request The posted changes: _token, timesheet, and the new values in changes[field].
    * @return JsonResponse
    */
   #[Route( path: '/save', name: self::ROUTE_SAVE, methods: [ 'POST' ] )]
@@ -99,10 +106,7 @@ final class InlineEditController extends AbstractController
 
     try
     {
-      $this->editor->update( $entry, $user, (string) $request->request->get( 'field' ), [
-        'value' => (string) $request->request->get( 'value' ),
-        EntryEditor::FIELD_ACTIVITY => (string) $request->request->get( EntryEditor::FIELD_ACTIVITY ),
-      ] );
+      $this->editor->update( $entry, $user, $this->getChanges( $request ) );
     }
     catch ( InvalidInputException $exception )
     {
@@ -114,6 +118,26 @@ final class InlineEditController extends AbstractController
     }
 
     return new JsonResponse( [ 'saved' => true ] );
+  }
+
+  /**
+   * Returns the posted changes as text values, by field.
+   *
+   * @param Request $request The request.
+   * @return array<string, string>
+   */
+  private function getChanges( Request $request ) : array
+  {
+    $changes = [];
+    foreach ( $request->request->all( self::CHANGES_PARAMETER ) as $field => $value )
+    {
+      if ( is_string( $value ) )
+      {
+        $changes[ (string) $field ] = $value;
+      }
+    }
+
+    return $changes;
   }
 
   /**

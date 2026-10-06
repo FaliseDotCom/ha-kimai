@@ -39,16 +39,19 @@ unchanged. A plain number used to mean hours in Kimai; with this plugin it means
 
 ## Editing records in the list
 
-On **My times** and **All times**, the cells of the user's own records can be edited in
-place: date, start, end, duration, break, customer and project (a project picker grouped by
-customer), activity, description, tags (comma-separated) and billable (toggles on click).
-Enter or leaving the field saves, Escape cancels; Kimai then reloads the list. When a new
-project does not allow the record's activity, an activity picker follows and both are saved
-together.
+On **My times** and **All times**, the user's own records can be edited in place. Clicking
+a record turns its shown cells into fields at once: date, start, end, duration, break,
+project (a picker grouped by customer, in the project column or, when that is hidden, the
+customer column), activity, description, tags (comma-separated) and billable (a checkbox).
+The clicked cell's field gets the focus and Tab moves between the fields. Enter, or leaving
+the record with Tab or a click elsewhere, saves all changes in one request; Escape cancels;
+Kimai then reloads the list. Picking another project refills the activity picker with that
+project's activities, and asks for one when the record's activity does not fit.
 
 Only records the user owns and may edit are offered, and only the fields Kimai's tracking
 mode and permissions allow (billable needs `edit_billable`, new tags need `create_tag`).
-Other cells, and other users' records, keep opening Kimai's edit dialog. Every change goes
+Clicking a record never opens Kimai's edit dialog while this is on, also not for other
+users' records; **Edit** in the actions menu still does. Every change goes
 through `TimesheetService`, so Kimai's validation, rounding and rate calculation apply, and a
 refusal is shown with Kimai's own message.
 
@@ -67,11 +70,14 @@ query, so a release never mixes old and new files from the browser cache.
 
 **Editing in the list:** on the `timesheet` and `admin_timesheet` routes, and only when the
 preference is on, `inline-edit.js` and `inline-edit.css` are added too. The script reads the
-record IDs from the rows' edit links, asks `InlineEditController` which of them the user owns
-and may edit (with their raw values and editable fields), and marks those cells by Kimai's
-`col_*` column classes. Clicks on a marked cell are handled in the capture phase and kept
-from Kimai's row handler, which would open the edit dialog. A change is posted as one field
-and value; times are sent as 24-hour `HH:MM`, durations in minutes. After a save the script
+record IDs from the rows' edit links and removes the `modal-ajax-form` class from the rows,
+so Kimai's row click handler no longer opens the edit dialog (the actions menu link keeps its
+own class). It then asks `InlineEditController` which records the user owns and may edit
+(with their raw values and editable fields) and marks those rows; Kimai's `col_*` column
+classes tell which field a cell edits. All changed fields of a row are posted together as
+`changes[field]`, and `EntryEditor` applies them in a fixed order (date, times, duration,
+break, project, activity, the rest) before validating and saving once; times are sent as
+24-hour `HH:MM`, durations in minutes. After a save the script
 dispatches `kimai.timesheetUpdate`, Kimai reloads the list, and `kimai.reloadedContent`
 marks the new rows.
 

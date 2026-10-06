@@ -4,6 +4,15 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.18
+
+- UI improvements: clicking one of your own records on **My times** or **All times** now
+  turns the whole record into fields. Tab moves between them, Enter or leaving the record
+  saves all changes at once, and Escape cancels.
+- UI improvements: with editing in the list turned on, clicking a record no longer opens
+  Kimai's edit dialog, also for other users' records. Use **Edit** in the record's actions
+  menu instead.
+
 ## 2.67.0.17
 
 - UI improvements: your own records on **My times** and **All times** can be edited directly
