@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @phpstan-type CustomerGroup array{name: string, projects: array<int, ProjectOption>}
  * @phpstan-type ActivityOption array{id: int, name: string, projectId: int, billable: bool}
  * @phpstan-type TagOption array{id: int, name: string}
- * @phpstan-type RunningEntry array{id: int, description: string, projectId: int, activityId: int, begin: string, beginTime: string, tagIds: array<int, int>, billableMode: string}
+ * @phpstan-type RunningEntry array{id: int, description: string, projectId: int, activityId: int, begin: string, beginDate: string, beginTime: string, tagIds: array<int, int>, billableMode: string}
  * @phpstan-type TimerBarView array{
  *   running: RunningEntry|array{},
  *   customers: array<int, CustomerGroup>,
@@ -122,7 +122,7 @@ final class TimerBarViewFactory
    */
   private function describeRunningEntry( Timesheet $entry, string $locale, DateTimeZone $timezone ) : array
   {
-    $begin = $entry->getBegin();
+    $begin = $entry->getBegin() === null ? null : DateTimeImmutable::createFromMutable( $entry->getBegin() )->setTimezone( $timezone );
     $tagIds = [];
     foreach ( $entry->getTags() as $tag )
     {
@@ -138,7 +138,8 @@ final class TimerBarViewFactory
       'projectId' => (int) $entry->getProject()?->getId(),
       'activityId' => (int) $entry->getActivity()?->getId(),
       'begin' => $begin?->format( DATE_ATOM ) ?? '',
-      'beginTime' => $begin === null ? '' : $this->timeInput->format( DateTimeImmutable::createFromMutable( $begin )->setTimezone( $timezone ), $locale ),
+      'beginDate' => $begin?->format( 'Y-m-d' ) ?? '',
+      'beginTime' => $begin === null ? '' : $this->timeInput->format( $begin, $locale ),
       'tagIds' => $tagIds,
       'billableMode' => match ( $entry->getBillableMode() )
       {

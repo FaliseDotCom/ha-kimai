@@ -1,6 +1,24 @@
 /* Quick start bar for Kimai. Builds on Kimai's Tabler theme and its colour variables. */
 
-/* One row: description, project, activity, tags, billable, times, mode and the main button */
+/* Row directly below the top bar that holds the bar */
+.timer-bar-row
+{
+  padding-top: 1rem;
+}
+
+.timer-bar-row:empty
+{
+  display: none;
+}
+
+/* Keep the open tag menu above the sticky header of the entry table below the bar */
+.timer-bar
+{
+  position: relative;
+  z-index: 1025;
+}
+
+/* One row: description, project, activity, tags, billable, date and times, main button */
 .timer-bar-form
 {
   display: flex;
@@ -12,7 +30,7 @@
 .timer-bar-description
 {
   flex: 1 1 16rem;
-  min-width: 0;
+  min-width: 8rem;
   font-size: 1rem;
 }
 
@@ -20,7 +38,7 @@
 .timer-bar-activity
 {
   flex: 0 1 14rem;
-  min-width: 8rem;
+  min-width: 7rem;
 }
 
 .timer-bar-button
@@ -66,8 +84,8 @@
   cursor: pointer;
 }
 
-/* Start and end times, and the date when entering a finished record */
-.timer-bar-manual
+/* Date, start time, and end time or the running clock */
+.timer-bar-times
 {
   display: flex;
   flex: 0 0 auto;
@@ -75,21 +93,30 @@
   gap: 0.25rem;
 }
 
-.timer-bar-manual[hidden]
+.timer-bar-date
 {
-  display: none;
+  width: 9.5rem;
 }
 
 .timer-bar-time
 {
-  flex: 0 0 6.5rem;
   width: 6.5rem;
   text-align: center;
 }
 
-.timer-bar-date
+.timer-bar-elapsed
 {
-  width: 9.5rem;
+  min-width: 5.5rem;
+  margin-left: 0.25rem;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Running entry: the same fields, saved as they change, with its clock and stop button */
+.timer-bar-running
+{
+  border-left: 4px solid var(--tblr-success);
 }
 
 /* Error when a change to the running entry could not be saved */
@@ -97,24 +124,6 @@
 {
   flex-basis: 100%;
   margin: 0;
-}
-
-/* Row directly below the top bar that holds the bar on narrow screens */
-.timer-bar-row
-{
-  padding-top: 1rem;
-}
-
-.timer-bar-row:empty
-{
-  display: none;
-}
-
-/* Keep the open tag menu above the sticky header of the entry table below the bar */
-.timer-bar
-{
-  position: relative;
-  z-index: 1025;
 }
 
 /* Continue button in each "My times" row, next to Kimai's actions menu */
@@ -135,88 +144,6 @@ td:has(> .timer-bar-continue)
   vertical-align: middle;
 }
 
-/* Running entry: the same fields, saved as they change, with its start time, clock and stop button */
-.timer-bar-running
-{
-  border-left: 4px solid var(--tblr-success);
-}
-
-.timer-bar-elapsed
-{
-  flex: 0 0 auto;
-  font-size: 1.25rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-
-/* In the top navigation, on wide screens: a compact bar without the card around it */
-/* The navigation gives the bar all width between the page title and the user menu */
-.timer-bar-header .navbar-collapse
-{
-  flex: 0 0 auto;
-}
-
-.timer-bar-host
-{
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.timer-bar.timer-bar-navbar
-{
-  flex: 1 1 auto;
-  min-width: 0;
-  margin: 0 0.5rem 0 1rem;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.timer-bar-navbar .timer-bar-form
-{
-  padding: 0;
-}
-
-.timer-bar-navbar .timer-bar-project,
-.timer-bar-navbar .timer-bar-activity
-{
-  flex-basis: 9rem;
-  min-width: 6rem;
-}
-
-.timer-bar-navbar .timer-bar-button
-{
-  width: 2.25rem;
-  height: 2.25rem;
-}
-
-.timer-bar-navbar.timer-bar-running
-{
-  border-left: 0;
-}
-
-.timer-bar-navbar .timer-bar-form
-{
-  flex-wrap: nowrap;
-}
-
-.timer-bar-navbar .timer-bar-description
-{
-  min-width: 6rem;
-}
-
-/* In the navigation the error shows just below the bar */
-.timer-bar-navbar .timer-bar-error
-{
-  position: absolute;
-  top: 100%;
-  right: 0;
-  padding: 0.25rem 0.5rem;
-  background: var(--tblr-bg-surface);
-  border-radius: var(--tblr-border-radius);
-  box-shadow: var(--tblr-box-shadow);
-}
-
 /* Kimai's own start button, while the bar takes its place. !important is needed to beat
    the d-flex utility class on it. */
 .timer-bar-replaced
@@ -224,7 +151,8 @@ td:has(> .timer-bar-continue)
   display: none !important;
 }
 
-@media (max-width: 767.98px)
+/* Up to large screens: description on its own line, the rest below it */
+@media (max-width: 1599.98px)
 {
   .timer-bar-form
   {
@@ -239,28 +167,48 @@ td:has(> .timer-bar-continue)
   .timer-bar-project,
   .timer-bar-activity
   {
+    flex: 1 1 10rem;
+  }
+}
+
+/* Phones: pickers side by side, then date and times, then the buttons on the right */
+@media (max-width: 767.98px)
+{
+  .timer-bar-project,
+  .timer-bar-activity
+  {
     flex: 1 1 calc(50% - 0.25rem);
   }
 
-  /* Tags, billable and start share the last row, aligned to the right */
-  .timer-bar-activity + *
-  {
-    margin-left: auto;
-  }
-
-  /* Date and times get a row of their own */
-  .timer-bar-manual
+  .timer-bar-times
   {
     flex: 1 1 100%;
-    min-width: 0;
     order: 1;
+    min-width: 0;
   }
 
-  .timer-bar-manual .timer-bar-time,
-  .timer-bar-manual .timer-bar-date
+  .timer-bar-times .timer-bar-date,
+  .timer-bar-times .timer-bar-time
   {
     flex: 1 1 0;
     width: auto;
     min-width: 0;
+  }
+
+  .timer-bar-tags,
+  .timer-bar-billable,
+  .timer-bar-button
+  {
+    order: 2;
+  }
+
+  .timer-bar-tags
+  {
+    margin-left: auto;
+  }
+
+  .timer-bar-error
+  {
+    order: 3;
   }
 }

@@ -54,10 +54,6 @@
         <source>timer_bar.add</source>
         <target>Add</target>
       </trans-unit>
-      <trans-unit id="timer_bar.mode.manual" resname="timer_bar.mode.manual">
-        <source>timer_bar.mode.manual</source>
-        <target>Enter start and end time</target>
-      </trans-unit>
     </body>
   </file>
 </xliff>

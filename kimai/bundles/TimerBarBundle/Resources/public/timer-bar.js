@@ -1,8 +1,8 @@
 /**
- * Behaviour of the Kimai quick start bar: fills in project and activity from recent entries,
- * offers only the activities that fit the chosen project, switches between starting a timer
- * and entering a start and end time, saves changes to the running entry as they are made,
- * and runs the clock of the running entry.
+ * Behaviour of the Kimai quick start bar: places it below the top bar, fills in project and
+ * activity from recent entries, offers only the activities that fit the chosen project, shows
+ * whether the button starts a timer or adds a finished record, saves changes to the running
+ * entry as they are made, and runs the clock of the running entry.
  */
 ( function ()
 {
@@ -23,13 +23,6 @@
   const NAVBAR_TIMER_SELECTOR = '.ticktac';
 
   /**
-   * Screens at least this wide show the bar in the top navigation.
-   *
-   * @type {string}
-   */
-  const WIDE_SCREEN_QUERY = '(min-width: 1200px)';
-
-  /**
    * Selector of the page area below the top bar, which holds the page title and content.
    *
    * @type {string}
@@ -43,27 +36,6 @@
    * @type {string}
    */
   const ROW_CLASS = 'container-fluid timer-bar-row';
-
-  /**
-   * Class of the bar while it sits in the top navigation.
-   *
-   * @type {string}
-   */
-  const NAVBAR_CLASS = 'timer-bar-navbar';
-
-  /**
-   * Class of the navigation group that holds the bar, so it can take the free width.
-   *
-   * @type {string}
-   */
-  const HOST_CLASS = 'timer-bar-host';
-
-  /**
-   * Class of the top navigation while it holds the bar.
-   *
-   * @type {string}
-   */
-  const HEADER_CLASS = 'timer-bar-header';
 
   /**
    * Spacing utility class the bar is rendered with, for pages without the usual layout.
@@ -155,20 +127,6 @@
    * @type {{automatic: string, yes: string, no: string}}
    */
   const BILLABLE = { automatic: 'auto', yes: 'yes', no: 'no' };
-
-  /**
-   * Values of the mode field: start a timer, or enter a start and end time.
-   *
-   * @type {{timer: string, manual: string}}
-   */
-  const MODE = { timer: 'timer', manual: 'manual' };
-
-  /**
-   * Key under which the browser remembers the last chosen mode.
-   *
-   * @type {string}
-   */
-  const MODE_STORAGE_KEY = 'kimai.timerBar.mode';
 
   /**
    * Value of the form's data-state while a record runs.
@@ -444,93 +402,43 @@
     }
     else
     {
-      initModes( form );
+      initSubmitLabel( form );
     }
   }
 
   /**
-   * Reads the mode the user chose last time, if the browser remembers it.
-   *
-   * @returns {string}
-   */
-  function readStoredMode()
-  {
-    try
-    {
-      return window.localStorage.getItem( MODE_STORAGE_KEY ) === MODE.manual ? MODE.manual : MODE.timer;
-    }
-    catch ( error )
-    {
-      return MODE.timer;
-    }
-  }
-
-  /**
-   * Remembers the chosen mode in this browser, when the browser allows it.
-   *
-   * @param {string} mode One of the MODE values.
-   * @returns {void}
-   */
-  function storeMode( mode )
-  {
-    try
-    {
-      window.localStorage.setItem( MODE_STORAGE_KEY, mode );
-    }
-    catch ( error )
-    {
-      // Private windows and blocked storage simply start in timer mode next time.
-    }
-  }
-
-  /**
-   * Wires up the button that switches between starting a timer and entering a start and end
-   * time. The button is highlighted while start and end times are shown.
+   * Shows on the main button what it will do: start a timer while no end time is entered, or
+   * add a finished record once there is one.
    *
    * @param {HTMLFormElement} form The start form.
    * @returns {void}
    */
-  function initModes( form )
+  function initSubmitLabel( form )
   {
-    const value = form.querySelector( '[data-timer-bar-mode-value]' );
-    const manual = form.querySelector( '[data-timer-bar-manual]' );
+    const endTime = form.querySelector( '[data-timer-bar-end-time]' );
     const submit = form.querySelector( '[data-timer-bar-submit]' );
-    const toggle = form.querySelector( '[data-timer-bar-mode-toggle]' );
 
-    if ( value === null || manual === null || submit === null || toggle === null )
+    if ( endTime === null || submit === null )
     {
       return;
     }
 
-    const apply = ( mode ) =>
+    const update = () =>
     {
-      const isManual = mode === MODE.manual;
-      const title = isManual ? submit.dataset.titleManual : submit.dataset.titleTimer;
+      const adds = endTime.value.trim() !== '';
+      const title = adds ? submit.dataset.titleAdd : submit.dataset.titleStart;
 
-      value.value = mode;
-      manual.hidden = !isManual;
-      manual.querySelectorAll( '[data-timer-bar-manual-field]' ).forEach( ( field ) =>
-      {
-        field.required = isManual;
-      } );
-      toggle.classList.toggle( 'active', isManual );
-      toggle.setAttribute( 'aria-pressed', String( isManual ) );
       submit.querySelectorAll( '[data-timer-bar-icon]' ).forEach( ( icon ) =>
       {
-        icon.hidden = icon.dataset.timerBarIcon !== mode;
+        icon.hidden = icon.dataset.timerBarIcon !== ( adds ? 'add' : 'start' );
       } );
       submit.title = title;
       submit.setAttribute( 'aria-label', title );
     };
 
-    toggle.addEventListener( 'click', () =>
-    {
-      const mode = value.value === MODE.manual ? MODE.timer : MODE.manual;
-      apply( mode );
-      storeMode( mode );
-    } );
-
-    apply( readStoredMode() );
+    endTime.addEventListener( 'input', update );
+    endTime.addEventListener( 'change', update );
+    update();
   }
 
   /**
@@ -685,8 +593,8 @@
   }
 
   /**
-   * Creates the row the bar uses on narrow screens: directly below the top bar, above the
-   * page title and the page's own buttons. Falls back to where the bar was rendered.
+   * Creates the row that holds the bar: directly below the top bar, above the page title and
+   * the page's own buttons. Falls back to where the bar was rendered.
    *
    * @param {HTMLElement} bar The quick start bar.
    * @returns {HTMLElement}
@@ -710,40 +618,17 @@
   }
 
   /**
-   * Shows the bar in place of Kimai's own start button: in the top navigation on wide
-   * screens, and on its own row directly below the top bar on narrow screens.
+   * Shows the bar on its own row directly below the top bar, in place of Kimai's own start
+   * button.
    *
    * @param {HTMLElement} bar The quick start bar.
    * @returns {void}
    */
   function initPlacement( bar )
   {
-    const home = createRow( bar );
-    const wide = window.matchMedia( WIDE_SCREEN_QUERY );
-
-    const place = () =>
-    {
-      const navbarTimer = Array.from( document.querySelectorAll( NAVBAR_TIMER_SELECTOR ) ).find( ( timer ) => timer.closest( 'header' ) !== null );
-      const inNavbar = wide.matches && navbarTimer !== undefined;
-
-      document.querySelectorAll( NAVBAR_TIMER_SELECTOR ).forEach( ( timer ) => timer.classList.add( REPLACED_CLASS ) );
-      bar.classList.toggle( NAVBAR_CLASS, inNavbar );
-      navbarTimer?.parentElement?.classList.toggle( HOST_CLASS, inNavbar );
-      navbarTimer?.closest( 'header' )?.classList.toggle( HEADER_CLASS, inNavbar );
-      bar.classList.remove( CONTENT_SPACING_CLASS );
-
-      if ( inNavbar )
-      {
-        navbarTimer.before( bar );
-      }
-      else
-      {
-        home.append( bar );
-      }
-    };
-
-    place();
-    wide.addEventListener( 'change', place );
+    createRow( bar ).append( bar );
+    bar.classList.remove( CONTENT_SPACING_CLASS );
+    document.querySelectorAll( NAVBAR_TIMER_SELECTOR ).forEach( ( timer ) => timer.classList.add( REPLACED_CLASS ) );
   }
 
   /**

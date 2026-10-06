@@ -3,21 +3,19 @@
 A quick start bar for [Kimai](https://www.kimai.org/): start and stop time recording from one
 bar, without opening a form.
 
-The bar replaces Kimai's own start button on every page. On screens at least 1200 pixels wide
-it sits in the top navigation; on narrower screens it gets its own row directly below the top
-bar, above the page's own buttons and filters.
+The bar replaces Kimai's own start button and sits on its own row directly below the top bar
+of every page, above the page's own buttons and filters.
 
 - **Idle:** "What are you working on?", a project picker grouped by customer, an activity
   picker, a tag picker (which can create tags, with permission), a billable toggle (with
-  permission), a switch between starting a timer and entering a start and end time, and a
-  start (or add) button.
-- **Running:** the same fields, filled in with the running record and editable, plus its
-  start time, a live clock and a stop button. Changes are saved as they are made.
+  permission), a date with start and end time, and a start (or add) button.
+- **Running:** the same fields, filled in with the running record and editable, with its
+  date and start time, a live clock and a stop button. Changes are saved as they are made.
 
-With the switch on start and end time, the bar shows a date and **Start time** and **End
-time** fields, and adds a finished record. Times accept short forms such as `915` or `945p`,
-and an end time before the start time means the next day. The choice is remembered in the
-browser.
+The times decide what the button does: no times start a timer now, a start time alone starts
+a timer that has been running since then, and a start and end time add a finished record.
+Times accept short forms such as `915` or `945p`, and an end time before the start time means
+the next day.
 
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.

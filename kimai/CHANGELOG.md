@@ -4,6 +4,14 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.17
+
+- Quick start bar: always on its own row directly below the top bar, on every screen size,
+  instead of inside the top navigation on wide screens.
+- Quick start bar: date, start time and end time are always shown; the clock button is gone.
+  No times start a timer now, a start time alone starts a timer from that time, and a start
+  and end time add a finished record. The running record's date can be changed too.
+
 ## 2.67.0.16
 
 - Quick start bar: a clock button switches to entering a start and end time (and date), to

@@ -43,15 +43,20 @@ final class EntryWriter
   }
 
   /**
-   * Starts a new record now.
+   * Starts a new running record, now or at an earlier time.
    *
    * @param User $user The logged-in user.
    * @param EntryInput $input What the user entered.
+   * @param DateTimeImmutable|null $begin When the work started, or null for now.
    * @return Timesheet
    */
-  public function start( User $user, EntryInput $input ) : Timesheet
+  public function start( User $user, EntryInput $input, ?DateTimeImmutable $begin = null ) : Timesheet
   {
     $timesheet = $this->createNew( $user );
+    if ( $begin !== null )
+    {
+      $timesheet->setBegin( DateTime::createFromImmutable( $begin ) );
+    }
     $this->apply( $timesheet, $input );
 
     return $this->timesheetService->saveTimesheet( $timesheet );

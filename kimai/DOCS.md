@@ -196,9 +196,8 @@ a quick start bar, reporting extras and UI improvements.
 ### Quick start bar
 
 A bar to start and stop time recording without opening a form. It replaces Kimai's own
-start button on every page: on wide screens it sits in the top navigation, and on phones and
-narrow windows it gets its own row directly below the top bar, above the page's own buttons
-and filters.
+start button and sits on its own row directly below the top bar of every page, above the
+page's own buttons and filters.
 
 - **Description:** type what you are working on. Recent descriptions are suggested; picking
   one fills in the project and activity it was last booked on.
@@ -209,16 +208,19 @@ and filters.
 - **Billable** (coins icon): shows whether the record will be billable. It follows Kimai's rule
   (billable when the customer, project and activity all are) until you press it; then your
   choice counts. It only appears if you may change the billable setting.
-- **Start** (green button) starts recording now.
-- **Start and end time** (clock icon): switches the bar to entering a finished record. A date
-  field and **Start time** and **End time** fields appear, and the green button becomes **Add**
-  (+). Times can be typed short, such as `915`; an end time before the start time is taken as
-  the next day. Press the clock icon again to go back to starting a timer. The bar remembers
-  your choice in this browser.
+- **Date, start time and end time:** fill these in to record something you already did, or
+  leave them empty to start now. The green button shows what it will do:
+  - no times: **Start** (▶) starts a timer now;
+  - only a start time: **Start** (▶) starts a timer that has been running since then;
+  - start and end time: **Add** (+) adds a finished record.
 
-**While a record runs**, the bar shows the running record in the same fields, with its start
-time, a running clock and a red stop button. Everything can be changed while it runs: the
-description, project, activity, tags, billable setting and the start time. Each change is
+  Times can be typed short, such as `915` or `945p`, and an end time before the start time is
+  taken as the next day. The date is today unless you change it.
+
+**While a record runs**, the bar shows the running record in the same fields, with its date
+and start time, a running clock and a red stop button. Everything can be changed while it
+runs: the description, project, activity, tags, billable setting, and the date and time it
+started. Each change is
 saved as soon as you leave the field or pick an option; there is no save button, and Enter
 saves too. Changing the start time moves the clock. If Kimai refuses a change, for example
 a start time in the future, the reason appears below the bar.

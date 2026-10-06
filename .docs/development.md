@@ -19,7 +19,7 @@ kimai/
   translations/              Option names and descriptions (en, nl)
   bundles/                   Kimai plugins that ship with the app
     ReportingBundle/         Reporting extras: summary report, and charts on the user reports
-    TimerBarBundle/          Quick start bar in the top navigation
+    TimerBarBundle/          Quick start bar below the top bar
     UiImprovementsBundle/    UI improvements, such as short time and duration entry
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
@@ -135,9 +135,8 @@ They only use Kimai's extension points and services:
 | `UiImprovementsBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
-button (`.ticktac`). Its script moves it into the top navigation on screens of 1200 pixels
-and wider, and otherwise into a row at the start of `.page-wrapper`, directly below the top
-bar; Kimai offers no event for either place. The charts on the user
+button (`.ticktac`). Its script moves it into a row at the start of `.page-wrapper`, directly
+below the top bar; Kimai offers no event for that place. The charts on the user
 reports are rendered the same way and moved into the report's `#reporting-content`, below
 its filters.
 

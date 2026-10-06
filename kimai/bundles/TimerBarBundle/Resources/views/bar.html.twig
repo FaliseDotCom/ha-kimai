@@ -14,8 +14,6 @@
     <input type="hidden" name="_target_path" value="{{ target_path }}">
     {% if is_running %}
       <input type="hidden" name="timesheet" value="{{ running.id }}">
-    {% else %}
-      <input type="hidden" name="mode" value="timer" data-timer-bar-mode-value>
     {% endif %}
 
     <input type="text" name="description" class="form-control timer-bar-description" list="timer-bar-suggestions"
@@ -82,38 +80,33 @@
       </button>
     {% endif %}
 
+    <div class="timer-bar-times">
+      <input type="date" name="date" class="form-control timer-bar-date" value="{{ is_running ? running.beginDate : timer_bar.today }}"
+        title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+      <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ is_running ? running.beginTime : '' }}"
+        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
+        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
+      {% if is_running %}
+        <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}">0:00:00</time>
+      {% else %}
+        <span class="timer-bar-time-separator" aria-hidden="true">&ndash;</span>
+        <input type="text" name="end_time" class="form-control timer-bar-time"
+          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
+          title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off" data-timer-bar-end-time>
+      {% endif %}
+    </div>
+
     {% if is_running %}
-      <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
-        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ timer_bar.timeFormat }}"
-        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off" data-timer-bar-begin-time>
-      <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}">0:00:00</time>
       <button type="submit" formaction="{{ path('timer_bar_stop') }}" class="btn btn-danger btn-icon timer-bar-button"
         title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop>
         <i class="{{ 'stop'|icon(true) }}"></i>
       </button>
     {% else %}
-      <div class="timer-bar-manual" data-timer-bar-manual hidden>
-        <input type="date" name="date" class="form-control timer-bar-date" value="{{ timer_bar.today }}"
-          title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}">
-        <input type="text" name="begin_time" class="form-control timer-bar-time"
-          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
-          title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off" data-timer-bar-manual-field>
-        <span class="timer-bar-time-separator" aria-hidden="true">&ndash;</span>
-        <input type="text" name="end_time" class="form-control timer-bar-time"
-          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
-          title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off" data-timer-bar-manual-field>
-      </div>
-
-      <button type="button" class="btn btn-icon timer-bar-toggle timer-bar-mode" aria-pressed="false" data-timer-bar-mode-toggle
-        title="{{ 'timer_bar.mode.manual'|trans }}" aria-label="{{ 'timer_bar.mode.manual'|trans }}">
-        <i class="{{ 'clock'|icon(true) }}"></i>
-      </button>
-
       <button type="submit" class="btn btn-success btn-icon timer-bar-button" data-timer-bar-submit
-        data-title-timer="{{ 'timer_bar.start'|trans }}" data-title-manual="{{ 'timer_bar.add'|trans }}"
+        data-title-start="{{ 'timer_bar.start'|trans }}" data-title-add="{{ 'timer_bar.add'|trans }}"
         title="{{ 'timer_bar.start'|trans }}" aria-label="{{ 'timer_bar.start'|trans }}">
-        <i class="{{ 'start'|icon(true) }}" data-timer-bar-icon="timer"></i>
-        <i class="{{ 'create'|icon(true) }}" data-timer-bar-icon="manual" hidden></i>
+        <i class="{{ 'start'|icon(true) }}" data-timer-bar-icon="start"></i>
+        <i class="{{ 'create'|icon(true) }}" data-timer-bar-icon="add" hidden></i>
       </button>
     {% endif %}
 

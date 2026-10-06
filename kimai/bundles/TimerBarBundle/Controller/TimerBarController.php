@@ -38,13 +38,6 @@ final class TimerBarController extends AbstractController
   public const ROUTE_CONTINUE = 'timer_bar_continue';
 
   /**
-   * Value of the "mode" field when the user enters a start and end time.
-   *
-   * @var string
-   */
-  public const MODE_MANUAL = 'manual';
-
-  /**
    * The page users return to when the request names no valid page.
    *
    * @var string
@@ -71,7 +64,8 @@ final class TimerBarController extends AbstractController
   }
 
   /**
-   * Starts a record now, or adds a finished one when a start and end time were entered.
+   * Starts or adds a record, depending on the times entered: none starts a timer now, a start
+   * time starts a timer from that time, and a start and end time add a finished record.
    *
    * @param Request $request The posted quick start bar form.
    * @return Response
@@ -89,22 +83,18 @@ final class TimerBarController extends AbstractController
       return $this->redirectBack( $request );
     }
 
-    if ( $request->request->get( 'mode' ) !== self::MODE_MANUAL )
-    {
-      $this->flashFailure( fn() => $this->writer->start( $user, $input ) );
-
-      return $this->redirectBack( $request );
-    }
-
-    $period = $this->getManualPeriod( $request, $user );
-    if ( $period === [] )
+    $period = $this->getEnteredPeriod( $request, $user );
+    if ( $period === null )
     {
       $this->flashError( 'timer_bar.invalid_time' );
 
       return $this->redirectBack( $request );
     }
 
-    $this->flashFailure( fn() => $this->writer->add( $user, $input, $period[ 0 ], $period[ 1 ] ) );
+    [ $begin, $end ] = $period;
+    $this->flashFailure( fn() => $end === null
+      ? $this->writer->start( $user, $input, $begin )
+      : $this->writer->add( $user, $input, $begin ?? $end, $end ) );
 
     return $this->redirectBack( $request );
   }
@@ -129,7 +119,7 @@ final class TimerBarController extends AbstractController
     }
 
     $beginTime = trim( (string) $request->request->get( 'begin_time' ) );
-    $begin = $beginTime === '' ? null : $this->getRunningBegin( $beginTime, $entry, $user );
+    $begin = $beginTime === '' ? null : $this->getRunningBegin( $request, $entry, $user );
 
     if ( $beginTime !== '' && $begin === null )
     {
@@ -212,42 +202,52 @@ final class TimerBarController extends AbstractController
   }
 
   /**
-   * Returns the start and end of a record entered with times. An end before the start is on
-   * the next day.
+   * Returns the entered start and end: each is null when left empty. An end before the start
+   * is on the next day. Returns null when a time is invalid, or when only an end was entered.
    *
    * @param Request $request The posted form with date, begin_time and end_time.
    * @param User $user The logged-in user.
-   * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|array{}
+   * @return array{0: DateTimeImmutable|null, 1: DateTimeImmutable|null}|null
    */
-  private function getManualPeriod( Request $request, User $user ) : array
+  private function getEnteredPeriod( Request $request, User $user ) : ?array
   {
-    $day = $this->timeInput->parseDay( (string) $request->request->get( 'date' ), DateTimeFactory::createByUser( $user )->getTimezone() );
-    $begin = $day === null ? null : $this->timeInput->parse( (string) $request->request->get( 'begin_time' ), $day );
-    $end = $day === null ? null : $this->timeInput->parse( (string) $request->request->get( 'end_time' ), $day );
+    $beginTime = trim( (string) $request->request->get( 'begin_time' ) );
+    $endTime = trim( (string) $request->request->get( 'end_time' ) );
 
-    if ( $begin === null || $end === null )
+    if ( $beginTime === '' && $endTime === '' )
     {
-      return [];
+      return [ null, null ];
     }
 
-    return [ $begin, $end <= $begin ? $end->modify( '+1 day' ) : $end ];
+    $day = $this->timeInput->parseDay( (string) $request->request->get( 'date' ), DateTimeFactory::createByUser( $user )->getTimezone() );
+    $begin = $day === null || $beginTime === '' ? null : $this->timeInput->parse( $beginTime, $day );
+    $end = $day === null || $endTime === '' ? null : $this->timeInput->parse( $endTime, $day );
+
+    if ( $begin === null || ( $endTime !== '' && $end === null ) )
+    {
+      return null;
+    }
+
+    return [ $begin, $end !== null && $end <= $begin ? $end->modify( '+1 day' ) : $end ];
   }
 
   /**
-   * Returns the new start of the running record: the typed time on the day it started, or the
-   * day before when that would lie in the future.
+   * Returns the new start of the running record: the typed time on the entered date (or the
+   * day it started), or the day before when that would lie in the future.
    *
-   * @param string $value The typed time.
+   * @param Request $request The posted form with date and begin_time.
    * @param Timesheet $entry The running record.
    * @param User $user The logged-in user.
    * @return DateTimeImmutable|null
    */
-  private function getRunningBegin( string $value, Timesheet $entry, User $user ) : ?DateTimeImmutable
+  private function getRunningBegin( Request $request, Timesheet $entry, User $user ) : ?DateTimeImmutable
   {
     $timezone = DateTimeFactory::createByUser( $user )->getTimezone();
     $current = $entry->getBegin();
-    $day = $current === null ? new DateTimeImmutable( 'today', $timezone ) : DateTimeImmutable::createFromMutable( $current )->setTimezone( $timezone )->setTime( 0, 0 );
-    $begin = $this->timeInput->parse( $value, $day );
+    $date = (string) $request->request->get( 'date' );
+    $day = $date !== '' ? $this->timeInput->parseDay( $date, $timezone ) : null;
+    $day ??= $current === null ? new DateTimeImmutable( 'today', $timezone ) : DateTimeImmutable::createFromMutable( $current )->setTimezone( $timezone )->setTime( 0, 0 );
+    $begin = $this->timeInput->parse( (string) $request->request->get( 'begin_time' ), $day );
 
     if ( $begin !== null && $begin > new DateTimeImmutable( 'now', $timezone ) )
     {
