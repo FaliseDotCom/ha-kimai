@@ -278,6 +278,13 @@ contains today, and otherwise the start of the current period.
 - a doughnut chart and a breakdown per project, customer, activity or user, which opens to
   show the time per description.
 
+**Dashboard widget.** **Your working hours by project** shows one week on the dashboard in the
+same style: a bar chart of the hours per day stacked by project, and a doughnut chart with each
+project's share. The arrows step to the previous or next week. Below the charts, the totals
+for today, the week, the month and the year (or financial year) open the matching user
+report. To use it instead of Kimai's own **My working hours** chart, open the dashboard's
+**Settings**, add **Your working hours by project**, and remove **My working hours**.
+
 **Colours and short records.** The charts use the colours of your projects, customers and
 activities in Kimai. When two of them are too alike to tell apart, for example two projects
 that both take their customer's red, the smaller one gets a clearly different colour, and the

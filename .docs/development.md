@@ -132,7 +132,7 @@ They only use Kimai's extension points and services:
 
 | Plugin           | Hooks into                                    | Uses                                                    |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
-| `ReportingGraphsBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
+| `ReportingGraphsBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes; a dashboard widget (`AbstractWidget`) | `DateRangeType`, `UserType`, Kimai's Chart.js build |
 | `QuickTimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
 | `ShortTimeEntriesBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
 | `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |

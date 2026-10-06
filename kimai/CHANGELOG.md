@@ -11,6 +11,10 @@ version the app contains; see the
   If you turned either off with `plugins/TimerBarBundle/.disabled` or
   `plugins/ReportingBundle/.disabled`, rename that folder; the old one can be removed. The
   **Show quick start bar** preference keeps its setting.
+- Reporting extras: a **Your working hours by project** dashboard widget, in the style of the
+  report charts: hours per day stacked by project, a doughnut chart of the projects, and
+  totals for today, the week, the month and the year that open the user reports. Add it
+  under the dashboard's **Settings**, in place of Kimai's **My working hours**.
 - Quick start bar and inline timesheet editing: **+** buttons next to the project and
   activity pickers add a new project (with a new or existing customer) or activity from just
   its name, and select it. Kimai's defaults apply; everything can be changed later.
