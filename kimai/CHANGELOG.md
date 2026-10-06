@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.22
+
+- Reporting extras: the working hours dashboard widget is now called **Your working hours by
+  project per week**.
+
 ## 2.67.0.21
 
 - Reporting extras: a **Your working hours by project** dashboard widget, in the style of the
