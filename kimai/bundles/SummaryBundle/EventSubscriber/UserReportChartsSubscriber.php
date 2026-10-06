@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use KimaiPlugin\SummaryBundle\Model\SummaryQuery;
 use KimaiPlugin\SummaryBundle\Repository\SummaryRepository;
+use KimaiPlugin\SummaryBundle\Service\DetailLinks;
 use KimaiPlugin\SummaryBundle\Service\SummaryBuilder;
 use KimaiPlugin\SummaryBundle\SummaryBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -22,7 +23,8 @@ use Twig\Environment;
 
 /**
  * Adds a bar chart per day (or month) and a doughnut chart per project to Kimai's weekly,
- * monthly and yearly report for one user.
+ * monthly and yearly report for one user, and links its customers and projects to their
+ * detail pages.
  */
 final class UserReportChartsSubscriber implements EventSubscriberInterface
 {
@@ -36,6 +38,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
    * @param SystemConfiguration $configuration Provides the start of the financial year.
    * @param SummaryRepository $repository Reads the aggregated time records.
    * @param SummaryBuilder $builder Turns the records into chart data.
+   * @param DetailLinks $detailLinks Finds the customer and project pages the viewer may open.
    * @param Environment $twig Renders the charts.
    */
   public function __construct(
@@ -44,6 +47,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     private readonly SystemConfiguration $configuration,
     private readonly SummaryRepository $repository,
     private readonly SummaryBuilder $builder,
+    private readonly DetailLinks $detailLinks,
     private readonly Environment $twig
   )
   {
@@ -89,6 +93,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
 
     $event->addContent( $this->twig->render( '@Summary/report_charts.html.twig', [
       'summary' => $this->builder->build( $rows, $begin, $end, SummaryQuery::GROUP_PROJECT, $request->getLocale() ),
+      'detail_links' => $this->detailLinks->create( $rows ),
       'asset_version' => SummaryBundle::getAssetVersion(),
     ] ) );
   }

@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.12
+
+- Weekly, monthly and yearly user reports: customer and project names link to their detail
+  pages, for users who may view those pages.
+
 ## 2.67.0.11
 
 - Graphs: on the weekly, monthly and yearly user reports, the bar chart and the doughnut chart

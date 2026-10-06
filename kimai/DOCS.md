@@ -238,7 +238,8 @@ kimai:
 two charts above their table: a bar chart of the hours per day (per month in the yearly
 view), stacked by project, and a doughnut chart of each project's share. They follow the
 week, month, year and user picked in the report. In the table below the charts, projects
-are indented under their customer and activities under their project.
+are indented under their customer and activities under their project, and customer and
+project names link to their detail pages if you may open those.
 
 **Summary report.** **Reporting** > **Summary** shows where your time went in one page:
 

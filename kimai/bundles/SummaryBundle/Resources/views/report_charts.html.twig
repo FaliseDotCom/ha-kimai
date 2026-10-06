@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="{{ path('summary_report_asset', { 'name': 'summary.css', 'v': asset_version }) }}">
 <script src="{{ path('summary_report_asset', { 'name': 'summary.js', 'v': asset_version }) }}"></script>
 
+<script type="application/json" id="summary-detail-links">{{ detail_links|json_encode|raw }}</script>
+
 {% if summary.groups is not empty %}
   <div class="row row-cards mb-3 summary-report-charts" data-summary-move-to="reporting-content">
     {% include '@Summary/chart_data.html.twig' %}

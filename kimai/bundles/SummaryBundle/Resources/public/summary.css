@@ -182,3 +182,14 @@
 {
   padding-left: 3.5rem;
 }
+
+/* Customer and project names in the user reports link to their detail pages */
+.summary-detail-link
+{
+  color: inherit;
+}
+
+.summary-detail-link:hover
+{
+  text-decoration: underline;
+}

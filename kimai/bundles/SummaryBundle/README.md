@@ -11,7 +11,8 @@ user** get two charts above their table:
 - a doughnut chart of each project's share of the period.
 
 The charts follow the period and user picked in the report, including a financial year when
-one is configured.
+one is configured. In the table, customer and project names link to their detail pages for
+users who may view them.
 
 ## Summary report
 

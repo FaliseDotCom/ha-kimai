@@ -42,6 +42,24 @@
   const READY_EVENT = 'kimai.initialized';
 
   /**
+   * ID of the script element that holds the customer and project detail page addresses.
+   *
+   * @type {string}
+   */
+  const LINKS_ELEMENT_ID = 'summary-detail-links';
+
+  /**
+   * Report table rows that get a detail link, with the filter parameter that holds their ID
+   * in Kimai's own link on the row's total.
+   *
+   * @type {{selector: string, parameter: string, type: string}[]}
+   */
+  const LINKED_ROWS = [
+    { selector: '#reporting-content .dataTable tr.summary', parameter: 'customers[]', type: 'customers' },
+    { selector: '#reporting-content .dataTable tr.project', parameter: 'projects[]', type: 'projects' },
+  ];
+
+  /**
    * Attribute naming the element that charts added to another report should move into.
    *
    * @type {string}
@@ -305,6 +323,58 @@
   }
 
   /**
+   * Turns the customer and project names in the report table into links to their detail
+   * pages. The row's ID is read from Kimai's own link on the row's total.
+   *
+   * @returns {void}
+   */
+  function linkReportRows()
+  {
+    const element = document.getElementById( LINKS_ELEMENT_ID );
+    if ( element === null )
+    {
+      return;
+    }
+
+    let links;
+    try
+    {
+      links = JSON.parse( element.textContent );
+    }
+    catch ( error )
+    {
+      console.error( 'Summary report: invalid detail links', error );
+      return;
+    }
+
+    LINKED_ROWS.forEach( ( { selector, parameter, type } ) =>
+    {
+      document.querySelectorAll( selector ).forEach( ( row ) =>
+      {
+        const filterLink = row.querySelector( 'a[href]' );
+        const nameCell = row.cells[ 0 ];
+        if ( filterLink === null || nameCell === undefined )
+        {
+          return;
+        }
+
+        const id = new URL( filterLink.href, window.location.href ).searchParams.get( parameter );
+        const url = id === null ? undefined : links[ type ]?.[ id ];
+        if ( url === undefined )
+        {
+          return;
+        }
+
+        const link = document.createElement( 'a' );
+        link.href = url;
+        link.className = 'summary-detail-link';
+        link.append( ...nameCell.childNodes );
+        nameCell.append( link );
+      } );
+    } );
+  }
+
+  /**
    * Draws everything once Kimai is ready.
    *
    * @returns {void}
@@ -312,6 +382,7 @@
   function init()
   {
     placeCharts();
+    linkReportRows();
     paintSwatches();
 
     const data = readChartData();
