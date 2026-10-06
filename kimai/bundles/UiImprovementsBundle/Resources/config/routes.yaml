@@ -1,0 +1,8 @@
+summary_controllers:
+  resource: '@UiImprovementsBundle/Controller/'
+  type: attribute
+  prefix: /{_locale}
+  requirements:
+    _locale: '%app_locales%'
+  defaults:
+    _locale: '%locale%'

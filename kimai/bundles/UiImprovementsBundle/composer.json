@@ -1,0 +1,29 @@
+{
+  "name": "falisedotcom/kimai-ui-improvements-bundle",
+  "description": "UI improvements for Kimai: quicker time and duration entry, such as 945 for 9:45 and 10 for ten minutes",
+  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "type": "kimai-plugin",
+  "version": "1.0.0",
+  "keywords": [ "kimai", "kimai-plugin" ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sander Falise"
+    }
+  ],
+  "extra":
+  {
+    "kimai":
+    {
+      "require": 26700,
+      "name": "UI improvements"
+    }
+  },
+  "autoload":
+  {
+    "psr-4":
+    {
+      "KimaiPlugin\\UiImprovementsBundle\\": ""
+    }
+  }
+}

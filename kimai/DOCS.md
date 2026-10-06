@@ -190,8 +190,8 @@ Never expose port 8001 directly to the internet without HTTPS.
 
 ## Extras in this app
 
-The app adds two Kimai plugins, made for this app and maintained in the same repository: a
-quick start bar and reporting extras.
+The app adds three Kimai plugins, made for this app and maintained in the same repository:
+a quick start bar, reporting extras and UI improvements.
 
 ### Quick start bar
 
@@ -264,6 +264,36 @@ quarters and years. The arrows next to it move one period back or forward. The r
 with your own time this week. Users who may see other people's reports can choose a
 colleague or **All users**.
 
+### UI improvements
+
+**Quicker time entry.** Start and end times and durations can be typed in short form. They
+are completed when you leave the field, before Kimai calculates the other times, so typing
+a start of `945` and a duration of `10` sets the end to 9:55.
+
+Times:
+
+| You type | Becomes                         |
+| -------- | ------------------------------- |
+| `9`      | 9:00                            |
+| `945`    | 9:45                            |
+| `1330`   | 13:30 (1:30 PM on a 12-hour clock) |
+| `9.45`, `9,45`, `9h45` | 9:45              |
+| `945p`, `9:45 pm` | 9:45 PM                |
+
+Durations: one or two digits are minutes, three or four digits are hours and minutes.
+
+| You type | Becomes          |
+| -------- | ---------------- |
+| `10`     | 0:10 (minutes)   |
+| `90`     | 1:30 (minutes)   |
+| `130`    | 1:30             |
+| `1045`   | 10:45            |
+
+Other ways of writing a duration that Kimai already understood, such as `1:30`, `1.5` or
+`1h30m`, keep working. Note that a plain number used to mean hours in Kimai (`2` was two
+hours); with this plugin it means minutes. This applies to the record dialog, to
+**Weekly hours** and to every other form with a time or duration field.
+
 ### Turning an extra off
 
 Create a folder with the extra's name inside the `plugins` folder of the app's
@@ -271,6 +301,7 @@ configuration folder, put an empty file named `.disabled` in it, and restart the
 
 - `plugins/ReportingBundle/.disabled` turns off the reporting extras.
 - `plugins/TimerBarBundle/.disabled` turns off the quick start bar.
+- `plugins/UiImprovementsBundle/.disabled` turns off the UI improvements.
 
 Remove the folder and restart to turn the extra back on.
 

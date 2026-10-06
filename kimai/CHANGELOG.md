@@ -4,6 +4,12 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.15
+
+- New plugin, **UI improvements**: times and durations can be typed in short form. `945`
+  becomes 9:45 as a start or end time, and `10` becomes ten minutes as a duration. A plain
+  number in a duration field now means minutes instead of hours.
+
 ## 2.67.0.14
 
 - Weekly, monthly and yearly user reports: buttons next to the period picker switch to the

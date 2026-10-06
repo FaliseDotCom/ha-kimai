@@ -15,8 +15,9 @@ else to set up.
 - Kimai with a bundled database; no separate database app needed.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
-- Two extra [plugins](#plugins): a **quick start bar** for starting and stopping time
-  recording, and **reporting extras** with charts on Kimai's reports.
+- Three extra [plugins](#plugins): a **quick start bar** for starting and stopping time
+  recording, **reporting extras** with charts on Kimai's reports, and **UI improvements** such
+  as typing `945` for 9:45.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -43,7 +44,7 @@ Assistant.
 
 ## Plugins
 
-The app ships with two Kimai plugins, written for this app. Both are optional: each can be
+The app ships with three Kimai plugins, written for this app. All are optional: each can be
 turned off without affecting the rest of Kimai.
 
 ### Quick start bar
@@ -73,8 +74,17 @@ Additions to Kimai's **Reporting** section:
 
 [How it works](kimai/bundles/ReportingBundle/README.md)
 
-The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use both, and how
-to turn them off.
+### UI improvements
+
+Small changes that make Kimai's forms quicker to use. Times and durations can be typed in
+short form and are completed as soon as you leave the field: `945` becomes 9:45 as a start
+or end time, and `10` becomes ten minutes as a duration. This works in the record dialog and
+on **Weekly hours**.
+
+[How it works](kimai/bundles/UiImprovementsBundle/README.md)
+
+The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use the plugins,
+and how to turn them off.
 
 ## Contributing
 
