@@ -11,6 +11,8 @@ version the app contains; see the
   If you turned either off with `plugins/TimerBarBundle/.disabled` or
   `plugins/ReportingBundle/.disabled`, rename that folder; the old one can be removed. The
   **Show quick start bar** preference keeps its setting.
+- Inline timesheet editing: switching to another window or app, for example to take a
+  screenshot, no longer saves and closes the record being edited.
 
 ## 2.67.0.19
 
