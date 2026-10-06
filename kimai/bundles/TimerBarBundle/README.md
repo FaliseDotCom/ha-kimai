@@ -31,7 +31,7 @@ Picking one fills in the project and activity it was last booked on. The activit
 only offers activities that can be booked on the selected project, and selects the one used
 most recently with it.
 
-It ships with the [Kimai app for Home Assistant](../../DOCS.md), but works in any Kimai
+It ships with the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md), but works in any Kimai
 installation.
 
 ## Requirements
@@ -41,7 +41,9 @@ and stylesheet.
 
 ## Installation
 
-1. Copy this `TimerBarBundle` folder to `var/plugins/TimerBarBundle/` in your Kimai installation.
+1. Download the zip of the latest [release](https://github.com/FaliseDotCom/kimai-timerbar-bundle/releases)
+   and unzip it into `var/plugins/` in your Kimai installation, so the plugin ends up in
+   `var/plugins/TimerBarBundle/`.
 2. Rebuild Kimai's cache: `bin/console kimai:reload --env=prod`.
 
 There are no database changes.
@@ -68,6 +70,14 @@ needs `create_tag`, and the continue button only accepts the user's own records.
 English and Dutch, in `Resources/translations/`. Error messages use Kimai's
 `flashmessages` domain.
 
+## Source
+
+This plugin is developed in the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai) repository, in
+`kimai/bundles/TimerBarBundle/`. The
+[kimai-timerbar-bundle](https://github.com/FaliseDotCom/kimai-timerbar-bundle) repository
+is a read-only mirror of that folder for releases: report issues and send changes to the app
+repository.
+
 ## License
 
-MIT, see the [repository license](../../../LICENSE).
+MIT, see [LICENSE](LICENSE).

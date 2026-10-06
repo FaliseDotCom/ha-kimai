@@ -50,6 +50,48 @@ and commit, tag and push.
 For a change to the app itself without a new Kimai release, add a fourth version segment:
 `2.67.0` becomes `2.67.0.1`, then `2.67.0.2`. The next Kimai release resets it.
 
+## Publishing the plugins
+
+The plugins in `kimai/bundles/` are developed only in this repository. Each one is also
+published to its own GitHub repository, a read-only mirror of its folder, so it can be
+installed in any Kimai installation and listed in the
+[Kimai Store](https://www.kimai.org/documentation/store.html):
+
+| Folder                 | Mirror                                                                               |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `ReportingBundle`      | [kimai-reporting-bundle](https://github.com/FaliseDotCom/kimai-reporting-bundle)           |
+| `TimerBarBundle`       | [kimai-timerbar-bundle](https://github.com/FaliseDotCom/kimai-timerbar-bundle)             |
+| `UiImprovementsBundle` | [kimai-ui-improvements-bundle](https://github.com/FaliseDotCom/kimai-ui-improvements-bundle) |
+
+The mirror's name is the package name in the plugin's `composer.json`. Never commit to a
+mirror: the next publish would refuse to overwrite it.
+
+1. When a plugin changes, raise its `version` in `composer.json` (`1.2.0` to `1.3.0` for new
+   features, `1.2.1` for fixes) in the same release as the app.
+2. After pushing the app release, run from the repository root, in Git Bash:
+
+   ```bash
+   scripts/mirror-plugins.sh                  # all plugins
+   scripts/mirror-plugins.sh TimerBarBundle   # one plugin
+   ```
+
+   For each plugin, the script uses `git subtree split` to extract the folder's history,
+   pushes it to the mirror's `main` branch, and tags the `composer.json` version when the
+   mirror does not have it yet. Only committed work is published; the script stops when
+   `kimai/bundles/` has uncommitted changes.
+3. With the [GitHub CLI](https://cli.github.com/) installed and logged in
+   (`winget install GitHub.cli`, then `gh auth login`), the script also creates a GitHub
+   release for a new version, with a zip whose top folder is the plugin's folder name, so it
+   unzips straight into Kimai's `var/plugins/`. Without it the script only pushes and tags;
+   run it again once `gh` is set up to add the missing releases.
+
+When a plugin changed since its last tag but its version was not raised, the script pushes
+`main` and points out that the changes are not released yet.
+
+A new plugin needs an empty repository on GitHub, named after its `composer.json` package,
+before its first publish. Each plugin folder carries its own `LICENSE`, and its `README.md`
+must work on its own in the mirror: link to files outside the folder with full GitHub URLs.
+
 ## Changes to watch for
 
 - **New base Debian release.** MariaDB moves to a new major version. `run.sh` runs

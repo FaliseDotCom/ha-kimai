@@ -3,7 +3,7 @@
   "description": "UI improvements for Kimai: quicker time and duration entry, such as 945 for 9:45, and editing records directly in the list",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [

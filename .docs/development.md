@@ -24,6 +24,7 @@ kimai/
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
+scripts/mirror-plugins.sh    Publishes each plugin to its own read-only mirror repository
 ```
 
 ## How the app works
@@ -155,6 +156,10 @@ Each plugin serves its own script and stylesheet through a controller route
 (`/…/assets/{name}`, limited to a fixed list of files), because Kimai has no asset pipeline
 for plugins. A version parameter based on the files' modification time busts browser
 caches after an update.
+
+Each plugin folder is also published on its own, to a read-only mirror repository (see
+[Releasing](releasing.md#publishing-the-plugins)). Keep a plugin's folder self-contained: its
+own `LICENSE`, and links in its `README.md` to files outside the folder as full GitHub URLs.
 
 Both declare `"require": 26700` (Kimai 2.67.0) in `composer.json`, the version they were
 tested with. Raise it when a plugin starts using newer Kimai features.

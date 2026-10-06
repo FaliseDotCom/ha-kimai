@@ -1,5 +1,5 @@
 {
-  "name": "falisedotcom/kimai-timer-bar-bundle",
+  "name": "falisedotcom/kimai-timerbar-bundle",
   "description": "Quick start bar for Kimai: type what you are working on, pick a project and press start",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",

@@ -1,7 +1,7 @@
 # UI improvements for Kimai
 
 Small improvements to [Kimai](https://www.kimai.org/)'s forms and record lists. It ships with the
-[Kimai app for Home Assistant](../../DOCS.md), but works in any Kimai installation.
+[Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md), but works in any Kimai installation.
 
 ## Quicker time and duration entry
 
@@ -85,12 +85,20 @@ marks the new rows.
 
 Kimai 2.67.0 or later.
 
-1. Copy this `UiImprovementsBundle` folder to `var/plugins/UiImprovementsBundle/` in your
-   Kimai installation.
+1. Download the zip of the latest [release](https://github.com/FaliseDotCom/kimai-ui-improvements-bundle/releases)
+   and unzip it into `var/plugins/` in your Kimai installation, so the plugin ends up in
+   `var/plugins/UiImprovementsBundle/`.
 2. Rebuild Kimai's cache: `bin/console kimai:reload --env=prod`.
 
 There are no database changes.
 
+## Source
+
+This plugin is developed in the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai) repository, in
+`kimai/bundles/UiImprovementsBundle/`. The [kimai-ui-improvements-bundle](https://github.com/FaliseDotCom/kimai-ui-improvements-bundle) repository is a
+read-only mirror of that folder for releases: report issues and send changes to the app
+repository.
+
 ## License
 
-MIT, see the [repository license](../../../LICENSE).
+MIT, see [LICENSE](LICENSE).

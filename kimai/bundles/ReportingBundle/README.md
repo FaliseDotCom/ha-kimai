@@ -34,7 +34,7 @@ The period comes from Kimai's own date range picker, with its presets for weeks,
 quarters and years, plus arrows to step back and forward. Without a period ("all time") the
 report covers everything from the first to the last record.
 
-It ships with the [Kimai app for Home Assistant](../../DOCS.md), but works in any Kimai
+It ships with the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md), but works in any Kimai
 installation.
 
 ## Requirements
@@ -44,7 +44,9 @@ its own beyond one script and one stylesheet, which the plugin serves itself.
 
 ## Installation
 
-1. Copy this `ReportingBundle` folder to `var/plugins/ReportingBundle/` in your Kimai installation.
+1. Download the zip of the latest [release](https://github.com/FaliseDotCom/kimai-reporting-bundle/releases)
+   and unzip it into `var/plugins/` in your Kimai installation, so the plugin ends up in
+   `var/plugins/ReportingBundle/`.
 2. Rebuild Kimai's cache: `bin/console kimai:reload --env=prod`.
 
 There are no database changes.
@@ -64,6 +66,13 @@ There are no database changes.
 
 English and Dutch, in `Resources/translations/summary.*.xlf`.
 
+## Source
+
+This plugin is developed in the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai) repository, in
+`kimai/bundles/ReportingBundle/`. The [kimai-reporting-bundle](https://github.com/FaliseDotCom/kimai-reporting-bundle) repository is a
+read-only mirror of that folder for releases: report issues and send changes to the app
+repository.
+
 ## License
 
-MIT, see the [repository license](../../../LICENSE).
+MIT, see [LICENSE](LICENSE).
