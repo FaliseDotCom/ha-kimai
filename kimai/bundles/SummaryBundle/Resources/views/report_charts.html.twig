@@ -9,8 +9,8 @@
   <div class="row row-cards mb-3 summary-report-charts" data-summary-move-to="reporting-content">
     {% include '@Summary/chart_data.html.twig' %}
     <div class="col-lg-8">
-      <div class="card">
-        <div class="card-body">
+      <div class="card h-100">
+        <div class="card-body summary-chart-fill">
           <div class="summary-chart summary-chart-bar">
             <canvas id="summary-bar-chart" aria-label="{{ 'summary.chart.bar'|trans }}" role="img"></canvas>
           </div>
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="col-lg-4">
-      <div class="card">
+      <div class="card h-100">
         <div class="card-body">
           <div class="summary-chart summary-chart-doughnut">
             <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>

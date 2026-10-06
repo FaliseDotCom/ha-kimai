@@ -45,6 +45,19 @@
   height: 16rem;
 }
 
+/* On the user reports the bar chart grows to the height of the doughnut card next to it */
+.summary-chart-fill
+{
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-chart-fill > .summary-chart
+{
+  flex: 1 1 auto;
+  min-height: 18rem;
+}
+
 /* Breakdown: one expandable row per group, with its descriptions inside */
 .summary-group
 {
