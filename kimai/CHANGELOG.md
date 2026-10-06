@@ -15,6 +15,9 @@ version the app contains; see the
   report charts: hours per day stacked by project, a doughnut chart of the projects, and
   totals for today, the week, the month and the year that open the user reports. Add it
   under the dashboard's **Settings**, in place of Kimai's **My working hours**.
+- Reporting extras: the icons of the dashboard's duration cards open the matching report:
+  **Today**, **This week**, **This month** and **This year** (everyone's hours) the reports for
+  all users, and the **My working hours ...** cards your own user reports.
 - Quick start bar and inline timesheet editing: **+** buttons next to the project and
   activity pickers add a new project (with a new or existing customer) or activity from just
   its name, and select it. Kimai's defaults apply; everything can be changed later.

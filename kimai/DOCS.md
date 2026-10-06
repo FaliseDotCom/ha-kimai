@@ -285,6 +285,13 @@ for today, the week, the month and the year (or financial year) open the matchin
 report. To use it instead of Kimai's own **My working hours** chart, open the dashboard's
 **Settings**, add **Your working hours by project**, and remove **My working hours**.
 
+The icons of Kimai's duration cards on the dashboard open the matching report too. **Today**,
+**This week**, **This month** and **This year** count everyone's hours and are shown to users
+who may see other people's records; they open the weekly, monthly and yearly report for all
+users. The **My working hours today**, **this week**, **this month** and **this year** cards
+count only your own hours and open your own user reports. A day has no report of its own, so
+the today cards open the week.
+
 **Colours and short records.** The charts use the colours of your projects, customers and
 activities in Kimai. When two of them are too alike to tell apart, for example two projects
 that both take their customer's red, the smaller one gets a clearly different colour, and the
