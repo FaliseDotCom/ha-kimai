@@ -15,6 +15,10 @@ version the app contains; see the
   report charts: hours per day stacked by project, a doughnut chart of the projects, and
   totals for today, the week, the month and the year that open the user reports. Add it
   under the dashboard's **Settings**, in place of Kimai's **My working hours**.
+- Reporting extras: an **Hours overview** dashboard widget with today, this week, this month and
+  this year under **My hours**, and, for users who may see other people's records, the same
+  for everyone under **Everyone's hours**. Every card opens the matching report. It replaces
+  Kimai's duration cards, whose titles do not say they count everyone's hours.
 - Reporting extras: the icons of the dashboard's duration cards open the matching report:
   **Today**, **This week**, **This month** and **This year** (everyone's hours) the reports for
   all users, and the **My working hours ...** cards your own user reports.
