@@ -9,9 +9,15 @@ bar, above the page's own buttons and filters.
 
 - **Idle:** "What are you working on?", a project picker grouped by customer, an activity
   picker, a tag picker (which can create tags, with permission), a billable toggle (with
-  permission) and a start button.
-- **Running:** the description, project, customer, activity, tags and billable state of the
-  running record, a live clock and a stop button.
+  permission), a switch between starting a timer and entering a start and end time, and a
+  start (or add) button.
+- **Running:** the same fields, filled in with the running record and editable, plus its
+  start time, a live clock and a stop button. Changes are saved as they are made.
+
+With the switch on start and end time, the bar shows a date and **Start time** and **End
+time** fields, and adds a finished record. Times accept short forms such as `915` or `945p`,
+and an end time before the start time means the next day. The choice is remembered in the
+browser.
 
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.
@@ -41,9 +47,10 @@ There are no database changes.
 
 ## How it starts and stops records
 
-The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/stop` and
-`/timer-bar/continue`, protected by a CSRF token, and then returns to the page it was used
-on. Records are created and stopped through Kimai's `TimesheetService`, and continuing goes
+The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/update`, `/timer-bar/stop`
+and `/timer-bar/continue`, protected by a CSRF token. The script sends changes to the running
+record to `/timer-bar/update` in the background and gets JSON back; everything else returns
+to the page it was used on. Records are created and stopped through Kimai's `TimesheetService`, and continuing goes
 through Kimai's restart events like Kimai's own "repeat" action, so Kimai's own rules apply:
 
 - validation, such as required fields, budgets and locked periods;

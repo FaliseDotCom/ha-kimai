@@ -131,7 +131,7 @@ They only use Kimai's extension points and services:
 | Plugin           | Hooks into                                    | Uses                                                    |
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
 | `ReportingBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
-| `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService`, project, activity and tag queries   |
+| `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
 | `UiImprovementsBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start

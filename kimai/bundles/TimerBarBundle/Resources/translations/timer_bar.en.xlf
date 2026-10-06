@@ -22,10 +22,6 @@
         <source>timer_bar.stop</source>
         <target>Stop</target>
       </trans-unit>
-      <trans-unit id="timer_bar.no_description" resname="timer_bar.no_description">
-        <source>timer_bar.no_description</source>
-        <target>(no description)</target>
-      </trans-unit>
       <trans-unit id="timer_bar.tags" resname="timer_bar.tags">
         <source>timer_bar.tags</source>
         <target>Tags</target>
@@ -41,6 +37,26 @@
       <trans-unit id="timer_bar.continue" resname="timer_bar.continue">
         <source>timer_bar.continue</source>
         <target>Continue now</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.begin" resname="timer_bar.begin">
+        <source>timer_bar.begin</source>
+        <target>Start time</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.end" resname="timer_bar.end">
+        <source>timer_bar.end</source>
+        <target>End time</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.date" resname="timer_bar.date">
+        <source>timer_bar.date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.add" resname="timer_bar.add">
+        <source>timer_bar.add</source>
+        <target>Add</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.mode.manual" resname="timer_bar.mode.manual">
+        <source>timer_bar.mode.manual</source>
+        <target>Enter start and end time</target>
       </trans-unit>
     </body>
   </file>

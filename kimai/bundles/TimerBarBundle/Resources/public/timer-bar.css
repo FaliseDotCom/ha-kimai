@@ -1,6 +1,6 @@
 /* Quick start bar for Kimai. Builds on Kimai's Tabler theme and its colour variables. */
 
-/* One row: description, project, activity, start button */
+/* One row: description, project, activity, tags, billable, times, mode and the main button */
 .timer-bar-form
 {
   display: flex;
@@ -66,14 +66,37 @@
   cursor: pointer;
 }
 
-.timer-bar-tag
+/* Start and end times, and the date when entering a finished record */
+.timer-bar-manual
 {
-  margin-left: 0.25rem;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.timer-bar-billable-flag
+.timer-bar-manual[hidden]
 {
-  flex: 0 0 auto;
+  display: none;
+}
+
+.timer-bar-time
+{
+  flex: 0 0 6.5rem;
+  width: 6.5rem;
+  text-align: center;
+}
+
+.timer-bar-date
+{
+  width: 9.5rem;
+}
+
+/* Error when a change to the running entry could not be saved */
+.timer-bar-error
+{
+  flex-basis: 100%;
+  margin: 0;
 }
 
 /* Row directly below the top bar that holds the bar on narrow screens */
@@ -112,23 +135,10 @@ td:has(> .timer-bar-continue)
   vertical-align: middle;
 }
 
-/* Running entry: what is running, its clock, and the stop button */
+/* Running entry: the same fields, saved as they change, with its start time, clock and stop button */
 .timer-bar-running
 {
   border-left: 4px solid var(--tblr-success);
-}
-
-.timer-bar-current
-{
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.timer-bar-current-description
-{
-  font-size: 1rem;
-  font-weight: 600;
-  overflow-wrap: anywhere;
 }
 
 .timer-bar-elapsed
@@ -171,6 +181,7 @@ td:has(> .timer-bar-continue)
 .timer-bar-navbar .timer-bar-activity
 {
   flex-basis: 9rem;
+  min-width: 6rem;
 }
 
 .timer-bar-navbar .timer-bar-button
@@ -184,12 +195,26 @@ td:has(> .timer-bar-continue)
   border-left: 0;
 }
 
-.timer-bar-navbar .timer-bar-current-description,
-.timer-bar-navbar .timer-bar-current-project
+.timer-bar-navbar .timer-bar-form
 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+.timer-bar-navbar .timer-bar-description
+{
+  min-width: 6rem;
+}
+
+/* In the navigation the error shows just below the bar */
+.timer-bar-navbar .timer-bar-error
+{
+  position: absolute;
+  top: 100%;
+  right: 0;
+  padding: 0.25rem 0.5rem;
+  background: var(--tblr-bg-surface);
+  border-radius: var(--tblr-border-radius);
+  box-shadow: var(--tblr-box-shadow);
 }
 
 /* Kimai's own start button, while the bar takes its place. !important is needed to beat
@@ -221,5 +246,21 @@ td:has(> .timer-bar-continue)
   .timer-bar-activity + *
   {
     margin-left: auto;
+  }
+
+  /* Date and times get a row of their own */
+  .timer-bar-manual
+  {
+    flex: 1 1 100%;
+    min-width: 0;
+    order: 1;
+  }
+
+  .timer-bar-manual .timer-bar-time,
+  .timer-bar-manual .timer-bar-date
+  {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
   }
 }

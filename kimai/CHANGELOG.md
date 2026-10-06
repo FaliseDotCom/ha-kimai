@@ -4,6 +4,14 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.16
+
+- Quick start bar: a clock button switches to entering a start and end time (and date), to
+  add a finished record instead of starting a timer. The choice is remembered.
+- Quick start bar: the running record can be edited in the bar. Description, project,
+  activity, tags, billable setting and start time are saved as soon as they change, and the
+  list on **My times** updates with them.
+
 ## 2.67.0.15
 
 - New plugin, **UI improvements**: times and durations can be typed in short form. `945`

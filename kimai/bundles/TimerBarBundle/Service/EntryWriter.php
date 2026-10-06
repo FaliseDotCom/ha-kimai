@@ -4,26 +4,24 @@ declare( strict_types=1 );
 
 namespace KimaiPlugin\TimerBarBundle\Service;
 
-use App\Entity\Activity;
-use App\Entity\Project;
 use App\Entity\Tag;
 use App\Entity\Timesheet;
 use App\Entity\User;
 use App\Timesheet\TimesheetService;
+use DateTime;
+use DateTimeImmutable;
+use KimaiPlugin\TimerBarBundle\Model\EntryInput;
 use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Starts time records from the quick start bar: new ones from the bar's fields, and continued ones
- * that copy a past record. Both start now, and go through Kimai's TimesheetService so its
- * validation, rounding and running-record limit apply.
+ * Creates and changes time records from the quick start bar: records that start now, records
+ * entered with a start and end time, continued records, and changes to the running record.
+ * Everything goes through Kimai's TimesheetService, so its validation, rounding and
+ * running-record limit apply.
  */
-final class TimerStarter
+final class EntryWriter
 {
-  public const BILLABLE_AUTOMATIC = 'auto';
-  public const BILLABLE_YES = 'yes';
-  public const BILLABLE_NO = 'no';
-
   /**
    * Shortest and longest tag name Kimai accepts.
    *
@@ -48,27 +46,59 @@ final class TimerStarter
    * Starts a new record now.
    *
    * @param User $user The logged-in user.
-   * @param Project $project The project to book on.
-   * @param Activity $activity The activity to book on.
-   * @param string $description What the user is working on.
-   * @param array<int, Tag> $tags Existing tags to add.
-   * @param array<int, string> $newTagNames Names of tags to create and add, if the user may.
-   * @param string $billable One of the BILLABLE_ constants.
+   * @param EntryInput $input What the user entered.
    * @return Timesheet
    */
-  public function start( User $user, Project $project, Activity $activity, string $description, array $tags, array $newTagNames, string $billable ) : Timesheet
+  public function start( User $user, EntryInput $input ) : Timesheet
   {
-    $timesheet = $this->createStartedNow( $user );
-    $timesheet->setProject( $project );
-    $timesheet->setActivity( $activity );
-    $timesheet->setDescription( $description );
+    $timesheet = $this->createNew( $user );
+    $this->apply( $timesheet, $input );
 
-    foreach ( array_merge( $tags, $this->createTags( $newTagNames ) ) as $tag )
+    return $this->timesheetService->saveTimesheet( $timesheet );
+  }
+
+  /**
+   * Adds a finished record with the given start and end.
+   *
+   * @param User $user The logged-in user.
+   * @param EntryInput $input What the user entered.
+   * @param DateTimeImmutable $begin When the work started.
+   * @param DateTimeImmutable $end When the work ended.
+   * @return Timesheet
+   */
+  public function add( User $user, EntryInput $input, DateTimeImmutable $begin, DateTimeImmutable $end ) : Timesheet
+  {
+    $timesheet = $this->createNew( $user );
+    $timesheet->setBegin( DateTime::createFromImmutable( $begin ) );
+    $timesheet->setEnd( DateTime::createFromImmutable( $end ) );
+    $this->apply( $timesheet, $input );
+
+    return $this->timesheetService->saveTimesheet( $timesheet );
+  }
+
+  /**
+   * Changes the running record: what it is, and optionally when it started.
+   *
+   * @param Timesheet $timesheet The running record.
+   * @param EntryInput $input What the user entered.
+   * @param DateTimeImmutable|null $begin The new start, or null to keep it.
+   * @return Timesheet
+   */
+  public function update( Timesheet $timesheet, EntryInput $input, ?DateTimeImmutable $begin ) : Timesheet
+  {
+    foreach ( $timesheet->getTags()->toArray() as $tag )
     {
-      $timesheet->addTag( $tag );
+      $timesheet->removeTag( $tag );
     }
 
-    $this->applyBillable( $timesheet, $billable );
+    $this->apply( $timesheet, $input );
+
+    if ( $begin !== null )
+    {
+      $timesheet->setBegin( DateTime::createFromImmutable( $begin ) );
+    }
+
+    $this->timesheetService->validateTimesheet( $timesheet );
 
     return $this->timesheetService->saveTimesheet( $timesheet );
   }
@@ -83,7 +113,7 @@ final class TimerStarter
    */
   public function continueEntry( User $user, Timesheet $source ) : Timesheet
   {
-    $timesheet = $this->createStartedNow( $user );
+    $timesheet = $this->createNew( $user );
     $timesheet->setProject( $source->getProject() );
     $timesheet->setActivity( $source->getActivity() );
     $timesheet->setDescription( $source->getDescription() );
@@ -127,12 +157,33 @@ final class TimerStarter
    * @param User $user The logged-in user.
    * @return Timesheet
    */
-  private function createStartedNow( User $user ) : Timesheet
+  private function createNew( User $user ) : Timesheet
   {
     $timesheet = $this->timesheetService->createNewTimesheet( $user );
     $this->timesheetService->prepareNewTimesheet( $timesheet );
 
     return $timesheet;
+  }
+
+  /**
+   * Copies what the user entered onto a record.
+   *
+   * @param Timesheet $timesheet The record.
+   * @param EntryInput $input What the user entered.
+   * @return void
+   */
+  private function apply( Timesheet $timesheet, EntryInput $input ) : void
+  {
+    $timesheet->setProject( $input->getProject() );
+    $timesheet->setActivity( $input->getActivity() );
+    $timesheet->setDescription( $input->getDescription() );
+
+    foreach ( array_merge( $input->getTags(), $this->createTags( $input->getNewTagNames() ) ) as $tag )
+    {
+      $timesheet->addTag( $tag );
+    }
+
+    $this->applyBillable( $timesheet, $input->getBillable() );
   }
 
   /**
@@ -154,17 +205,22 @@ final class TimerStarter
   /**
    * Applies the billable choice when the user may change it; otherwise Kimai decides.
    *
-   * @param Timesheet $timesheet The new record.
-   * @param string $billable One of the BILLABLE_ constants.
+   * @param Timesheet $timesheet The record.
+   * @param string $billable One of the EntryInput::BILLABLE_ constants.
    * @return void
    */
   private function applyBillable( Timesheet $timesheet, string $billable ) : void
   {
-    if ( $billable === self::BILLABLE_AUTOMATIC || !$this->security->isGranted( 'edit_billable', $timesheet ) )
+    if ( !$this->security->isGranted( 'edit_billable', $timesheet ) )
     {
       return;
     }
 
-    $timesheet->setBillableMode( $billable === self::BILLABLE_YES ? Timesheet::BILLABLE_YES : Timesheet::BILLABLE_NO );
+    $timesheet->setBillableMode( match ( $billable )
+    {
+      EntryInput::BILLABLE_YES => Timesheet::BILLABLE_YES,
+      EntryInput::BILLABLE_NO => Timesheet::BILLABLE_NO,
+      default => Timesheet::BILLABLE_AUTOMATIC,
+    } );
   }
 }

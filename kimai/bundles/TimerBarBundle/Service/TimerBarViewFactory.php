@@ -9,6 +9,10 @@ use App\Entity\Project;
 use App\Entity\Tag;
 use App\Entity\Timesheet;
 use App\Entity\User;
+use App\Timesheet\DateTimeFactory;
+use DateTimeImmutable;
+use DateTimeZone;
+use KimaiPlugin\TimerBarBundle\Model\EntryInput;
 use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -21,7 +25,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @phpstan-type CustomerGroup array{name: string, projects: array<int, ProjectOption>}
  * @phpstan-type ActivityOption array{id: int, name: string, projectId: int, billable: bool}
  * @phpstan-type TagOption array{id: int, name: string}
- * @phpstan-type RunningEntry array{id: int, description: string, project: string, customer: string, activity: string, begin: string, tags: array<int, string>, billable: bool}
+ * @phpstan-type RunningEntry array{id: int, description: string, projectId: int, activityId: int, begin: string, beginTime: string, tagIds: array<int, int>, billableMode: string}
  * @phpstan-type TimerBarView array{
  *   running: RunningEntry|array{},
  *   customers: array<int, CustomerGroup>,
@@ -31,7 +35,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *   canCreateTags: bool,
  *   canEditBillable: bool,
  *   defaultProjectId: int,
- *   defaultActivityId: int
+ *   defaultActivityId: int,
+ *   timeFormat: string,
+ *   today: string
  * }
  */
 final class TimerBarViewFactory
@@ -39,10 +45,12 @@ final class TimerBarViewFactory
   /**
    * @param TimerBarRepository $repository Reads projects, activities, tags, suggestions and running entries.
    * @param AuthorizationCheckerInterface $security Checks the tag and billable permissions.
+   * @param TimeInput $timeInput Formats times in the user's clock.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
-    private readonly AuthorizationCheckerInterface $security
+    private readonly AuthorizationCheckerInterface $security,
+    private readonly TimeInput $timeInput
   )
   {
   }
@@ -51,17 +59,19 @@ final class TimerBarViewFactory
    * Builds the view data for one user.
    *
    * @param User $user The logged-in user.
+   * @param string $locale The locale of the page, which decides the time format.
    * @return TimerBarView
    */
-  public function create( User $user ) : array
+  public function create( User $user, string $locale ) : array
   {
+    $timezone = DateTimeFactory::createByUser( $user )->getTimezone();
     $projects = $this->repository->findProjects( $user );
     $activities = $this->repository->findActivities( $user );
     $suggestions = $this->filterSuggestions( $this->repository->findSuggestions( $user ), $projects, $activities );
     $running = $this->repository->findRunningEntry( $user );
 
     return [
-      'running' => $running === null ? [] : $this->describeRunningEntry( $running ),
+      'running' => $running === null ? [] : $this->describeRunningEntry( $running, $locale, $timezone ),
       'customers' => $this->groupProjectsByCustomer( $projects ),
       'activities' => $this->describeActivities( $activities ),
       'suggestions' => $suggestions,
@@ -70,6 +80,8 @@ final class TimerBarViewFactory
       'canEditBillable' => $this->security->isGranted( 'edit_billable_own_timesheet' ),
       'defaultProjectId' => $suggestions[ 0 ][ 'projectId' ] ?? 0,
       'defaultActivityId' => $suggestions[ 0 ][ 'activityId' ] ?? 0,
+      'timeFormat' => $this->timeInput->getFormats( $locale )[ 'js' ],
+      'today' => ( new DateTimeImmutable( 'today', $timezone ) )->format( 'Y-m-d' ),
     ];
   }
 
@@ -101,24 +113,39 @@ final class TimerBarViewFactory
   }
 
   /**
-   * Describes the running entry for display.
+   * Describes the running entry, so the bar can show it in its editable fields.
    *
    * @param Timesheet $entry The running entry.
+   * @param string $locale The locale of the page, which decides the time format.
+   * @param DateTimeZone $timezone The user's time zone.
    * @return RunningEntry
    */
-  private function describeRunningEntry( Timesheet $entry ) : array
+  private function describeRunningEntry( Timesheet $entry, string $locale, DateTimeZone $timezone ) : array
   {
-    $project = $entry->getProject();
+    $begin = $entry->getBegin();
+    $tagIds = [];
+    foreach ( $entry->getTags() as $tag )
+    {
+      if ( $tag->getId() !== null )
+      {
+        $tagIds[] = $tag->getId();
+      }
+    }
 
     return [
       'id' => (int) $entry->getId(),
       'description' => (string) $entry->getDescription(),
-      'project' => $project?->getName() ?? '',
-      'customer' => $project?->getCustomer()?->getName() ?? '',
-      'activity' => $entry->getActivity()?->getName() ?? '',
-      'begin' => $entry->getBegin()?->format( DATE_ATOM ) ?? '',
-      'tags' => $entry->getTagsAsArray(),
-      'billable' => $entry->isBillable(),
+      'projectId' => (int) $entry->getProject()?->getId(),
+      'activityId' => (int) $entry->getActivity()?->getId(),
+      'begin' => $begin?->format( DATE_ATOM ) ?? '',
+      'beginTime' => $begin === null ? '' : $this->timeInput->format( DateTimeImmutable::createFromMutable( $begin )->setTimezone( $timezone ), $locale ),
+      'tagIds' => $tagIds,
+      'billableMode' => match ( $entry->getBillableMode() )
+      {
+        Timesheet::BILLABLE_YES => EntryInput::BILLABLE_YES,
+        Timesheet::BILLABLE_NO => EntryInput::BILLABLE_NO,
+        default => EntryInput::BILLABLE_AUTOMATIC,
+      },
     ];
   }
 

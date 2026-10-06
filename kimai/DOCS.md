@@ -209,8 +209,19 @@ and filters.
 - **Billable** (coins icon): shows whether the record will be billable. It follows Kimai's rule
   (billable when the customer, project and activity all are) until you press it; then your
   choice counts. It only appears if you may change the billable setting.
-- **Start** (green button) starts recording now. While a record runs, the bar shows its
-  description, project, tags and a running clock, and the red button stops it.
+- **Start** (green button) starts recording now.
+- **Start and end time** (clock icon): switches the bar to entering a finished record. A date
+  field and **Start time** and **End time** fields appear, and the green button becomes **Add**
+  (+). Times can be typed short, such as `915`; an end time before the start time is taken as
+  the next day. Press the clock icon again to go back to starting a timer. The bar remembers
+  your choice in this browser.
+
+**While a record runs**, the bar shows the running record in the same fields, with its start
+time, a running clock and a red stop button. Everything can be changed while it runs: the
+description, project, activity, tags, billable setting and the start time. Each change is
+saved as soon as you leave the field or pick an option; there is no save button, and Enter
+saves too. Changing the start time moves the clock. If Kimai refuses a change, for example
+a start time in the future, the reason appears below the bar.
 
 On **My times**, every record has a green play button next to its menu. It continues that
 record: a new record starts now with the same description, project, activity, tags and

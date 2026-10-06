@@ -5,25 +5,27 @@ declare( strict_types=1 );
 namespace KimaiPlugin\TimerBarBundle\Controller;
 
 use App\Controller\AbstractController;
-use App\Entity\Activity;
-use App\Entity\Project;
-use App\Entity\Tag;
+use App\Entity\Timesheet;
+use App\Entity\User;
+use App\Timesheet\DateTimeFactory;
 use App\Timesheet\TimesheetService;
 use App\Validator\ValidationFailedException;
+use DateTimeImmutable;
 use KimaiPlugin\TimerBarBundle\Repository\TimerBarRepository;
-use KimaiPlugin\TimerBarBundle\Service\TimerStarter;
-use KimaiPlugin\TimerBarBundle\TimerBarBundle;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use KimaiPlugin\TimerBarBundle\Service\EntryInputReader;
+use KimaiPlugin\TimerBarBundle\Service\EntryWriter;
+use KimaiPlugin\TimerBarBundle\Service\TimeInput;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Starts and stops time records from the quick start bar, and serves its script and stylesheet.
+ * Starts, adds, changes, continues and stops time records from the quick start bar.
  */
 #[Route( path: '/timer-bar' )]
 #[IsGranted( 'create_own_timesheet' )]
@@ -31,9 +33,16 @@ final class TimerBarController extends AbstractController
 {
   public const CSRF_TOKEN_ID = 'timer_bar';
   public const ROUTE_START = 'timer_bar_start';
+  public const ROUTE_UPDATE = 'timer_bar_update';
   public const ROUTE_STOP = 'timer_bar_stop';
   public const ROUTE_CONTINUE = 'timer_bar_continue';
-  public const ROUTE_ASSET = 'timer_bar_asset';
+
+  /**
+   * Value of the "mode" field when the user enters a start and end time.
+   *
+   * @var string
+   */
+  public const MODE_MANUAL = 'manual';
 
   /**
    * The page users return to when the request names no valid page.
@@ -43,27 +52,26 @@ final class TimerBarController extends AbstractController
   private const FALLBACK_ROUTE = 'timesheet';
 
   /**
-   * How long browsers may cache the assets, in seconds.
-   *
-   * @var int
-   */
-  private const ASSET_MAX_AGE = 86400;
-
-  /**
-   * @param TimerBarRepository $repository Finds bookable projects, activities, tags and entries.
+   * @param TimerBarRepository $repository Finds the user's running and past records.
    * @param TimesheetService $timesheetService Stops time records the way Kimai does.
-   * @param TimerStarter $starter Starts new and continued time records.
+   * @param EntryInputReader $inputReader Reads and checks the posted fields.
+   * @param EntryWriter $writer Creates and changes records.
+   * @param TimeInput $timeInput Reads typed times.
+   * @param TranslatorInterface $translator Translates error messages for the script.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
     private readonly TimesheetService $timesheetService,
-    private readonly TimerStarter $starter
+    private readonly EntryInputReader $inputReader,
+    private readonly EntryWriter $writer,
+    private readonly TimeInput $timeInput,
+    private readonly TranslatorInterface $translator
   )
   {
   }
 
   /**
-   * Starts a new time record for the posted description, project and activity.
+   * Starts a record now, or adds a finished one when a start and end time were entered.
    *
    * @param Request $request The posted quick start bar form.
    * @return Response
@@ -71,35 +79,71 @@ final class TimerBarController extends AbstractController
   #[Route( path: '/start', name: self::ROUTE_START, methods: [ 'POST' ] )]
   public function start( Request $request ) : Response
   {
-    if ( !$this->isCsrfTokenValid( self::CSRF_TOKEN_ID, (string) $request->request->get( '_token' ) ) )
-    {
-      $this->flashError( 'timesheet.start.error' );
-
-      return $this->redirectBack( $request );
-    }
-
     $user = $this->getUser();
-    $project = $this->repository->findProjects( $user )[ $request->request->getInt( 'project' ) ] ?? null;
-    $activity = $this->repository->findActivities( $user )[ $request->request->getInt( 'activity' ) ] ?? null;
+    $input = $this->isTokenValid( $request ) ? $this->inputReader->read( $request, $user ) : null;
 
-    if ( $project === null || $activity === null || !$this->canCombine( $project, $activity ) )
+    if ( $input === null )
     {
       $this->flashError( 'timer_bar.invalid_selection' );
 
       return $this->redirectBack( $request );
     }
 
-    $this->runStart( fn() => $this->starter->start(
-      $user,
-      $project,
-      $activity,
-      trim( (string) $request->request->get( 'description' ) ),
-      $this->getPostedTags( $request ),
-      $this->starter->parseTagNames( (string) $request->request->get( 'new_tags' ) ),
-      $this->getPostedBillable( $request )
-    ) );
+    if ( $request->request->get( 'mode' ) !== self::MODE_MANUAL )
+    {
+      $this->flashFailure( fn() => $this->writer->start( $user, $input ) );
+
+      return $this->redirectBack( $request );
+    }
+
+    $period = $this->getManualPeriod( $request, $user );
+    if ( $period === [] )
+    {
+      $this->flashError( 'timer_bar.invalid_time' );
+
+      return $this->redirectBack( $request );
+    }
+
+    $this->flashFailure( fn() => $this->writer->add( $user, $input, $period[ 0 ], $period[ 1 ] ) );
 
     return $this->redirectBack( $request );
+  }
+
+  /**
+   * Changes the running record. The script calls this whenever a field in the running bar
+   * changes and gets JSON back; without the script, the form posts here and returns to the page.
+   *
+   * @param Request $request The posted running bar form.
+   * @return Response
+   */
+  #[Route( path: '/update', name: self::ROUTE_UPDATE, methods: [ 'POST' ] )]
+  public function update( Request $request ) : Response
+  {
+    $user = $this->getUser();
+    $entry = $this->repository->findRunningEntryById( $user, $request->request->getInt( 'timesheet' ) );
+    $input = $entry !== null && $this->isTokenValid( $request ) ? $this->inputReader->read( $request, $user ) : null;
+
+    if ( $entry === null || $input === null )
+    {
+      return $this->respondToUpdate( $request, null, 'timer_bar.invalid_selection' );
+    }
+
+    $beginTime = trim( (string) $request->request->get( 'begin_time' ) );
+    $begin = $beginTime === '' ? null : $this->getRunningBegin( $beginTime, $entry, $user );
+
+    if ( $beginTime !== '' && $begin === null )
+    {
+      return $this->respondToUpdate( $request, null, 'timer_bar.invalid_time' );
+    }
+
+    try
+    {
+      return $this->respondToUpdate( $request, $this->writer->update( $entry, $input, $begin ), '' );
+    }
+    catch ( ValidationFailedException $exception )
+    {
+      return $this->respondToUpdate( $request, null, $this->describeViolations( $exception ) );
+    }
   }
 
   /**
@@ -114,14 +158,14 @@ final class TimerBarController extends AbstractController
     $user = $this->getUser();
     $source = $this->repository->findOwnEntry( $user, $request->request->getInt( 'timesheet' ) );
 
-    if ( $source === null || !$this->isCsrfTokenValid( self::CSRF_TOKEN_ID, (string) $request->request->get( '_token' ) ) )
+    if ( $source === null || !$this->isTokenValid( $request ) )
     {
       $this->flashError( 'timesheet.start.error' );
 
       return $this->redirectBack( $request );
     }
 
-    $this->runStart( fn() => $this->starter->continueEntry( $user, $source ) );
+    $this->flashFailure( fn() => $this->writer->continueEntry( $user, $source ) );
 
     return $this->redirectBack( $request );
   }
@@ -137,7 +181,7 @@ final class TimerBarController extends AbstractController
   {
     $entry = $this->repository->findRunningEntryById( $this->getUser(), $request->request->getInt( 'timesheet' ) );
 
-    if ( $entry === null || !$this->isCsrfTokenValid( self::CSRF_TOKEN_ID, (string) $request->request->get( '_token' ) ) )
+    if ( $entry === null || !$this->isTokenValid( $request ) )
     {
       $this->flashError( 'timesheet.stop.error' );
 
@@ -157,38 +201,101 @@ final class TimerBarController extends AbstractController
   }
 
   /**
-   * Serves the quick start bar's script or stylesheet.
+   * Returns whether the posted form carries a valid CSRF token.
    *
-   * @param string $name The file name, one of the keys of TimerBarBundle::ASSETS.
-   * @return Response
+   * @param Request $request The posted form.
+   * @return bool
    */
-  #[Route( path: '/assets/{name}', name: self::ROUTE_ASSET, methods: [ 'GET' ] )]
-  public function asset( string $name ) : Response
+  private function isTokenValid( Request $request ) : bool
   {
-    if ( !isset( TimerBarBundle::ASSETS[ $name ] ) )
+    return $this->isCsrfTokenValid( self::CSRF_TOKEN_ID, (string) $request->request->get( '_token' ) );
+  }
+
+  /**
+   * Returns the start and end of a record entered with times. An end before the start is on
+   * the next day.
+   *
+   * @param Request $request The posted form with date, begin_time and end_time.
+   * @param User $user The logged-in user.
+   * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|array{}
+   */
+  private function getManualPeriod( Request $request, User $user ) : array
+  {
+    $day = $this->timeInput->parseDay( (string) $request->request->get( 'date' ), DateTimeFactory::createByUser( $user )->getTimezone() );
+    $begin = $day === null ? null : $this->timeInput->parse( (string) $request->request->get( 'begin_time' ), $day );
+    $end = $day === null ? null : $this->timeInput->parse( (string) $request->request->get( 'end_time' ), $day );
+
+    if ( $begin === null || $end === null )
     {
-      throw new NotFoundHttpException();
+      return [];
     }
 
-    $response = new BinaryFileResponse( TimerBarBundle::ASSET_DIRECTORY . '/' . $name );
-    $response->headers->set( 'Content-Type', TimerBarBundle::ASSETS[ $name ] );
-    $response->setPublic();
-    $response->setMaxAge( self::ASSET_MAX_AGE );
+    return [ $begin, $end <= $begin ? $end->modify( '+1 day' ) : $end ];
+  }
 
-    return $response;
+  /**
+   * Returns the new start of the running record: the typed time on the day it started, or the
+   * day before when that would lie in the future.
+   *
+   * @param string $value The typed time.
+   * @param Timesheet $entry The running record.
+   * @param User $user The logged-in user.
+   * @return DateTimeImmutable|null
+   */
+  private function getRunningBegin( string $value, Timesheet $entry, User $user ) : ?DateTimeImmutable
+  {
+    $timezone = DateTimeFactory::createByUser( $user )->getTimezone();
+    $current = $entry->getBegin();
+    $day = $current === null ? new DateTimeImmutable( 'today', $timezone ) : DateTimeImmutable::createFromMutable( $current )->setTimezone( $timezone )->setTime( 0, 0 );
+    $begin = $this->timeInput->parse( $value, $day );
+
+    if ( $begin !== null && $begin > new DateTimeImmutable( 'now', $timezone ) )
+    {
+      $begin = $begin->modify( '-1 day' );
+    }
+
+    return $begin;
+  }
+
+  /**
+   * Answers a change to the running record: JSON for the script, or a redirect for a plain post.
+   *
+   * @param Request $request The posted form.
+   * @param Timesheet|null $entry The changed record, or null when the change failed.
+   * @param string $error A translation key or message explaining a failure.
+   * @return Response
+   */
+  private function respondToUpdate( Request $request, ?Timesheet $entry, string $error ) : Response
+  {
+    if ( $request->getPreferredFormat() !== 'json' )
+    {
+      if ( $entry === null )
+      {
+        $this->flashError( 'action.update.error', $error );
+      }
+
+      return $this->redirectBack( $request );
+    }
+
+    if ( $entry === null )
+    {
+      return new JsonResponse( [ 'message' => $this->translator->trans( $error, [], 'flashmessages' ) ], Response::HTTP_UNPROCESSABLE_ENTITY );
+    }
+
+    return new JsonResponse( [ 'begin' => $entry->getBegin()?->format( DATE_ATOM ) ?? '' ] );
   }
 
   /**
    * Runs a start action and turns Kimai's refusals into error messages.
    *
-   * @param callable(): mixed $start Starts the record.
+   * @param callable(): mixed $action Starts or adds the record.
    * @return void
    */
-  private function runStart( callable $start ) : void
+  private function flashFailure( callable $action ) : void
   {
     try
     {
-      $start();
+      $action();
     }
     catch ( ValidationFailedException $exception )
     {
@@ -198,63 +305,6 @@ final class TimerBarController extends AbstractController
     {
       $this->flashError( 'timesheet.start.error' );
     }
-  }
-
-  /**
-   * Returns the posted existing tags that are visible; unknown IDs are ignored.
-   *
-   * @param Request $request The posted quick start bar form.
-   * @return array<int, Tag>
-   */
-  private function getPostedTags( Request $request ) : array
-  {
-    $posted = $request->request->all( 'tags' );
-    $tags = $this->repository->findTags();
-
-    $selected = [];
-    foreach ( $posted as $id )
-    {
-      if ( is_scalar( $id ) && isset( $tags[ (int) $id ] ) )
-      {
-        $selected[] = $tags[ (int) $id ];
-      }
-    }
-
-    return $selected;
-  }
-
-  /**
-   * Returns the posted billable choice, falling back to Kimai's automatic setting.
-   *
-   * @param Request $request The posted quick start bar form.
-   * @return string One of the TimerStarter::BILLABLE_ constants.
-   */
-  private function getPostedBillable( Request $request ) : string
-  {
-    $billable = (string) $request->request->get( 'billable' );
-    $choices = [ TimerStarter::BILLABLE_YES, TimerStarter::BILLABLE_NO ];
-
-    return in_array( $billable, $choices, true ) ? $billable : TimerStarter::BILLABLE_AUTOMATIC;
-  }
-
-  /**
-   * Returns whether an activity may be booked on a project: its own activities, or global
-   * activities when the project allows them.
-   *
-   * @param Project $project The selected project.
-   * @param Activity $activity The selected activity.
-   * @return bool
-   */
-  private function canCombine( Project $project, Activity $activity ) : bool
-  {
-    $activityProject = $activity->getProject();
-
-    if ( $activityProject === null )
-    {
-      return $project->isGlobalActivities();
-    }
-
-    return $activityProject->getId() === $project->getId();
   }
 
   /**

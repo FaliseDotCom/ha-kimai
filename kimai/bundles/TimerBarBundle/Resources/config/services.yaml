@@ -8,6 +8,7 @@ services:
     resource: '../../*'
     exclude:
       - '../../Resources/'
+      - '../../Model/'
 
   KimaiPlugin\TimerBarBundle\Controller\:
     resource: '../../Controller'

@@ -3,7 +3,7 @@
   "description": "Quick start bar for Kimai: type what you are working on, pick a project and press start",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [

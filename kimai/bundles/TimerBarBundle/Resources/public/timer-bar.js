@@ -1,7 +1,8 @@
 /**
  * Behaviour of the Kimai quick start bar: fills in project and activity from recent entries,
- * offers only the activities that fit the chosen project, and runs the clock of the
- * running entry.
+ * offers only the activities that fit the chosen project, switches between starting a timer
+ * and entering a start and end time, saves changes to the running entry as they are made,
+ * and runs the clock of the running entry.
  */
 ( function ()
 {
@@ -86,6 +87,13 @@
   const KIMAI_RECORD_EVENTS = [ 'kimai.timesheetStart', 'kimai.timesheetStop' ];
 
   /**
+   * Event Kimai listens to for reloading its lists after a record changed.
+   *
+   * @type {string}
+   */
+  const KIMAI_UPDATE_EVENT = 'kimai.timesheetUpdate';
+
+  /**
    * Selector of the start form.
    *
    * @type {string}
@@ -149,6 +157,35 @@
   const BILLABLE = { automatic: 'auto', yes: 'yes', no: 'no' };
 
   /**
+   * Values of the mode field: start a timer, or enter a start and end time.
+   *
+   * @type {{timer: string, manual: string}}
+   */
+  const MODE = { timer: 'timer', manual: 'manual' };
+
+  /**
+   * Key under which the browser remembers the last chosen mode.
+   *
+   * @type {string}
+   */
+  const MODE_STORAGE_KEY = 'kimai.timerBar.mode';
+
+  /**
+   * Value of the form's data-state while a record runs.
+   *
+   * @type {string}
+   */
+  const STATE_RUNNING = 'running';
+
+  /**
+   * Milliseconds to wait after a change before saving the running entry, so quick changes
+   * are saved together.
+   *
+   * @type {number}
+   */
+  const SAVE_DELAY = 400;
+
+  /**
    * Formats a number of seconds as hours, minutes and seconds, for example 1:05:09.
    *
    * @param {number} totalSeconds The duration in seconds.
@@ -172,16 +209,13 @@
    */
   function startClock( clock )
   {
-    const begin = Date.parse( clock.dataset.timerBarBegin );
-
-    if ( Number.isNaN( begin ) )
-    {
-      return;
-    }
-
     const update = () =>
     {
-      clock.textContent = formatClock( ( Date.now() - begin ) / 1000 );
+      const begin = Date.parse( clock.dataset.timerBarBegin );
+      if ( !Number.isNaN( begin ) )
+      {
+        clock.textContent = formatClock( ( Date.now() - begin ) / 1000 );
+      }
     };
 
     update();
@@ -304,6 +338,10 @@
       {
         showBillable( toggle, isBillableByDefault( projectSelect, activitySelect ) );
       }
+      else
+      {
+        showBillable( toggle, value.value === BILLABLE.yes );
+      }
     };
 
     toggle.addEventListener( 'click', () =>
@@ -311,6 +349,7 @@
       const billable = toggle.getAttribute( 'aria-pressed' ) !== 'true';
       value.value = billable ? BILLABLE.yes : BILLABLE.no;
       showBillable( toggle, billable );
+      form.dispatchEvent( new Event( 'timer-bar:selection' ) );
     } );
 
     projectSelect.addEventListener( 'change', follow );
@@ -345,6 +384,7 @@
       count.hidden = total === 0;
     };
 
+    update();
     form.addEventListener( 'change', update );
     if ( newTags !== null )
     {
@@ -397,6 +437,199 @@
     filterActivities( projectSelect, activitySelect, suggestions );
     initBillable( form, projectSelect, activitySelect );
     initTags( form );
+
+    if ( form.dataset.state === STATE_RUNNING )
+    {
+      initAutoSave( form );
+    }
+    else
+    {
+      initModes( form );
+    }
+  }
+
+  /**
+   * Reads the mode the user chose last time, if the browser remembers it.
+   *
+   * @returns {string}
+   */
+  function readStoredMode()
+  {
+    try
+    {
+      return window.localStorage.getItem( MODE_STORAGE_KEY ) === MODE.manual ? MODE.manual : MODE.timer;
+    }
+    catch ( error )
+    {
+      return MODE.timer;
+    }
+  }
+
+  /**
+   * Remembers the chosen mode in this browser, when the browser allows it.
+   *
+   * @param {string} mode One of the MODE values.
+   * @returns {void}
+   */
+  function storeMode( mode )
+  {
+    try
+    {
+      window.localStorage.setItem( MODE_STORAGE_KEY, mode );
+    }
+    catch ( error )
+    {
+      // Private windows and blocked storage simply start in timer mode next time.
+    }
+  }
+
+  /**
+   * Wires up the button that switches between starting a timer and entering a start and end
+   * time. The button is highlighted while start and end times are shown.
+   *
+   * @param {HTMLFormElement} form The start form.
+   * @returns {void}
+   */
+  function initModes( form )
+  {
+    const value = form.querySelector( '[data-timer-bar-mode-value]' );
+    const manual = form.querySelector( '[data-timer-bar-manual]' );
+    const submit = form.querySelector( '[data-timer-bar-submit]' );
+    const toggle = form.querySelector( '[data-timer-bar-mode-toggle]' );
+
+    if ( value === null || manual === null || submit === null || toggle === null )
+    {
+      return;
+    }
+
+    const apply = ( mode ) =>
+    {
+      const isManual = mode === MODE.manual;
+      const title = isManual ? submit.dataset.titleManual : submit.dataset.titleTimer;
+
+      value.value = mode;
+      manual.hidden = !isManual;
+      manual.querySelectorAll( '[data-timer-bar-manual-field]' ).forEach( ( field ) =>
+      {
+        field.required = isManual;
+      } );
+      toggle.classList.toggle( 'active', isManual );
+      toggle.setAttribute( 'aria-pressed', String( isManual ) );
+      submit.querySelectorAll( '[data-timer-bar-icon]' ).forEach( ( icon ) =>
+      {
+        icon.hidden = icon.dataset.timerBarIcon !== mode;
+      } );
+      submit.title = title;
+      submit.setAttribute( 'aria-label', title );
+    };
+
+    toggle.addEventListener( 'click', () =>
+    {
+      const mode = value.value === MODE.manual ? MODE.timer : MODE.manual;
+      apply( mode );
+      storeMode( mode );
+    } );
+
+    apply( readStoredMode() );
+  }
+
+  /**
+   * Shows or clears the error message of the running bar.
+   *
+   * @param {HTMLFormElement} form The running bar form.
+   * @param {string} message The message, or an empty string to clear it.
+   * @returns {void}
+   */
+  function showError( form, message )
+  {
+    const element = form.querySelector( '[data-timer-bar-error]' );
+    if ( element !== null )
+    {
+      element.textContent = message;
+      element.hidden = message === '';
+    }
+  }
+
+  /**
+   * Saves the running entry with the current field values, and moves the clock when the start
+   * time changed.
+   *
+   * @param {HTMLFormElement} form The running bar form.
+   * @returns {Promise<void>}
+   */
+  async function saveRunning( form )
+  {
+    const newTags = form.querySelector( '[data-timer-bar-new-tags]' );
+    const hasNewTags = newTags !== null && newTags.value.trim() !== '';
+
+    try
+    {
+      const response = await fetch( form.action, {
+        method: 'POST',
+        body: new FormData( form ),
+        headers: { Accept: 'application/json' },
+        credentials: 'same-origin',
+      } );
+      const result = await response.json();
+
+      if ( !response.ok )
+      {
+        showError( form, result.message ?? '' );
+        return;
+      }
+
+      showError( form, '' );
+      // Kimai reloads its lists of records on this event, so "My times" shows the change.
+      document.dispatchEvent( new CustomEvent( KIMAI_UPDATE_EVENT ) );
+      const clock = form.querySelector( CLOCK_SELECTOR );
+      if ( clock !== null && result.begin )
+      {
+        clock.dataset.timerBarBegin = result.begin;
+        clock.setAttribute( 'datetime', result.begin );
+      }
+
+      // New tags now exist; reload so they show up as normal choices.
+      if ( hasNewTags )
+      {
+        window.location.reload();
+      }
+    }
+    catch ( error )
+    {
+      console.error( 'Quick start bar: saving the running entry failed', error );
+    }
+  }
+
+  /**
+   * Saves changes to the running entry as they are made: there is no save button, and Enter
+   * saves too. Only the stop button submits the form.
+   *
+   * @param {HTMLFormElement} form The running bar form.
+   * @returns {void}
+   */
+  function initAutoSave( form )
+  {
+    let timer = 0;
+    const schedule = () =>
+    {
+      window.clearTimeout( timer );
+      timer = window.setTimeout( () => saveRunning( form ), SAVE_DELAY );
+    };
+
+    form.addEventListener( 'change', schedule );
+    form.addEventListener( 'timer-bar:selection', schedule );
+
+    // Enter in a field would submit the form with its first button, the stop button. Leave
+    // the field instead: that saves the change, after other scripts completed short times.
+    form.addEventListener( 'keydown', ( event ) =>
+    {
+      if ( event.key === 'Enter' && event.target instanceof HTMLInputElement )
+      {
+        event.preventDefault();
+        event.target.blur();
+        schedule();
+      }
+    } );
   }
 
   /**

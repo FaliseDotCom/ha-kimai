@@ -51,7 +51,9 @@ turned off without affecting the rest of Kimai.
 
 Start and stop time recording from one bar instead of a form. Type what you are working on,
 pick a project and activity, optionally add tags and mark the record billable, and press
-start. While a record runs, the bar shows it with a live clock and a stop button. Recent
+start, or switch to entering a start and end time to add a finished record. While a record
+runs, the bar shows it with a live clock and a stop button, and everything about it,
+including its start time, can be changed right there. Recent
 descriptions are suggested as you type, and every record on **My times** gets a play button
 that starts the same work again.
 

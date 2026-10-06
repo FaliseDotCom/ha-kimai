@@ -6,6 +6,10 @@
         <source>timer_bar.invalid_selection</source>
         <target>Choose a project and an activity that belongs to it.</target>
       </trans-unit>
+      <trans-unit id="timer_bar.invalid_time" resname="timer_bar.invalid_time">
+        <source>timer_bar.invalid_time</source>
+        <target>Enter a valid start and end time, for example 9:00 or 945.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

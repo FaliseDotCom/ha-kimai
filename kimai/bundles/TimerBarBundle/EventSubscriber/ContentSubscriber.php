@@ -78,7 +78,7 @@ final class ContentSubscriber implements EventSubscriberInterface
     }
 
     $event->addContent( $this->twig->render( '@TimerBar/bar.html.twig', [
-      'timer_bar' => $this->viewFactory->create( $user ),
+      'timer_bar' => $this->viewFactory->create( $user, \Locale::getDefault() ),
       'target_path' => $request->getRequestUri(),
       'timer_bar_version' => TimerBarBundle::getAssetVersion(),
       'show_continue' => $route === self::LIST_ROUTE,
