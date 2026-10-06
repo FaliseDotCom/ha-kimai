@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\UiImprovementsBundle\EventSubscriber;
+namespace KimaiPlugin\InlineTimesheetEditBundle\EventSubscriber;
 
 use App\Entity\User;
 use App\Entity\UserPreference;

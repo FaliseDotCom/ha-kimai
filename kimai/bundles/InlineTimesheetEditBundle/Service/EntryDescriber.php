@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\UiImprovementsBundle\Service;
+namespace KimaiPlugin\InlineTimesheetEditBundle\Service;
 
 use App\Entity\Timesheet;
 use App\Entity\User;

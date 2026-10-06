@@ -2,16 +2,16 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\UiImprovementsBundle\Controller;
+namespace KimaiPlugin\InlineTimesheetEditBundle\Controller;
 
 use App\Controller\AbstractController;
 use App\Entity\User;
 use App\Validator\ValidationFailedException;
-use KimaiPlugin\UiImprovementsBundle\EventSubscriber\PreferenceSubscriber;
-use KimaiPlugin\UiImprovementsBundle\Exception\InvalidInputException;
-use KimaiPlugin\UiImprovementsBundle\Service\BookingOptions;
-use KimaiPlugin\UiImprovementsBundle\Service\EntryDescriber;
-use KimaiPlugin\UiImprovementsBundle\Service\EntryEditor;
+use KimaiPlugin\InlineTimesheetEditBundle\EventSubscriber\PreferenceSubscriber;
+use KimaiPlugin\InlineTimesheetEditBundle\Exception\InvalidInputException;
+use KimaiPlugin\InlineTimesheetEditBundle\Service\BookingOptions;
+use KimaiPlugin\InlineTimesheetEditBundle\Service\EntryDescriber;
+use KimaiPlugin\InlineTimesheetEditBundle\Service\EntryEditor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,14 +23,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Reads and saves the user's own records for editing them directly in the list.
  */
-#[Route( path: '/ui-improvements/inline-edit' )]
+#[Route( path: '/inline-timesheet-edit' )]
 #[IsGranted( 'IS_AUTHENTICATED_REMEMBERED' )]
 final class InlineEditController extends AbstractController
 {
-  public const CSRF_TOKEN_ID = 'ui_improvements_inline_edit';
-  public const ROUTE_ENTRIES = 'ui_improvements_inline_edit_entries';
-  public const ROUTE_OPTIONS = 'ui_improvements_inline_edit_options';
-  public const ROUTE_SAVE = 'ui_improvements_inline_edit_save';
+  public const CSRF_TOKEN_ID = 'inline_timesheet_edit';
+  public const ROUTE_ENTRIES = 'inline_timesheet_edit_entries';
+  public const ROUTE_OPTIONS = 'inline_timesheet_edit_options';
+  public const ROUTE_SAVE = 'inline_timesheet_edit_save';
 
   /**
    * Name of the posted array of changed values, by field.
@@ -44,7 +44,7 @@ final class InlineEditController extends AbstractController
    *
    * @var string
    */
-  public const TRANSLATION_DOMAIN = 'ui_improvements';
+  public const TRANSLATION_DOMAIN = 'inline_timesheet_edit';
 
   /**
    * @param EntryDescriber $describer Finds and describes the user's editable records.

@@ -1,5 +1,5 @@
-summary_controllers:
-  resource: '@UiImprovementsBundle/Controller/'
+inline_timesheet_edit_controllers:
+  resource: '@InlineTimesheetEditBundle/Controller/'
   type: attribute
   prefix: /{_locale}
   requirements:

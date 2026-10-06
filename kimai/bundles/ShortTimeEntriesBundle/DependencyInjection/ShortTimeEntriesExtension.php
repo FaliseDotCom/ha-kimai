@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\UiImprovementsBundle\DependencyInjection;
+namespace KimaiPlugin\ShortTimeEntriesBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -10,9 +10,9 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
- * Registers the services of the UI improvements.
+ * Registers the services of the short time entries.
  */
-final class UiImprovementsExtension extends Extension
+final class ShortTimeEntriesExtension extends Extension
 {
   /**
    * Loads the service definitions of the bundle.

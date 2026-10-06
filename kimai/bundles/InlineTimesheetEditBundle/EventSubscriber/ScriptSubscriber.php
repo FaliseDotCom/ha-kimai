@@ -2,13 +2,13 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\UiImprovementsBundle\EventSubscriber;
+namespace KimaiPlugin\InlineTimesheetEditBundle\EventSubscriber;
 
 use App\Entity\User;
 use App\Event\ThemeEvent;
-use KimaiPlugin\UiImprovementsBundle\Controller\AssetController;
-use KimaiPlugin\UiImprovementsBundle\Controller\InlineEditController;
-use KimaiPlugin\UiImprovementsBundle\UiImprovementsBundle;
+use KimaiPlugin\InlineTimesheetEditBundle\Controller\AssetController;
+use KimaiPlugin\InlineTimesheetEditBundle\Controller\InlineEditController;
+use KimaiPlugin\InlineTimesheetEditBundle\InlineTimesheetEditBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -16,18 +16,11 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Adds the plugin's script to every page for logged-in users, and the inline edit script and
- * stylesheet to the record lists when the user has inline editing turned on.
+ * Adds the inline edit script and stylesheet to the record lists when the user has inline
+ * editing turned on.
  */
 final class ScriptSubscriber implements EventSubscriberInterface
 {
-  /**
-   * The script added to every page.
-   *
-   * @var string
-   */
-  private const SCRIPT = 'ui-improvements.js';
-
   /**
    * The script that edits records in the list.
    *
@@ -93,7 +86,7 @@ final class ScriptSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the script tags; the login page and other anonymous pages are skipped.
+   * Adds the inline edit script to the record lists.
    *
    * @param ThemeEvent $event The event that collects scripts for the end of the page.
    * @return void
@@ -101,14 +94,7 @@ final class ScriptSubscriber implements EventSubscriberInterface
   public function onJavascript( ThemeEvent $event ) : void
   {
     $user = $event->getUser();
-    if ( !$user instanceof User )
-    {
-      return;
-    }
-
-    $event->addContent( $this->renderScript( self::SCRIPT, [] ) );
-
-    if ( !$this->isInlineEditPage( $user ) )
+    if ( !$user instanceof User || !$this->isInlineEditPage( $user ) )
     {
       return;
     }
@@ -180,7 +166,7 @@ final class ScriptSubscriber implements EventSubscriberInterface
   {
     return $this->urlGenerator->generate( AssetController::ROUTE, [
       'name' => $name,
-      'v' => UiImprovementsBundle::getAssetVersion(),
+      'v' => InlineTimesheetEditBundle::getAssetVersion(),
     ] );
   }
 

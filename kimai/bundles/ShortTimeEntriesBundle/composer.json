@@ -1,9 +1,9 @@
 {
-  "name": "falisedotcom/kimai-ui-improvements-bundle",
-  "description": "UI improvements for Kimai: quicker time and duration entry, such as 945 for 9:45, and editing records directly in the list",
+  "name": "falisedotcom/kimai-short-time-entries-bundle",
+  "description": "Quicker time and duration entry in Kimai's forms: type 945 for 9:45 or 90 for an hour and a half",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [
@@ -16,14 +16,14 @@
     "kimai":
     {
       "require": 26700,
-      "name": "UI improvements"
+      "name": "Short time entries"
     }
   },
   "autoload":
   {
     "psr-4":
     {
-      "KimaiPlugin\\UiImprovementsBundle\\": ""
+      "KimaiPlugin\\ShortTimeEntriesBundle\\": ""
     }
   }
 }

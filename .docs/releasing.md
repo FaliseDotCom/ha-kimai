@@ -61,7 +61,8 @@ installed in any Kimai installation and listed in the
 | ---------------------- | ------------------------------------------------------------------------------------ |
 | `ReportingBundle`      | [kimai-reporting-bundle](https://github.com/FaliseDotCom/kimai-reporting-bundle)           |
 | `TimerBarBundle`       | [kimai-timerbar-bundle](https://github.com/FaliseDotCom/kimai-timerbar-bundle)             |
-| `UiImprovementsBundle` | [kimai-ui-improvements-bundle](https://github.com/FaliseDotCom/kimai-ui-improvements-bundle) |
+| `ShortTimeEntriesBundle` | [kimai-short-time-entries-bundle](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle) |
+| `InlineTimesheetEditBundle` | [kimai-inline-timesheet-edit-bundle](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle) |
 
 The mirror's name is the package name in the plugin's `composer.json`. Never commit to a
 mirror: the next publish would refuse to overwrite it.

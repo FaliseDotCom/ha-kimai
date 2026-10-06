@@ -20,7 +20,8 @@ kimai/
   bundles/                   Kimai plugins that ship with the app
     ReportingBundle/         Reporting extras: summary report, and charts on the user reports
     TimerBarBundle/          Quick start bar below the top bar
-    UiImprovementsBundle/    UI improvements: short time and duration entry, editing in the list
+    ShortTimeEntriesBundle/  Short time and duration entry in Kimai's forms
+    InlineTimesheetEditBundle/  Editing records directly in the record list
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
@@ -133,7 +134,8 @@ They only use Kimai's extension points and services:
 | ---------------- | --------------------------------------------- | ------------------------------------------------------- |
 | `ReportingBundle` | `ReportingEvent`, adds a report; `ThemeEvent::CONTENT_START` on the three `report_user_*` routes | `DateRangeType`, `UserType`, Kimai's Chart.js build |
 | `TimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
-| `UiImprovementsBundle` | `ThemeEvent::JAVASCRIPT` on every page; `ThemeEvent::STYLESHEET` and `UserPreferenceEvent` for inline editing | Kimai's form markup: `input[data-timepicker]` and `input.duration-input`; for inline editing the list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
+| `ShortTimeEntriesBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
+| `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
 button (`.ticktac`). Its script moves it into a row at the start of `.page-wrapper`, directly
@@ -156,6 +158,10 @@ Each plugin serves its own script and stylesheet through a controller route
 (`/…/assets/{name}`, limited to a fixed list of files), because Kimai has no asset pipeline
 for plugins. A version parameter based on the files' modification time busts browser
 caches after an update.
+
+`ShortTimeEntriesBundle` and `InlineTimesheetEditBundle` each carry an identical copy of
+`Resources/public/input-parsing.js`, because a published plugin cannot load files from
+another plugin. Change both copies together.
 
 Each plugin folder is also published on its own, to a read-only mirror repository (see
 [Releasing](releasing.md#publishing-the-plugins)). Keep a plugin's folder self-contained: its

@@ -4,12 +4,11 @@ services:
     autoconfigure: true
     public: false
 
-  KimaiPlugin\UiImprovementsBundle\:
+  KimaiPlugin\ShortTimeEntriesBundle\:
     resource: '../../*'
     exclude:
       - '../../Resources/'
-      - '../../Exception/'
 
-  KimaiPlugin\UiImprovementsBundle\Controller\:
+  KimaiPlugin\ShortTimeEntriesBundle\Controller\:
     resource: '../../Controller'
     tags: [ 'controller.service_arguments' ]

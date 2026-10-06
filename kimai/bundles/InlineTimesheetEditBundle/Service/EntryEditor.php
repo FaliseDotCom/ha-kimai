@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\UiImprovementsBundle\Service;
+namespace KimaiPlugin\InlineTimesheetEditBundle\Service;
 
 use App\Configuration\SystemConfiguration;
 use App\Entity\Timesheet;
@@ -13,7 +13,7 @@ use App\Validator\ValidationFailedException;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
-use KimaiPlugin\UiImprovementsBundle\Exception\InvalidInputException;
+use KimaiPlugin\InlineTimesheetEditBundle\Exception\InvalidInputException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**

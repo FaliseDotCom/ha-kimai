@@ -6,12 +6,16 @@ version the app contains; see the
 
 ## 2.67.0.18
 
-- UI improvements: clicking one of your own records on **My times** or **All times** now
-  turns the whole record into fields. Tab moves between them, Enter or leaving the record
+- The UI improvements plugin is split in two: **Short time entries** (typing `945` for 9:45)
+  and **Inline timesheet editing**. If you turned the UI improvements off with
+  `plugins/UiImprovementsBundle/.disabled`, use `plugins/ShortTimeEntriesBundle/.disabled`
+  and `plugins/InlineTimesheetEditBundle/.disabled` instead; the old folder can be removed.
+  The **Edit records directly in the list** preference keeps its setting.
+- Inline timesheet editing: clicking one of your own records on **My times** or **All times**
+  now turns the whole record into fields. Tab moves between them, Enter or leaving the record
   saves all changes at once, and Escape cancels.
-- UI improvements: with editing in the list turned on, clicking a record no longer opens
-  Kimai's edit dialog, also for other users' records. Use **Edit** in the record's actions
-  menu instead.
+- Inline timesheet editing: clicking a record no longer opens Kimai's edit dialog, also for
+  other users' records. Use **Edit** in the record's actions menu instead.
 
 ## 2.67.0.17
 

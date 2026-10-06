@@ -190,8 +190,8 @@ Never expose port 8001 directly to the internet without HTTPS.
 
 ## Extras in this app
 
-The app adds three Kimai plugins, made for this app and maintained in the same repository:
-a quick start bar, reporting extras and UI improvements.
+The app adds four Kimai plugins, made for this app and maintained in the same repository:
+a quick start bar, reporting extras, short time entries and inline timesheet editing.
 
 ### Quick start bar
 
@@ -281,9 +281,9 @@ quarters and years. The arrows next to it move one period back or forward. The r
 with your own time this week. Users who may see other people's reports can choose a
 colleague or **All users**.
 
-### UI improvements
+### Short time entries
 
-**Quicker time entry.** Start and end times and durations can be typed in short form. They
+Start and end times and durations can be typed in short form. They
 are completed when you leave the field, before Kimai calculates the other times, so typing
 a start of `945` and a duration of `10` sets the end to 9:55.
 
@@ -311,8 +311,9 @@ Other ways of writing a duration that Kimai already understood, such as `1:30`, 
 hours); with this plugin it means minutes. This applies to the record dialog, to
 **Weekly hours** and to every other form with a time or duration field.
 
-**Editing records in the list.** On **My times** and **All times**, your own records can be
-changed in place: click a record and all its cells become fields, with the cell you clicked
+### Inline timesheet editing
+
+On **My times** and **All times**, your own records can be changed in place: click a record and all its cells become fields, with the cell you clicked
 ready for typing. Tab moves to the next field. Press Enter, or leave the record with Tab or a
 click elsewhere, to save all changes at once; Escape cancels. Kimai then reloads the list, so
 day totals and prices stay right.
@@ -348,7 +349,9 @@ configuration folder, put an empty file named `.disabled` in it, and restart the
 - `plugins/ReportingBundle/.disabled` turns off the reporting extras.
 - `plugins/TimerBarBundle/.disabled` turns off the quick start bar for everyone; to hide it
   for one user only, see [Quick start bar](#quick-start-bar).
-- `plugins/UiImprovementsBundle/.disabled` turns off the UI improvements.
+- `plugins/ShortTimeEntriesBundle/.disabled` turns off the short time entries.
+- `plugins/InlineTimesheetEditBundle/.disabled` turns off inline editing for everyone; to
+  turn it off for one user only, see [Inline timesheet editing](#inline-timesheet-editing).
 
 Remove the folder and restart to turn the extra back on.
 
