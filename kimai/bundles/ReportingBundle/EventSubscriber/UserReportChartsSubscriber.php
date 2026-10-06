@@ -14,6 +14,7 @@ use KimaiPlugin\ReportingBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingBundle\ReportingBundle;
 use KimaiPlugin\ReportingBundle\Repository\SummaryRepository;
 use KimaiPlugin\ReportingBundle\Service\DetailLinks;
+use KimaiPlugin\ReportingBundle\Service\ReportViewLinks;
 use KimaiPlugin\ReportingBundle\Service\SummaryBuilder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,7 @@ use Twig\Environment;
 /**
  * Adds a bar chart per day (or month) and a doughnut chart per project to Kimai's weekly,
  * monthly and yearly report for one user, and links its customers and projects to their
- * detail pages.
+ * detail pages, and adds buttons to switch to the other two reports.
  */
 final class UserReportChartsSubscriber implements EventSubscriberInterface
 {
@@ -39,6 +40,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
    * @param SummaryRepository $repository Reads the aggregated time records.
    * @param SummaryBuilder $builder Turns the records into chart data.
    * @param DetailLinks $detailLinks Finds the customer and project pages the viewer may open.
+   * @param ReportViewLinks $viewLinks Links to the other two user reports.
    * @param Environment $twig Renders the charts.
    */
   public function __construct(
@@ -48,6 +50,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     private readonly SummaryRepository $repository,
     private readonly SummaryBuilder $builder,
     private readonly DetailLinks $detailLinks,
+    private readonly ReportViewLinks $viewLinks,
     private readonly Environment $twig
   )
   {
@@ -94,6 +97,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     $event->addContent( $this->twig->render( '@Reporting/report_charts.html.twig', [
       'summary' => $this->builder->build( $rows, $begin, $end, SummaryQuery::GROUP_PROJECT, $request->getLocale() ),
       'detail_links' => $this->detailLinks->create( $rows ),
+      'view_links' => $this->viewLinks->create( (string) $route, $begin, $end, $request ),
       'asset_version' => ReportingBundle::getAssetVersion(),
     ] ) );
   }

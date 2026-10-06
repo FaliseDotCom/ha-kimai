@@ -60,6 +60,20 @@
   ];
 
   /**
+   * Selector of the buttons that switch between the weekly, monthly and yearly report.
+   *
+   * @type {string}
+   */
+  const VIEW_SWITCH_SELECTOR = '[data-summary-view-switch]';
+
+  /**
+   * Selector of the period picker in Kimai's report filters, which the buttons follow.
+   *
+   * @type {string}
+   */
+  const PERIOD_PICKER_SELECTOR = '#report-form .btn-list > .btn-group';
+
+  /**
    * Attribute naming the element that charts added to another report should move into.
    *
    * @type {string}
@@ -375,6 +389,24 @@
   }
 
   /**
+   * Puts the buttons for the other two user reports right of the report's period picker.
+   *
+   * @returns {void}
+   */
+  function placeViewSwitch()
+  {
+    const viewSwitch = document.querySelector( VIEW_SWITCH_SELECTOR );
+    const periodPicker = document.querySelector( PERIOD_PICKER_SELECTOR );
+    if ( viewSwitch === null || periodPicker === null )
+    {
+      return;
+    }
+
+    periodPicker.after( viewSwitch );
+    viewSwitch.hidden = false;
+  }
+
+  /**
    * Draws everything once Kimai is ready.
    *
    * @returns {void}
@@ -382,6 +414,7 @@
   function init()
   {
     placeCharts();
+    placeViewSwitch();
     linkReportRows();
     paintSwatches();
 

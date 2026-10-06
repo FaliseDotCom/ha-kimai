@@ -15,6 +15,11 @@ The charts follow the period and user picked in the report, including a financia
 one is configured. In the table, customer and project names link to their detail pages for
 users who may view them.
 
+Next to the period picker, buttons switch to the other two reports for the same user and
+summing mode: the yearly view gets **Week** and **Month**, and so on. The new report opens
+on the period that contains today if the current period does, and otherwise on the period
+that contains the current period's first day.
+
 ## Summary report
 
 **Reporting** > **Summary** shows a period on one page:

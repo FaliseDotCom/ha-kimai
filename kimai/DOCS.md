@@ -239,7 +239,10 @@ two charts above their table: a bar chart of the hours per day (per month in the
 view), stacked by project, and a doughnut chart of each project's share. They follow the
 week, month, year and user picked in the report. In the table below the charts, projects
 are indented under their customer and activities under their project, and customer and
-project names link to their detail pages if you may open those.
+project names link to their detail pages if you may open those. Buttons next to the period
+picker switch to the other two views for the same user, for example **Week** and **Month**
+in the yearly view. The new view shows the period with today in it when the current one
+contains today, and otherwise the start of the current period.
 
 **Summary report.** **Reporting** > **Summary** shows where your time went in one page:
 

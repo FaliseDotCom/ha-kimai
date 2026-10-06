@@ -66,7 +66,7 @@ Additions to Kimai's **Reporting** section:
 - The **weekly, monthly and yearly report for one user** get a bar chart of the hours per day
   (or month), stacked by project, and a doughnut chart with a legend, above Kimai's table. In
   the table, projects are indented under their customer, and customer and project names link
-  to their detail pages.
+  to their detail pages. Buttons next to the period picker switch between the three views.
 - A **Summary** report shows any period on one page: totals, a bar chart over time, a
   doughnut chart, and a breakdown per project, customer, activity or user down to each
   description.

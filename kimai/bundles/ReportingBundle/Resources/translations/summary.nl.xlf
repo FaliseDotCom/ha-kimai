@@ -62,6 +62,22 @@
         <source>summary.other</source>
         <target>Overig</target>
       </trans-unit>
+      <trans-unit id="summary.view.label" resname="summary.view.label">
+        <source>summary.view.label</source>
+        <target>Andere overzichten</target>
+      </trans-unit>
+      <trans-unit id="summary.view.week" resname="summary.view.week">
+        <source>summary.view.week</source>
+        <target>Week</target>
+      </trans-unit>
+      <trans-unit id="summary.view.month" resname="summary.view.month">
+        <source>summary.view.month</source>
+        <target>Maand</target>
+      </trans-unit>
+      <trans-unit id="summary.view.year" resname="summary.view.year">
+        <source>summary.view.year</source>
+        <target>Jaar</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

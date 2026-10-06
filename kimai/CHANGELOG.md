@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.14
+
+- Weekly, monthly and yearly user reports: buttons next to the period picker switch to the
+  other two views for the same user, for example **Week** and **Month** in the yearly view.
+
 ## 2.67.0.13
 
 - The Graphs plugin is now called **Reporting extras** (`ReportingBundle`), since it covers

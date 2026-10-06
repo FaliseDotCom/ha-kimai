@@ -5,6 +5,12 @@
 <link rel="stylesheet" href="{{ path('reporting_bundle_asset', { 'name': 'reporting.css', 'v': asset_version }) }}">
 <script src="{{ path('reporting_bundle_asset', { 'name': 'reporting.js', 'v': asset_version }) }}"></script>
 
+<div class="btn-group summary-view-switch" role="group" aria-label="{{ 'summary.view.label'|trans }}" data-summary-view-switch hidden>
+  {% for link in view_links %}
+    <a class="btn" href="{{ link.url }}">{{ link.label|trans }}</a>
+  {% endfor %}
+</div>
+
 <script type="application/json" id="summary-detail-links">{{ detail_links|json_encode|raw }}</script>
 
 {% if summary.groups is not empty %}
