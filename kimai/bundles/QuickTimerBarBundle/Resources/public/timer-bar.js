@@ -102,6 +102,13 @@
   const GLOBAL_ACTIVITY = '0';
 
   /**
+   * Type of the "+" form that creates a project; the other one creates an activity.
+   *
+   * @type {string}
+   */
+  const QUICK_CREATE_PROJECT = 'project';
+
+  /**
    * Milliseconds between clock updates.
    *
    * @type {number}
@@ -374,6 +381,133 @@
   }
 
   /**
+   * Returns the option group of a customer in the project picker, creating it when missing.
+   *
+   * @param {HTMLSelectElement} projectSelect The project picker.
+   * @param {string} customer The customer name.
+   * @returns {HTMLOptGroupElement}
+   */
+  function findCustomerGroup( projectSelect, customer )
+  {
+    const existing = Array.from( projectSelect.querySelectorAll( 'optgroup' ) ).find( ( group ) => group.label === customer );
+    if ( existing !== undefined )
+    {
+      return existing;
+    }
+
+    const group = document.createElement( 'optgroup' );
+    group.label = customer;
+    projectSelect.append( group );
+
+    return group;
+  }
+
+  /**
+   * Adds a created project or activity to its picker, unless it is there already, and selects it.
+   *
+   * @param {string} type Either "project" or "activity".
+   * @param {Object} item The created item as the server describes it.
+   * @param {HTMLSelectElement} projectSelect The project picker.
+   * @param {HTMLSelectElement} activitySelect The activity picker.
+   * @param {{projectId: number, activityId: number}[]} suggestions Recent entries, most recent first.
+   * @returns {void}
+   */
+  function selectCreated( type, item, projectSelect, activitySelect, suggestions )
+  {
+    const select = type === QUICK_CREATE_PROJECT ? projectSelect : activitySelect;
+    const value = String( item.id );
+
+    if ( select.querySelector( 'option[value="' + value + '"]' ) === null )
+    {
+      const option = new Option( item.name, value );
+      option.dataset.billable = item.billable ? '1' : '0';
+
+      if ( type === QUICK_CREATE_PROJECT )
+      {
+        option.dataset.globalActivities = item.globalActivities ? '1' : '0';
+        findCustomerGroup( projectSelect, item.customer ).append( option );
+      }
+      else
+      {
+        option.dataset.project = String( item.projectId );
+        activitySelect.append( option );
+      }
+    }
+
+    select.value = value;
+    filterActivities( projectSelect, activitySelect, suggestions );
+    select.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+  }
+
+  /**
+   * Wires up the "+" buttons next to the project and activity pickers: a small form that
+   * creates a project (with a new or existing customer) or an activity, and selects it.
+   *
+   * @param {HTMLFormElement} form The bar form, which carries the token.
+   * @param {HTMLSelectElement} projectSelect The project picker.
+   * @param {HTMLSelectElement} activitySelect The activity picker.
+   * @param {{projectId: number, activityId: number}[]} suggestions Recent entries, most recent first.
+   * @returns {void}
+   */
+  function initQuickCreate( form, projectSelect, activitySelect, suggestions )
+  {
+    form.querySelectorAll( '[data-timer-bar-create]' ).forEach( ( menu ) =>
+    {
+      const dropdown = menu.closest( '.dropdown' );
+      const toggle = dropdown.querySelector( '[data-bs-toggle="dropdown"]' );
+      const name = menu.querySelector( '[data-timer-bar-create-name]' );
+      const customer = menu.querySelector( '[data-timer-bar-create-customer]' );
+      const error = menu.querySelector( '[data-timer-bar-create-error]' );
+      const type = menu.dataset.timerBarCreate;
+
+      const create = async () =>
+      {
+        const body = new FormData();
+        body.append( '_token', form.querySelector( 'input[name="_token"]' ).value );
+        body.append( 'name', name.value );
+        body.append( 'customer', customer === null ? '' : customer.value );
+        body.append( 'project', projectSelect.value );
+
+        try
+        {
+          const response = await fetch( menu.dataset.url, { method: 'POST', body, headers: { Accept: 'application/json' }, credentials: 'same-origin' } );
+          const result = await response.json();
+
+          error.textContent = response.ok ? '' : ( result.message ?? '' );
+          error.hidden = response.ok;
+          if ( !response.ok )
+          {
+            return;
+          }
+
+          selectCreated( type, result, projectSelect, activitySelect, suggestions );
+          menu.querySelectorAll( 'input' ).forEach( ( input ) => { input.value = ''; } );
+          toggle.click();
+        }
+        catch ( exception )
+        {
+          console.error( 'Quick start bar: creating failed', exception );
+        }
+      };
+
+      // The small form lives inside the bar form: its typing must not save the running record,
+      // and Enter must create instead of submitting the bar.
+      [ 'change', 'input' ].forEach( ( eventName ) => menu.addEventListener( eventName, ( event ) => event.stopPropagation() ) );
+      menu.addEventListener( 'keydown', ( event ) =>
+      {
+        if ( event.key === 'Enter' )
+        {
+          event.preventDefault();
+          event.stopPropagation();
+          create();
+        }
+      } );
+      menu.querySelector( '[data-timer-bar-create-submit]' ).addEventListener( 'click', create );
+      dropdown.addEventListener( 'shown.bs.dropdown', () => name.focus() );
+    } );
+  }
+
+  /**
    * Wires up the start form: suggestions fill in project and activity, the activity picker
    * follows the project picker, and the billable and tag controls keep their state.
    *
@@ -410,6 +544,7 @@
     filterActivities( projectSelect, activitySelect, suggestions );
     initBillable( form, projectSelect, activitySelect );
     initTags( form );
+    initQuickCreate( form, projectSelect, activitySelect, suggestions );
 
     if ( form.dataset.state === STATE_RUNNING )
     {

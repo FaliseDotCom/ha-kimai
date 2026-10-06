@@ -39,6 +39,30 @@
       {% endfor %}
     </select>
 
+    {% if timer_bar.quickCreate.project %}
+      <div class="dropdown timer-bar-create">
+        <button type="button" class="btn btn-icon timer-bar-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+          aria-expanded="false" title="{{ 'quick_create.new_project'|trans }}" aria-label="{{ 'quick_create.new_project'|trans }}">
+          <i class="{{ 'create'|icon(true) }}"></i>
+        </button>
+        {# No name attributes: these fields are not part of the record form. #}
+        <div class="dropdown-menu dropdown-menu-end timer-bar-create-menu" data-timer-bar-create="project"
+          data-url="{{ path('timer_bar_create_project') }}">
+          <input type="text" class="form-control form-control-sm" maxlength="150" autocomplete="off"
+            placeholder="{{ 'quick_create.project_name'|trans }}" aria-label="{{ 'quick_create.project_name'|trans }}" data-timer-bar-create-name>
+          <input type="text" class="form-control form-control-sm" maxlength="150" autocomplete="off" list="timer-bar-customers"
+            placeholder="{{ 'quick_create.customer_name'|trans }}" aria-label="{{ 'quick_create.customer_name'|trans }}" data-timer-bar-create-customer>
+          <datalist id="timer-bar-customers">
+            {% for customer in timer_bar.quickCreate.customers %}
+              <option value="{{ customer }}"></option>
+            {% endfor %}
+          </datalist>
+          <button type="button" class="btn btn-primary btn-sm" data-timer-bar-create-submit>{{ 'quick_create.add'|trans }}</button>
+          <p class="text-danger small m-0" role="alert" data-timer-bar-create-error hidden></p>
+        </div>
+      </div>
+    {% endif %}
+
     <select name="activity" class="form-select timer-bar-activity" required aria-label="{{ 'timer_bar.activity'|trans }}" data-timer-bar-activity>
       <option value="">{{ 'timer_bar.activity'|trans }}</option>
       {% for activity in timer_bar.activities %}
@@ -46,6 +70,22 @@
           {% if activity.id == selected_activity %}selected{% endif %}>{{ activity.name }}</option>
       {% endfor %}
     </select>
+
+    {% if timer_bar.quickCreate.activity %}
+      <div class="dropdown timer-bar-create">
+        <button type="button" class="btn btn-icon timer-bar-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+          aria-expanded="false" title="{{ 'quick_create.new_activity'|trans }}" aria-label="{{ 'quick_create.new_activity'|trans }}">
+          <i class="{{ 'create'|icon(true) }}"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end timer-bar-create-menu" data-timer-bar-create="activity"
+          data-url="{{ path('timer_bar_create_activity') }}">
+          <input type="text" class="form-control form-control-sm" maxlength="150" autocomplete="off"
+            placeholder="{{ 'quick_create.activity_name'|trans }}" aria-label="{{ 'quick_create.activity_name'|trans }}" data-timer-bar-create-name>
+          <button type="button" class="btn btn-primary btn-sm" data-timer-bar-create-submit>{{ 'quick_create.add'|trans }}</button>
+          <p class="text-danger small m-0" role="alert" data-timer-bar-create-error hidden></p>
+        </div>
+      </div>
+    {% endif %}
 
     {% if timer_bar.tags is not empty or timer_bar.canCreateTags %}
       <div class="dropdown timer-bar-tags">

@@ -202,7 +202,8 @@ page's own buttons and filters.
 - **Description:** type what you are working on. Recent descriptions are suggested; picking
   one fills in the project and activity it was last booked on.
 - **Project and activity:** projects are grouped by customer, and the activity list only
-  offers activities that can be booked on the selected project.
+  offers activities that can be booked on the selected project. The **+** buttons next to
+  them add a new project or activity; see below.
 - **Tags** (tag icon): tick existing tags, or type new ones separated by commas if you may
   create tags. The icon shows how many tags are chosen.
 - **Billable** (coins icon): shows whether the record will be billable. It follows Kimai's rule
@@ -224,6 +225,14 @@ started. Each change is
 saved as soon as you leave the field or pick an option; there is no save button, and Enter
 saves too. Changing the start time moves the clock. If Kimai refuses a change, for example
 a start time in the future, the reason appears below the bar.
+
+**+** next to the project picker adds a new project: type its name and its customer, an
+existing one or a new one. **+** next to the activity picker adds a new activity; it can be
+used on every project, unless the selected project only allows its own activities. The new
+project or activity is selected straight away. Everything else uses Kimai's defaults and can
+be changed later under **Administration**. A name that already exists picks that project or
+activity instead of adding a second one. The buttons only appear if you may create projects
+or activities; a new customer also needs permission to create customers.
 
 On **My times**, every record has a green play button next to its menu. It continues that
 record: a new record starts now with the same description, project, activity, tags and
@@ -329,6 +338,9 @@ day totals and prices stay right.
 | Description | Enter saves, Shift+Enter starts a new line. |
 | Tags | Type tag names separated by commas. New tags are created if you may create tags. |
 | Billable | A checkbox. |
+
+The project and activity pickers have the same **+** buttons as the quick start bar, to add a
+new project (with a new or existing customer) or activity and select it right away.
 
 Only your own records can be edited this way, also on **All times**, and only the fields
 Kimai lets you change: exported or locked records, and times in a tracking mode that does not

@@ -159,7 +159,9 @@ Each plugin serves its own script and stylesheet through a controller route
 for plugins. A version parameter based on the files' modification time busts browser
 caches after an update.
 
-`ShortTimeEntriesBundle` and `InlineTimesheetEditBundle` each carry an identical copy of
+`QuickTimerBarBundle` and `InlineTimesheetEditBundle` each carry `Service/QuickCreator.php`,
+which creates projects, customers and activities from the "+" buttons; the copies differ only
+in their namespace. `ShortTimeEntriesBundle` and `InlineTimesheetEditBundle` each carry an identical copy of
 `Resources/public/input-parsing.js`, because a published plugin cannot load files from
 another plugin. Change both copies together.
 

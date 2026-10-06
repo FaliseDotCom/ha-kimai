@@ -48,6 +48,22 @@ and stylesheet.
 
 There are no database changes.
 
+## New projects and activities
+
+A **+** button next to the project picker adds a project from just its name and its customer,
+an existing one or a new one; a **+** next to the activity picker adds an activity. The new
+item is selected straight away. Kimai's defaults apply (a new customer gets the default
+country, currency, language and time zone), and everything can be changed later in Kimai's
+own forms. A name that already exists is reused instead of creating a duplicate. A new
+activity is global, unless the selected project only allows its own activities; then it
+belongs to that project.
+
+The buttons need Kimai's `create_project` and `create_activity` permissions; a new customer
+also needs `create_customer`. `Service/QuickCreator.php` creates everything through Kimai's
+`CustomerService`, `ProjectService` and `ActivityService`, so Kimai's validation and creation
+events apply. The quick start bar and inline timesheet editing plugins carry the same class,
+differing only in its namespace; change both together.
+
 ## How it starts and stops records
 
 The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/update`, `/timer-bar/stop`

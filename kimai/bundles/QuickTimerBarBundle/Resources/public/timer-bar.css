@@ -84,6 +84,25 @@
   cursor: pointer;
 }
 
+/* "+" buttons next to the pickers: a small form for a new project or activity */
+.timer-bar-create
+{
+  flex: 0 0 auto;
+}
+
+.timer-bar-create-menu
+{
+  min-width: 16rem;
+  padding: 0.5rem;
+}
+
+.timer-bar-create-menu.show
+{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 /* Date, start time, and end time or the running clock */
 .timer-bar-times
 {
@@ -200,6 +219,13 @@ td:has(> .timer-bar-continue)
   .timer-bar-button
   {
     order: 2;
+  }
+
+  /* Both pickers and their "+" buttons on one line: two buttons and three gaps */
+  .timer-bar-project,
+  .timer-bar-activity
+  {
+    flex-basis: calc(50% - 3.25rem);
   }
 
   .timer-bar-tags

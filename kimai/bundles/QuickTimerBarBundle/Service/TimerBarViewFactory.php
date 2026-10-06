@@ -26,6 +26,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @phpstan-type ActivityOption array{id: int, name: string, projectId: int, billable: bool}
  * @phpstan-type TagOption array{id: int, name: string}
  * @phpstan-type RunningEntry array{id: int, description: string, projectId: int, activityId: int, begin: string, beginDate: string, beginTime: string, tagIds: array<int, int>, billableMode: string}
+ * @phpstan-type QuickCreateView array{project: bool, customer: bool, activity: bool, customers: array<int, string>}
  * @phpstan-type TimerBarView array{
  *   running: RunningEntry|array{},
  *   customers: array<int, CustomerGroup>,
@@ -34,6 +35,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *   tags: array<int, TagOption>,
  *   canCreateTags: bool,
  *   canEditBillable: bool,
+ *   quickCreate: QuickCreateView,
  *   defaultProjectId: int,
  *   defaultActivityId: int,
  *   timeFormat: string,
@@ -46,11 +48,13 @@ final class TimerBarViewFactory
    * @param TimerBarRepository $repository Reads projects, activities, tags, suggestions and running entries.
    * @param AuthorizationCheckerInterface $security Checks the tag and billable permissions.
    * @param TimeInput $timeInput Formats times in the user's clock.
+   * @param QuickCreator $creator Tells what the user may create, and offers the customer names.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
     private readonly AuthorizationCheckerInterface $security,
-    private readonly TimeInput $timeInput
+    private readonly TimeInput $timeInput,
+    private readonly QuickCreator $creator
   )
   {
   }
@@ -78,11 +82,26 @@ final class TimerBarViewFactory
       'tags' => $this->describeTags( $this->repository->findTags() ),
       'canCreateTags' => $this->security->isGranted( 'create_tag' ),
       'canEditBillable' => $this->security->isGranted( 'edit_billable_own_timesheet' ),
+      'quickCreate' => $this->describeQuickCreate( $user ),
       'defaultProjectId' => $suggestions[ 0 ][ 'projectId' ] ?? 0,
       'defaultActivityId' => $suggestions[ 0 ][ 'activityId' ] ?? 0,
       'timeFormat' => $this->timeInput->getFormats( $locale )[ 'js' ],
       'today' => ( new DateTimeImmutable( 'today', $timezone ) )->format( 'Y-m-d' ),
     ];
+  }
+
+  /**
+   * Describes the "+" buttons: which ones to show, and the customers to suggest for a new
+   * project. The customers are only loaded when the user may create projects.
+   *
+   * @param User $user The logged-in user.
+   * @return QuickCreateView
+   */
+  private function describeQuickCreate( User $user ) : array
+  {
+    $permissions = $this->creator->getPermissions();
+
+    return $permissions + [ 'customers' => $permissions[ 'project' ] ? $this->creator->getCustomerNames( $user ) : [] ];
   }
 
   /**

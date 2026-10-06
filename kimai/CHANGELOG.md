@@ -11,6 +11,9 @@ version the app contains; see the
   If you turned either off with `plugins/TimerBarBundle/.disabled` or
   `plugins/ReportingBundle/.disabled`, rename that folder; the old one can be removed. The
   **Show quick start bar** preference keeps its setting.
+- Quick start bar and inline timesheet editing: **+** buttons next to the project and
+  activity pickers add a new project (with a new or existing customer) or activity from just
+  its name, and select it. Kimai's defaults apply; everything can be changed later.
 - Inline timesheet editing: switching to another window or app, for example to take a
   screenshot, no longer saves and closes the record being edited.
 

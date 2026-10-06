@@ -9,6 +9,7 @@ services:
     exclude:
       - '../../Resources/'
       - '../../Model/'
+      - '../../Exception/'
 
   KimaiPlugin\QuickTimerBarBundle\Controller\:
     resource: '../../Controller'
