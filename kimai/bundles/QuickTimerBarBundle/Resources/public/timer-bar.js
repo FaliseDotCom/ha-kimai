@@ -1,8 +1,8 @@
 /**
  * Behaviour of the Kimai quick start bar: places it below the top bar, fills in project and
- * activity from recent entries, offers only the activities that fit the chosen project, shows
- * whether the button starts a timer or adds a finished record, saves changes to the running
- * entry as they are made, and runs the clock of the running entry.
+ * activity from recent entries, offers only the activities that fit the chosen project,
+ * switches between timer mode (start now) and manual mode (add a finished record), saves
+ * changes to the running entry as they are made, and runs the clock of the running entry.
  */
 ( function ()
 {
@@ -158,6 +158,42 @@
   const STATE_RUNNING = 'running';
 
   /**
+   * Value of the form's data-state for the form that starts or adds a record.
+   *
+   * @type {string}
+   */
+  const STATE_IDLE = 'idle';
+
+  /**
+   * The bar's modes: timer mode starts a record now and shows the running one, manual mode
+   * adds a finished record from a date, start and end time.
+   *
+   * @type {{timer: string, manual: string}}
+   */
+  const MODES = { timer: 'timer', manual: 'manual' };
+
+  /**
+   * Browser storage key that remembers the mode the user last chose.
+   *
+   * @type {string}
+   */
+  const MODE_STORAGE_KEY = 'kimai.quickTimerBar.mode';
+
+  /**
+   * Selector of the mode buttons; their data-timer-bar-mode holds the mode they choose.
+   *
+   * @type {string}
+   */
+  const MODE_BUTTON_SELECTOR = '[data-timer-bar-mode]';
+
+  /**
+   * Selector of the continue buttons added to the entry rows.
+   *
+   * @type {string}
+   */
+  const CONTINUE_BUTTON_SELECTOR = '.timer-bar-continue';
+
+  /**
    * Milliseconds to wait after a change before saving the running entry, so quick changes
    * are saved together.
    *
@@ -203,14 +239,14 @@
   }
 
   /**
-   * Reads the recent entries that the form embeds as JSON.
+   * Reads the recent entries that the bar embeds as JSON.
    *
-   * @param {HTMLFormElement} form The start form.
+   * @param {HTMLFormElement} form One of the bar's forms.
    * @returns {{description: string, projectId: number, activityId: number}[]}
    */
   function readSuggestions( form )
   {
-    const element = form.querySelector( '[data-timer-bar-suggestions]' );
+    const element = ( form.closest( BAR_SELECTOR ) ?? form ).querySelector( '[data-timer-bar-suggestions]' );
 
     try
     {
@@ -550,51 +586,216 @@
     {
       initAutoSave( form );
     }
-    else
+  }
+
+  /**
+   * Returns the mode the user last chose, or timer mode when none is remembered.
+   *
+   * @returns {string}
+   */
+  function readStoredMode()
+  {
+    try
     {
-      initSubmitLabel( form );
+      const mode = window.localStorage.getItem( MODE_STORAGE_KEY );
+      return Object.values( MODES ).includes( mode ) ? mode : MODES.timer;
+    }
+    catch ( error )
+    {
+      return MODES.timer;
     }
   }
 
   /**
-   * Shows on the main button what it will do: start a timer while no end time is entered, or
-   * add a finished record once there is one.
+   * Remembers the chosen mode for the next page, when the browser allows it.
    *
-   * @param {HTMLFormElement} form The start form.
+   * @param {string} mode The chosen mode.
    * @returns {void}
    */
-  function initSubmitLabel( form )
+  function storeMode( mode )
   {
-    const endTime = form.querySelector( '[data-timer-bar-end-time]' );
-    const submit = form.querySelector( '[data-timer-bar-submit]' );
-
-    if ( endTime === null || submit === null )
+    try
     {
-      return;
+      window.localStorage.setItem( MODE_STORAGE_KEY, mode );
     }
-
-    const update = () =>
+    catch ( error )
     {
-      const adds = endTime.value.trim() !== '';
-      const title = adds ? submit.dataset.titleAdd : submit.dataset.titleStart;
+      // Without storage the bar simply starts in timer mode on the next page.
+    }
+  }
 
+  /**
+   * Returns the label of the continue buttons for the bar's current mode.
+   *
+   * @param {HTMLFormElement} continueForm The hidden continue form, which carries both labels.
+   * @returns {string}
+   */
+  function getContinueLabel( continueForm )
+  {
+    const bar = continueForm.closest( BAR_SELECTOR );
+    const manual = bar !== null && bar.dataset.mode === MODES.manual;
+
+    return manual ? continueForm.dataset.labelManual : continueForm.dataset.labelTimer;
+  }
+
+  /**
+   * Shows a label on a continue button.
+   *
+   * @param {HTMLButtonElement} button The continue button.
+   * @param {string} label What the button does in the current mode.
+   * @returns {void}
+   */
+  function labelContinueButton( button, label )
+  {
+    button.title = label;
+    button.setAttribute( 'aria-label', label );
+  }
+
+  /**
+   * Switches the bar to a mode. The stylesheet shows the matching form and fields; this turns
+   * the date and times of the start form on in manual mode only, where the start and end
+   * time are required, and shows on the main button whether it starts or adds.
+   *
+   * @param {HTMLElement} bar The quick start bar.
+   * @param {string} mode One of MODES.
+   * @returns {void}
+   */
+  function applyMode( bar, mode )
+  {
+    const manual = mode === MODES.manual;
+    const submit = bar.querySelector( '[data-timer-bar-submit]' );
+    const continueForm = bar.querySelector( CONTINUE_FORM_SELECTOR );
+
+    bar.dataset.mode = mode;
+    bar.querySelectorAll( MODE_BUTTON_SELECTOR ).forEach( ( button ) =>
+    {
+      button.setAttribute( 'aria-pressed', String( button.dataset.timerBarMode === mode ) );
+    } );
+    bar.querySelectorAll( '[data-timer-bar-manual] input' ).forEach( ( input ) =>
+    {
+      input.disabled = !manual;
+      input.required = manual;
+    } );
+
+    if ( submit !== null )
+    {
+      const title = manual ? submit.dataset.titleManual : submit.dataset.titleTimer;
       submit.querySelectorAll( '[data-timer-bar-icon]' ).forEach( ( icon ) =>
       {
-        icon.hidden = icon.dataset.timerBarIcon !== ( adds ? 'add' : 'start' );
+        icon.hidden = icon.dataset.timerBarIcon !== mode;
       } );
       submit.title = title;
       submit.setAttribute( 'aria-label', title );
-    };
+    }
 
-    endTime.addEventListener( 'input', update );
-    endTime.addEventListener( 'change', update );
-    update();
+    if ( continueForm !== null )
+    {
+      const label = getContinueLabel( continueForm );
+      document.querySelectorAll( CONTINUE_BUTTON_SELECTOR ).forEach( ( button ) => labelContinueButton( button, label ) );
+    }
   }
 
   /**
-   * Shows or clears the error message of the running bar.
+   * Starts the bar in the mode the user last chose, and wires up the mode buttons.
    *
-   * @param {HTMLFormElement} form The running bar form.
+   * @param {HTMLElement} bar The quick start bar.
+   * @returns {void}
+   */
+  function initModes( bar )
+  {
+    applyMode( bar, readStoredMode() );
+
+    bar.querySelectorAll( MODE_BUTTON_SELECTOR ).forEach( ( button ) =>
+    {
+      button.addEventListener( 'click', () =>
+      {
+        applyMode( bar, button.dataset.timerBarMode );
+        storeMode( button.dataset.timerBarMode );
+      } );
+    } );
+  }
+
+  /**
+   * Fills the start form with a past record, so its date and times can be entered: the
+   * description, project, activity, tags and billable setting are copied, the times cleared.
+   *
+   * @param {HTMLFormElement} form The start form.
+   * @param {{description: string, projectId: number, activityId: number, tagIds: number[], billableMode: string}} entry The record.
+   * @returns {void}
+   */
+  function fillForm( form, entry )
+  {
+    const projectSelect = form.querySelector( '[data-timer-bar-project]' );
+    const billable = form.querySelector( '[data-timer-bar-billable-value]' );
+    const newTags = form.querySelector( '[data-timer-bar-new-tags]' );
+    const beginTime = form.querySelector( '[data-timer-bar-begin-time]' );
+
+    form.querySelector( '[data-timer-bar-description]' ).value = entry.description;
+    projectSelect.value = String( entry.projectId );
+    form.querySelector( '[data-timer-bar-activity]' ).value = String( entry.activityId );
+    form.querySelectorAll( '[data-timer-bar-tag]' ).forEach( ( checkbox ) =>
+    {
+      checkbox.checked = entry.tagIds.includes( Number( checkbox.value ) );
+    } );
+    form.querySelectorAll( '[data-timer-bar-manual] .timer-bar-time' ).forEach( ( input ) => { input.value = ''; } );
+
+    if ( newTags !== null )
+    {
+      newTags.value = '';
+    }
+
+    if ( billable !== null )
+    {
+      billable.value = entry.billableMode;
+    }
+
+    // Lets the activity picker, tag count and billable toggle follow the new values.
+    projectSelect.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+    form.dispatchEvent( new Event( 'timer-bar:selection' ) );
+    showError( form, '' );
+
+    if ( beginTime !== null )
+    {
+      beginTime.focus();
+    }
+  }
+
+  /**
+   * Copies a past record into the start form in manual mode, instead of starting it now.
+   *
+   * @param {HTMLFormElement} continueForm The hidden continue form, which knows where to ask.
+   * @param {string} id The record ID.
+   * @returns {Promise<void>}
+   */
+  async function copyEntry( continueForm, id )
+  {
+    const form = continueForm.closest( BAR_SELECTOR ).querySelector( FORM_SELECTOR + '[data-state="' + STATE_IDLE + '"]' );
+    const url = new URL( continueForm.dataset.entryUrl, window.location.href );
+    url.searchParams.set( 'timesheet', id );
+
+    try
+    {
+      const response = await fetch( url, { headers: { Accept: 'application/json' }, credentials: 'same-origin' } );
+      const result = await response.json();
+
+      if ( !response.ok )
+      {
+        showError( form, result.message ?? '' );
+        return;
+      }
+
+      fillForm( form, result );
+    }
+    catch ( error )
+    {
+      console.error( 'Quick start bar: reading the record failed', error );
+    }
+  }
+
+  /**
+   * Shows or clears the error message below a bar form.
+   *
+   * @param {HTMLFormElement} form The bar form.
    * @param {string} message The message, or an empty string to clear it.
    * @returns {void}
    */
@@ -691,7 +892,9 @@
   }
 
   /**
-   * Adds a continue button to every entry row on "My times" that does not have one yet.
+   * Adds a continue button to every entry row on "My times" that does not have one yet. In
+   * timer mode it starts the record again now; in manual mode it copies the record into the
+   * bar, so its date and times can be entered.
    *
    * @param {HTMLFormElement} form The hidden continue form.
    * @returns {void}
@@ -714,14 +917,20 @@
       const button = document.createElement( 'button' );
       button.type = 'button';
       button.className = 'btn btn-sm btn-ghost-success btn-icon timer-bar-continue';
-      button.title = form.dataset.label;
-      button.setAttribute( 'aria-label', form.dataset.label );
+      labelContinueButton( button, getContinueLabel( form ) );
       button.innerHTML = '<i class="fas fa-play"></i>';
       button.addEventListener( 'click', ( event ) =>
       {
         // The row itself opens the edit dialog; the button must not.
         event.preventDefault();
         event.stopPropagation();
+
+        if ( form.closest( BAR_SELECTOR )?.dataset.mode === MODES.manual )
+        {
+          copyEntry( form, match[ 1 ] );
+          return;
+        }
+
         idField.value = match[ 1 ];
         form.submit();
       } );
@@ -819,6 +1028,7 @@
     }
 
     document.querySelectorAll( FORM_SELECTOR ).forEach( initForm );
+    document.querySelectorAll( BAR_SELECTOR ).forEach( initModes );
     document.querySelectorAll( CLOCK_SELECTOR ).forEach( startClock );
     document.querySelectorAll( CONTINUE_FORM_SELECTOR ).forEach( initContinue );
   } );

@@ -6,22 +6,27 @@ bar, without opening a form.
 The bar replaces Kimai's own start button and sits on its own row directly below the top bar
 of every page, above the page's own buttons and filters.
 
-- **Idle:** "What are you working on?", a project picker grouped by customer, an activity
-  picker, a tag picker (which can create tags, with permission), a billable toggle (with
-  permission), a date with start and end time, and a start (or add) button.
-- **Running:** the same fields, filled in with the running record and editable, with its
-  date and start time, a live clock and a stop button. Changes are saved as they are made.
+- **Fields:** "What are you working on?", a project picker grouped by customer, an activity
+  picker, a tag picker (which can create tags, with permission) and a billable toggle (with
+  permission).
+- **Timer mode** (clock icon): a start button that starts a record now. While a record runs,
+  the bar shows it in the same fields, editable, with its date and start time, a live clock
+  and a stop button. Changes are saved as they are made.
+- **Manual mode** (list icon): a date with start and end time, and an add button that adds a
+  finished record. This also works while a record runs; the running record keeps going and
+  returns in timer mode.
 
-The times decide what the button does: no times start a timer now, a start time alone starts
-a timer that has been running since then, and a start and end time add a finished record.
-Times accept short forms such as `915` or `945p`, and an end time before the start time means
-the next day.
+The two small icons next to the main button switch modes, as in Toggl Track; the browser
+remembers the last choice. Times accept short forms such as `915` or `945p`, and an end time
+before the start time means the next day.
 
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.
 
-On **My times** each record gets a play button that continues it: a new record starts now
-with the same description, project, activity, tags and billable setting.
+On **My times** each record gets a play button. In timer mode it continues the record: a
+new record starts now with the same description, project, activity, tags and billable
+setting. In manual mode it copies those into the bar instead, so a date, start and end time
+can be entered before adding it.
 
 Each user can turn the bar off with **Show quick start bar** in their preferences; Kimai's
 own start button then returns. The bar is on by default.
@@ -67,7 +72,8 @@ differing only in its namespace; change both together.
 ## How it starts and stops records
 
 The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/update`, `/timer-bar/stop`
-and `/timer-bar/continue`, protected by a CSRF token. The script sends changes to the running
+and `/timer-bar/continue`, protected by a CSRF token. In manual mode the play button reads
+the record from `/timer-bar/entry` as JSON, which only answers for the user's own records. The script sends changes to the running
 record to `/timer-bar/update` in the background and gets JSON back; everything else returns
 to the page it was used on. Records are created and stopped through Kimai's `TimesheetService`, and continuing goes
 through Kimai's restart events like Kimai's own "repeat" action, so Kimai's own rules apply:

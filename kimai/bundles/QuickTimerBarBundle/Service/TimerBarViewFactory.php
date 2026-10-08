@@ -11,7 +11,6 @@ use App\Entity\Timesheet;
 use App\Entity\User;
 use App\Timesheet\DateTimeFactory;
 use DateTimeImmutable;
-use DateTimeZone;
 use KimaiPlugin\QuickTimerBarBundle\Model\EntryInput;
 use KimaiPlugin\QuickTimerBarBundle\Repository\TimerBarRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -25,10 +24,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @phpstan-type CustomerGroup array{name: string, projects: array<int, ProjectOption>}
  * @phpstan-type ActivityOption array{id: int, name: string, projectId: int, billable: bool}
  * @phpstan-type TagOption array{id: int, name: string}
- * @phpstan-type RunningEntry array{id: int, description: string, projectId: int, activityId: int, begin: string, beginDate: string, beginTime: string, tagIds: array<int, int>, billableMode: string}
+ * @phpstan-type EntryView array{id: int, description: string, projectId: int, activityId: int, begin: string, beginDate: string, beginTime: string, tagIds: array<int, int>, billableMode: string}
  * @phpstan-type QuickCreateView array{project: bool, customer: bool, activity: bool, customers: array<int, string>}
  * @phpstan-type TimerBarView array{
- *   running: RunningEntry|array{},
+ *   running: EntryView|array{},
  *   customers: array<int, CustomerGroup>,
  *   activities: array<int, ActivityOption>,
  *   suggestions: array<int, SuggestionOption>,
@@ -75,7 +74,7 @@ final class TimerBarViewFactory
     $running = $this->repository->findRunningEntry( $user );
 
     return [
-      'running' => $running === null ? [] : $this->describeRunningEntry( $running, $locale, $timezone ),
+      'running' => $running === null ? [] : $this->describeEntry( $running, $user, $locale ),
       'customers' => $this->groupProjectsByCustomer( $projects ),
       'activities' => $this->describeActivities( $activities ),
       'suggestions' => $suggestions,
@@ -132,15 +131,17 @@ final class TimerBarViewFactory
   }
 
   /**
-   * Describes the running entry, so the bar can show it in its editable fields.
+   * Describes a record, so the bar can show it in its editable fields: the running record, or
+   * a past one copied into the bar in manual mode.
    *
-   * @param Timesheet $entry The running entry.
+   * @param Timesheet $entry The record.
+   * @param User $user The logged-in user, whose time zone applies.
    * @param string $locale The locale of the page, which decides the time format.
-   * @param DateTimeZone $timezone The user's time zone.
-   * @return RunningEntry
+   * @return EntryView
    */
-  private function describeRunningEntry( Timesheet $entry, string $locale, DateTimeZone $timezone ) : array
+  public function describeEntry( Timesheet $entry, User $user, string $locale ) : array
   {
+    $timezone = DateTimeFactory::createByUser( $user )->getTimezone();
     $begin = $entry->getBegin() === null ? null : DateTimeImmutable::createFromMutable( $entry->getBegin() )->setTimezone( $timezone );
     $tagIds = [];
     foreach ( $entry->getTags() as $tag )

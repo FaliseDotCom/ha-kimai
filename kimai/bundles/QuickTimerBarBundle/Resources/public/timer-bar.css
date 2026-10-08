@@ -132,10 +132,51 @@
   font-weight: 600;
 }
 
+/* Clock that has not started yet, in timer mode */
+.timer-bar-idle-clock
+{
+  color: var(--tblr-secondary);
+}
+
 /* Running entry: the same fields, saved as they change, with its clock and stop button */
 .timer-bar-running
 {
   border-left: 4px solid var(--tblr-success);
+}
+
+/* Timer and manual mode buttons, stacked like a switch */
+.timer-bar-modes
+{
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+
+.timer-bar-mode
+{
+  min-height: 0;
+  padding: 0.15rem 0.35rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--tblr-secondary);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.timer-bar-mode[aria-pressed="true"]
+{
+  color: var(--tblr-primary);
+}
+
+/* Timer mode: the running record when there is one, otherwise the start form without times.
+   Manual mode: the start form with date, start and end time, also while a record runs. */
+.timer-bar[data-mode="timer"].timer-bar-running .timer-bar-form[data-state="idle"],
+.timer-bar[data-mode="manual"] .timer-bar-form[data-state="running"],
+.timer-bar[data-mode="timer"] .timer-bar-times[data-timer-bar-manual],
+.timer-bar[data-mode="manual"] .timer-bar-idle-clock
+{
+  display: none;
 }
 
 /* Error when a change to the running entry could not be saved */
@@ -216,6 +257,8 @@ td:has(> .timer-bar-continue)
 
   .timer-bar-tags,
   .timer-bar-billable,
+  .timer-bar-idle-clock,
+  .timer-bar-modes,
   .timer-bar-button
   {
     order: 2;

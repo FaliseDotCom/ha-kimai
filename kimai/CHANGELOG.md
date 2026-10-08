@@ -8,6 +8,11 @@ version the app contains; see the
 
 - Reporting extras: the working hours dashboard widget is now called **Your working hours by
   project per week**.
+- Quick start bar: a **timer mode** and a **manual mode**, switched with two small icons next
+  to the green button, as in Toggl Track. Timer mode starts a record now; manual mode adds a
+  finished record from a date, start and end time, also while another record runs. In manual
+  mode the play buttons on **My times** copy the record into the bar instead of starting it,
+  so you can enter its date and times. The browser remembers the last mode.
 
 ## 2.67.0.21
 

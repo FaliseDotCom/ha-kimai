@@ -209,14 +209,14 @@ page's own buttons and filters.
 - **Billable** (coins icon): shows whether the record will be billable. It follows Kimai's rule
   (billable when the customer, project and activity all are) until you press it; then your
   choice counts. It only appears if you may change the billable setting.
-- **Date, start time and end time:** fill these in to record something you already did, or
-  leave them empty to start now. The green button shows what it will do:
-  - no times: **Start** (▶) starts a timer now;
-  - only a start time: **Start** (▶) starts a timer that has been running since then;
-  - start and end time: **Add** (+) adds a finished record.
-
-  Times can be typed short, such as `915` or `945p`, and an end time before the start time is
-  taken as the next day. The date is today unless you change it.
+- **Timer or manual mode:** the two small icons next to the green button switch between
+  them, as in Toggl Track. Your browser remembers the last choice.
+  - **Timer mode** (clock): the green **Start** button (▶) starts a record now. To have it
+    start earlier, change its start time once it runs.
+  - **Manual mode** (list): fill in a date, start time and end time, and the green **Add**
+    button (+) adds a finished record. Times can be typed short, such as `915` or `945p`, and
+    an end time before the start time is taken as the next day. The date is today unless
+    you change it.
 
 **While a record runs**, the bar shows the running record in the same fields, with its date
 and start time, a running clock and a red stop button. Everything can be changed while it
@@ -224,7 +224,9 @@ runs: the description, project, activity, tags, billable setting, and the date a
 started. Each change is
 saved as soon as you leave the field or pick an option; there is no save button, and Enter
 saves too. Changing the start time moves the clock. If Kimai refuses a change, for example
-a start time in the future, the reason appears below the bar.
+a start time in the future, the reason appears below the bar. Switching to manual mode
+while a record runs lets you add another, finished record; the running one keeps going and
+comes back when you switch to timer mode.
 
 **+** next to the project picker adds a new project: type its name and its customer, an
 existing one or a new one. **+** next to the activity picker adds a new activity; it can be
@@ -234,9 +236,10 @@ be changed later under **Administration**. A name that already exists picks that
 activity instead of adding a second one. The buttons only appear if you may create projects
 or activities; a new customer also needs permission to create customers.
 
-On **My times**, every record has a green play button next to its menu. It continues that
-record: a new record starts now with the same description, project, activity, tags and
-billable setting.
+On **My times**, every record has a green play button next to its menu. In timer mode it
+continues that record: a new record starts now with the same description, project, activity,
+tags and billable setting. In manual mode it copies those into the bar instead, without
+starting anything: enter the date, start and end time, and press **Add**.
 
 The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
 for rounding and for how many records may run at once apply. When only one record may run,

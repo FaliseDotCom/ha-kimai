@@ -1,0 +1,15 @@
+{#
+  Switches the bar between timer mode, which starts a record now and shows the running one,
+  and manual mode, which adds a finished record from a date, start and end time.
+#}
+{% trans_default_domain 'timer_bar' %}
+<div class="timer-bar-modes" role="group">
+  <button type="button" class="btn btn-icon timer-bar-mode" aria-pressed="true" data-timer-bar-mode="timer"
+    title="{{ 'timer_bar.mode_timer'|trans }}" aria-label="{{ 'timer_bar.mode_timer'|trans }}">
+    <i class="fas fa-clock"></i>
+  </button>
+  <button type="button" class="btn btn-icon timer-bar-mode" aria-pressed="false" data-timer-bar-mode="manual"
+    title="{{ 'timer_bar.mode_manual'|trans }}" aria-label="{{ 'timer_bar.mode_manual'|trans }}">
+    <i class="fas fa-list"></i>
+  </button>
+</div>

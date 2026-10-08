@@ -54,6 +54,18 @@
         <source>timer_bar.add</source>
         <target>Toevoegen</target>
       </trans-unit>
+      <trans-unit id="timer_bar.copy" resname="timer_bar.copy">
+        <source>timer_bar.copy</source>
+        <target>In de snelstartbalk invullen, om datum en tijden in te voeren</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.mode_timer" resname="timer_bar.mode_timer">
+        <source>timer_bar.mode_timer</source>
+        <target>Timermodus: nu starten, later stoppen</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.mode_manual" resname="timer_bar.mode_manual">
+        <source>timer_bar.mode_manual</source>
+        <target>Handmatige modus: datum, begin- en eindtijd invullen</target>
+      </trans-unit>
       <trans-unit id="quick_create.new_project" resname="quick_create.new_project">
         <source>quick_create.new_project</source>
         <target>Nieuw project</target>

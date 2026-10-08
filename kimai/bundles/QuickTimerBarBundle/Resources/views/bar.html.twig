@@ -1,163 +1,99 @@
 {% trans_default_domain 'timer_bar' %}
 {% set running = timer_bar.running %}
 {% set is_running = running is not empty %}
-{% set selected_project = is_running ? running.projectId : timer_bar.defaultProjectId %}
-{% set selected_activity = is_running ? running.activityId : timer_bar.defaultActivityId %}
-{% set selected_tags = is_running ? running.tagIds : [] %}
+{% set new_entry = {
+  description: '',
+  projectId: timer_bar.defaultProjectId,
+  activityId: timer_bar.defaultActivityId,
+  tagIds: [],
+  billableMode: 'auto'
+} %}
 <link rel="stylesheet" href="{{ path('timer_bar_asset', { 'name': 'timer-bar.css', 'v': timer_bar_version }) }}">
 <script src="{{ path('timer_bar_asset', { 'name': 'timer-bar.js', 'v': timer_bar_version }) }}" defer></script>
 
-<div class="card mb-3 timer-bar{% if is_running %} timer-bar-running{% endif %}" data-timer-bar>
-  <form method="post" action="{{ path(is_running ? 'timer_bar_update' : 'timer_bar_start') }}" class="card-body timer-bar-form"
-    data-timer-bar-form data-state="{{ is_running ? 'running' : 'idle' }}">
-    <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
-    <input type="hidden" name="_target_path" value="{{ target_path }}">
-    {% if is_running %}
+{# The script restores the mode the user last chose. #}
+<div class="card mb-3 timer-bar{% if is_running %} timer-bar-running{% endif %}" data-timer-bar data-mode="timer">
+  {% if is_running %}
+    {# Timer mode while a record runs: the running record, saved as it changes. #}
+    <form method="post" action="{{ path('timer_bar_update') }}" class="card-body timer-bar-form"
+      data-timer-bar-form data-state="running">
+      <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
+      <input type="hidden" name="_target_path" value="{{ target_path }}">
       <input type="hidden" name="timesheet" value="{{ running.id }}">
-    {% endif %}
 
-    <input type="text" name="description" class="form-control timer-bar-description" list="timer-bar-suggestions"
-      value="{{ is_running ? running.description : '' }}"
-      placeholder="{{ 'timer_bar.placeholder'|trans }}" aria-label="{{ 'timer_bar.placeholder'|trans }}"
-      autocomplete="off" maxlength="1000" data-timer-bar-description>
-    <datalist id="timer-bar-suggestions">
-      {% for suggestion in timer_bar.suggestions %}
-        <option value="{{ suggestion.description }}" label="{{ suggestion.projectName }}"></option>
-      {% endfor %}
-    </datalist>
+      {{ include('@QuickTimerBar/_fields.html.twig', { entry: running }) }}
 
-    <select name="project" class="form-select timer-bar-project" required aria-label="{{ 'timer_bar.project'|trans }}" data-timer-bar-project>
-      <option value="">{{ 'timer_bar.project'|trans }}</option>
-      {% for customer in timer_bar.customers %}
-        <optgroup label="{{ customer.name }}">
-          {% for project in customer.projects %}
-            <option value="{{ project.id }}" data-global-activities="{{ project.globalActivities ? '1' : '0' }}"
-              data-billable="{{ project.billable ? '1' : '0' }}"
-              {% if project.id == selected_project %}selected{% endif %}>{{ project.name }}</option>
-          {% endfor %}
-        </optgroup>
-      {% endfor %}
-    </select>
-
-    {% if timer_bar.quickCreate.project %}
-      <div class="dropdown timer-bar-create">
-        <button type="button" class="btn btn-icon timer-bar-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-          aria-expanded="false" title="{{ 'quick_create.new_project'|trans }}" aria-label="{{ 'quick_create.new_project'|trans }}">
-          <i class="{{ 'create'|icon(true) }}"></i>
-        </button>
-        {# No name attributes: these fields are not part of the record form. #}
-        <div class="dropdown-menu dropdown-menu-end timer-bar-create-menu" data-timer-bar-create="project"
-          data-url="{{ path('timer_bar_create_project') }}">
-          <input type="text" class="form-control form-control-sm" maxlength="150" autocomplete="off"
-            placeholder="{{ 'quick_create.project_name'|trans }}" aria-label="{{ 'quick_create.project_name'|trans }}" data-timer-bar-create-name>
-          <input type="text" class="form-control form-control-sm" maxlength="150" autocomplete="off" list="timer-bar-customers"
-            placeholder="{{ 'quick_create.customer_name'|trans }}" aria-label="{{ 'quick_create.customer_name'|trans }}" data-timer-bar-create-customer>
-          <datalist id="timer-bar-customers">
-            {% for customer in timer_bar.quickCreate.customers %}
-              <option value="{{ customer }}"></option>
-            {% endfor %}
-          </datalist>
-          <button type="button" class="btn btn-primary btn-sm" data-timer-bar-create-submit>{{ 'quick_create.add'|trans }}</button>
-          <p class="text-danger small m-0" role="alert" data-timer-bar-create-error hidden></p>
-        </div>
-      </div>
-    {% endif %}
-
-    <select name="activity" class="form-select timer-bar-activity" required aria-label="{{ 'timer_bar.activity'|trans }}" data-timer-bar-activity>
-      <option value="">{{ 'timer_bar.activity'|trans }}</option>
-      {% for activity in timer_bar.activities %}
-        <option value="{{ activity.id }}" data-project="{{ activity.projectId }}" data-billable="{{ activity.billable ? '1' : '0' }}"
-          {% if activity.id == selected_activity %}selected{% endif %}>{{ activity.name }}</option>
-      {% endfor %}
-    </select>
-
-    {% if timer_bar.quickCreate.activity %}
-      <div class="dropdown timer-bar-create">
-        <button type="button" class="btn btn-icon timer-bar-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-          aria-expanded="false" title="{{ 'quick_create.new_activity'|trans }}" aria-label="{{ 'quick_create.new_activity'|trans }}">
-          <i class="{{ 'create'|icon(true) }}"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end timer-bar-create-menu" data-timer-bar-create="activity"
-          data-url="{{ path('timer_bar_create_activity') }}">
-          <input type="text" class="form-control form-control-sm" maxlength="150" autocomplete="off"
-            placeholder="{{ 'quick_create.activity_name'|trans }}" aria-label="{{ 'quick_create.activity_name'|trans }}" data-timer-bar-create-name>
-          <button type="button" class="btn btn-primary btn-sm" data-timer-bar-create-submit>{{ 'quick_create.add'|trans }}</button>
-          <p class="text-danger small m-0" role="alert" data-timer-bar-create-error hidden></p>
-        </div>
-      </div>
-    {% endif %}
-
-    {% if timer_bar.tags is not empty or timer_bar.canCreateTags %}
-      <div class="dropdown timer-bar-tags">
-        <button type="button" class="btn btn-icon timer-bar-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-          aria-expanded="false" title="{{ 'timer_bar.tags'|trans }}" aria-label="{{ 'timer_bar.tags'|trans }}" data-timer-bar-tag-button>
-          <i class="{{ 'tag'|icon(true) }}"></i>
-          <span class="badge bg-primary text-primary-fg timer-bar-count" data-timer-bar-tag-count hidden></span>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end timer-bar-tag-menu">
-          {% for tag in timer_bar.tags %}
-            <label class="dropdown-item timer-bar-tag-option">
-              <input type="checkbox" class="form-check-input m-0 me-2" name="tags[]" value="{{ tag.id }}" data-timer-bar-tag
-                {% if tag.id in selected_tags %}checked{% endif %}>
-              {{ tag.name }}
-            </label>
-          {% endfor %}
-          {% if timer_bar.canCreateTags %}
-            <div class="dropdown-item-text">
-              <input type="text" name="new_tags" class="form-control form-control-sm" maxlength="500" autocomplete="off"
-                placeholder="{{ 'timer_bar.new_tags'|trans }}" aria-label="{{ 'timer_bar.new_tags'|trans }}" data-timer-bar-new-tags>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    {% endif %}
-
-    {% if timer_bar.canEditBillable %}
-      <input type="hidden" name="billable" value="{{ is_running ? running.billableMode : 'auto' }}" data-timer-bar-billable-value>
-      <button type="button" class="btn btn-icon timer-bar-toggle timer-bar-billable" aria-pressed="false"
-        title="{{ 'timer_bar.billable'|trans }}" aria-label="{{ 'timer_bar.billable'|trans }}" data-timer-bar-billable>
-        <i class="{{ 'money'|icon(true) }}"></i>
-      </button>
-    {% endif %}
-
-    <div class="timer-bar-times">
-      <input type="date" name="date" class="form-control timer-bar-date" value="{{ is_running ? running.beginDate : timer_bar.today }}"
-        title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
-      <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ is_running ? running.beginTime : '' }}"
-        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
-        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
-      {% if is_running %}
+      <div class="timer-bar-times">
+        <input type="date" name="date" class="form-control timer-bar-date" value="{{ running.beginDate }}"
+          title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+        <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
+          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
+          title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
         <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}">0:00:00</time>
-      {% else %}
-        <span class="timer-bar-time-separator" aria-hidden="true">&ndash;</span>
-        <input type="text" name="end_time" class="form-control timer-bar-time"
-          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
-          title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off" data-timer-bar-end-time>
-      {% endif %}
-    </div>
+      </div>
 
-    {% if is_running %}
+      {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+
       <button type="submit" formaction="{{ path('timer_bar_stop') }}" class="btn btn-danger btn-icon timer-bar-button"
         title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop>
         <i class="{{ 'stop'|icon(true) }}"></i>
       </button>
-    {% else %}
-      <button type="submit" class="btn btn-success btn-icon timer-bar-button" data-timer-bar-submit
-        data-title-start="{{ 'timer_bar.start'|trans }}" data-title-add="{{ 'timer_bar.add'|trans }}"
-        title="{{ 'timer_bar.start'|trans }}" aria-label="{{ 'timer_bar.start'|trans }}">
-        <i class="{{ 'start'|icon(true) }}" data-timer-bar-icon="start"></i>
-        <i class="{{ 'create'|icon(true) }}" data-timer-bar-icon="add" hidden></i>
-      </button>
-    {% endif %}
+
+      <p class="timer-bar-error text-danger" role="alert" data-timer-bar-error hidden></p>
+    </form>
+  {% endif %}
+
+  {# Timer mode starts a record now; manual mode adds a finished one from its date and times. #}
+  <form method="post" action="{{ path('timer_bar_start') }}" class="card-body timer-bar-form"
+    data-timer-bar-form data-state="idle">
+    <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
+    <input type="hidden" name="_target_path" value="{{ target_path }}">
+
+    {{ include('@QuickTimerBar/_fields.html.twig', { entry: new_entry }) }}
+
+    <div class="timer-bar-times" data-timer-bar-manual>
+      <input type="date" name="date" class="form-control timer-bar-date" value="{{ timer_bar.today }}"
+        title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+      <input type="text" name="begin_time" class="form-control timer-bar-time"
+        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
+        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off" data-timer-bar-begin-time>
+      <span class="timer-bar-time-separator" aria-hidden="true">&ndash;</span>
+      <input type="text" name="end_time" class="form-control timer-bar-time"
+        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
+        title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off">
+    </div>
+    <span class="timer-bar-elapsed timer-bar-idle-clock" aria-hidden="true">0:00:00</span>
+
+    {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+
+    <button type="submit" class="btn btn-success btn-icon timer-bar-button" data-timer-bar-submit
+      data-title-timer="{{ 'timer_bar.start'|trans }}" data-title-manual="{{ 'timer_bar.add'|trans }}"
+      title="{{ 'timer_bar.start'|trans }}" aria-label="{{ 'timer_bar.start'|trans }}">
+      <i class="{{ 'start'|icon(true) }}" data-timer-bar-icon="timer"></i>
+      <i class="{{ 'create'|icon(true) }}" data-timer-bar-icon="manual" hidden></i>
+    </button>
 
     <p class="timer-bar-error text-danger" role="alert" data-timer-bar-error hidden></p>
-
-    <script type="application/json" data-timer-bar-suggestions>{{ timer_bar.suggestions|json_encode|raw }}</script>
   </form>
+
+  <datalist id="timer-bar-suggestions">
+    {% for suggestion in timer_bar.suggestions %}
+      <option value="{{ suggestion.description }}" label="{{ suggestion.projectName }}"></option>
+    {% endfor %}
+  </datalist>
+  {% if timer_bar.quickCreate.project %}
+    <datalist id="timer-bar-customers">
+      {% for customer in timer_bar.quickCreate.customers %}
+        <option value="{{ customer }}"></option>
+      {% endfor %}
+    </datalist>
+  {% endif %}
+  <script type="application/json" data-timer-bar-suggestions>{{ timer_bar.suggestions|json_encode|raw }}</script>
 
   {% if show_continue %}
     <form method="post" action="{{ path('timer_bar_continue') }}" hidden data-timer-bar-continue
-      data-label="{{ 'timer_bar.continue'|trans }}">
+      data-label-timer="{{ 'timer_bar.continue'|trans }}" data-label-manual="{{ 'timer_bar.copy'|trans }}"
+      data-entry-url="{{ path('timer_bar_entry') }}">
       <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
       <input type="hidden" name="_target_path" value="{{ target_path }}">
       <input type="hidden" name="timesheet" value="" data-timer-bar-continue-id>

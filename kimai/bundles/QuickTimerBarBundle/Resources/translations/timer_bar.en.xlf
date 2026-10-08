@@ -54,6 +54,18 @@
         <source>timer_bar.add</source>
         <target>Add</target>
       </trans-unit>
+      <trans-unit id="timer_bar.copy" resname="timer_bar.copy">
+        <source>timer_bar.copy</source>
+        <target>Fill in the quick start bar, to enter its date and times</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.mode_timer" resname="timer_bar.mode_timer">
+        <source>timer_bar.mode_timer</source>
+        <target>Timer mode: start now, stop later</target>
+      </trans-unit>
+      <trans-unit id="timer_bar.mode_manual" resname="timer_bar.mode_manual">
+        <source>timer_bar.mode_manual</source>
+        <target>Manual mode: enter a date, start and end time</target>
+      </trans-unit>
       <trans-unit id="quick_create.new_project" resname="quick_create.new_project">
         <source>quick_create.new_project</source>
         <target>New project</target>

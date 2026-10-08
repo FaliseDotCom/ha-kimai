@@ -15,6 +15,7 @@ use KimaiPlugin\QuickTimerBarBundle\Repository\TimerBarRepository;
 use KimaiPlugin\QuickTimerBarBundle\Service\EntryInputReader;
 use KimaiPlugin\QuickTimerBarBundle\Service\EntryWriter;
 use KimaiPlugin\QuickTimerBarBundle\Service\TimeInput;
+use KimaiPlugin\QuickTimerBarBundle\Service\TimerBarViewFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Starts, adds, changes, continues and stops time records from the quick start bar.
+ * Starts, adds, changes, continues and stops time records from the quick start bar, and
+ * describes past records for copying into it.
  */
 #[Route( path: '/timer-bar' )]
 #[IsGranted( 'create_own_timesheet' )]
@@ -36,6 +38,7 @@ final class TimerBarController extends AbstractController
   public const ROUTE_UPDATE = 'timer_bar_update';
   public const ROUTE_STOP = 'timer_bar_stop';
   public const ROUTE_CONTINUE = 'timer_bar_continue';
+  public const ROUTE_ENTRY = 'timer_bar_entry';
 
   /**
    * The page users return to when the request names no valid page.
@@ -51,6 +54,7 @@ final class TimerBarController extends AbstractController
    * @param EntryWriter $writer Creates and changes records.
    * @param TimeInput $timeInput Reads typed times.
    * @param TranslatorInterface $translator Translates error messages for the script.
+   * @param TimerBarViewFactory $viewFactory Describes records the way the bar shows them.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
@@ -58,7 +62,8 @@ final class TimerBarController extends AbstractController
     private readonly EntryInputReader $inputReader,
     private readonly EntryWriter $writer,
     private readonly TimeInput $timeInput,
-    private readonly TranslatorInterface $translator
+    private readonly TranslatorInterface $translator,
+    private readonly TimerBarViewFactory $viewFactory
   )
   {
   }
@@ -158,6 +163,27 @@ final class TimerBarController extends AbstractController
     $this->flashFailure( fn() => $this->writer->continueEntry( $user, $source ) );
 
     return $this->redirectBack( $request );
+  }
+
+  /**
+   * Describes one of the user's records as JSON, so the script can copy it into the bar in
+   * manual mode: the user then enters its date and times instead of starting it now.
+   *
+   * @param Request $request The request, with the record ID in its timesheet parameter.
+   * @return JsonResponse
+   */
+  #[Route( path: '/entry', name: self::ROUTE_ENTRY, methods: [ 'GET' ] )]
+  public function describeEntry( Request $request ) : JsonResponse
+  {
+    $user = $this->getUser();
+    $entry = $this->repository->findOwnEntry( $user, $request->query->getInt( 'timesheet' ) );
+
+    if ( $entry === null )
+    {
+      return new JsonResponse( [ 'message' => $this->translator->trans( 'timesheet.start.error', [], 'flashmessages' ) ], Response::HTTP_NOT_FOUND );
+    }
+
+    return new JsonResponse( $this->viewFactory->describeEntry( $entry, $user, $request->getLocale() ) );
   }
 
   /**
