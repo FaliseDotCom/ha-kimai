@@ -187,12 +187,20 @@
   const MODE_BUTTON_SELECTOR = '[data-timer-bar-mode]';
 
   /**
-   * Selector of the inputs that only manual mode uses: the date and times of the start form,
-   * and the end time of the running record. They are required there and off in timer mode.
+   * Selector of the inputs that only manual mode uses: the end times. They are required there
+   * and off in timer mode.
    *
    * @type {string}
    */
-  const MANUAL_INPUT_SELECTOR = '[data-timer-bar-manual] input, input[data-timer-bar-manual]';
+  const MANUAL_INPUT_SELECTOR = 'input[data-timer-bar-manual]';
+
+  /**
+   * Selector of the inputs that are optional in timer mode but required in manual mode: the
+   * start time of the start form, which is empty to start now.
+   *
+   * @type {string}
+   */
+  const REQUIRED_MANUAL_SELECTOR = '[data-timer-bar-required-manual]';
 
   /**
    * Selector of the end time of the running record.
@@ -667,9 +675,9 @@
   }
 
   /**
-   * Switches the bar to a mode. The stylesheet shows the matching fields and buttons: in
-   * manual mode the running record gets an end time and a save button instead of its clock
-   * and stop button. This turns the manual-only inputs on in manual mode, where they are
+   * Switches the bar to a mode. The stylesheet shows the matching fields and buttons: manual
+   * mode has end times, and the running record a save button instead of its clock and stop
+   * button. This turns the end times on in manual mode, where they and the start time are
    * required, stops showing a copied record, and shows on the start form's main button
    * whether it starts or adds.
    *
@@ -692,6 +700,10 @@
     bar.querySelectorAll( MANUAL_INPUT_SELECTOR ).forEach( ( input ) =>
     {
       input.disabled = !manual;
+      input.required = manual;
+    } );
+    bar.querySelectorAll( REQUIRED_MANUAL_SELECTOR ).forEach( ( input ) =>
+    {
       input.required = manual;
     } );
 
@@ -755,7 +767,7 @@
     {
       checkbox.checked = entry.tagIds.includes( Number( checkbox.value ) );
     } );
-    form.querySelectorAll( '[data-timer-bar-manual] .timer-bar-time' ).forEach( ( input ) => { input.value = ''; } );
+    form.querySelectorAll( '.timer-bar-times .timer-bar-time' ).forEach( ( input ) => { input.value = ''; } );
 
     if ( newTags !== null )
     {

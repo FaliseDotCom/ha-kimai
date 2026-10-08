@@ -211,8 +211,9 @@ page's own buttons and filters.
   choice counts. It only appears if you may change the billable setting.
 - **Timer or manual mode:** the two small icons next to the green button switch between
   them, as in Toggl Track. Your browser remembers the last choice.
-  - **Timer mode** (clock): the green **Start** button (▶) starts a record now. To have it
-    start earlier, change its start time once it runs.
+  - **Timer mode** (clock): the green **Start** button (▶) starts a record now. Fill in a
+    start time (and a date, if not today) to have it running since then instead. There is
+    no end time: the record runs until you stop it.
   - **Manual mode** (list): fill in a date, start time and end time, and the green **Add**
     button (+) adds a finished record. Times can be typed short, such as `915` or `945p`, and
     an end time before the start time is taken as the next day. The date is today unless

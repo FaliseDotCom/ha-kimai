@@ -53,7 +53,8 @@
     </form>
   {% endif %}
 
-  {# Timer mode starts a record now; manual mode adds a finished one from its date and times. #}
+  {# Timer mode starts a record now, or from the entered date and start time; manual mode adds
+     a finished one from its date, start and end time. #}
   <form method="post" action="{{ path('timer_bar_start') }}" class="card-body timer-bar-form"
     data-timer-bar-form data-state="idle">
     <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
@@ -61,18 +62,19 @@
 
     {{ include('@QuickTimerBar/_fields.html.twig', { entry: new_entry }) }}
 
-    <div class="timer-bar-times" data-timer-bar-manual>
+    <div class="timer-bar-times">
       <input type="date" name="date" class="form-control timer-bar-date" value="{{ timer_bar.today }}"
         title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
       <input type="text" name="begin_time" class="form-control timer-bar-time"
         data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
-        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off" data-timer-bar-begin-time>
-      <span class="timer-bar-time-separator" aria-hidden="true">&ndash;</span>
+        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off"
+        data-timer-bar-begin-time data-timer-bar-required-manual>
+      <span class="timer-bar-elapsed timer-bar-idle-clock" aria-hidden="true" data-timer-bar-timer>0:00:00</span>
+      <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
       <input type="text" name="end_time" class="form-control timer-bar-time"
         data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
-        title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off">
+        title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off" data-timer-bar-manual>
     </div>
-    <span class="timer-bar-elapsed timer-bar-idle-clock" aria-hidden="true" data-timer-bar-timer>0:00:00</span>
 
     {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
 

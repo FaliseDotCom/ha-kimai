@@ -9,7 +9,8 @@ of every page, above the page's own buttons and filters.
 - **Fields:** "What are you working on?", a project picker grouped by customer, an activity
   picker, a tag picker (which can create tags, with permission) and a billable toggle (with
   permission).
-- **Timer mode** (clock icon): a start button that starts a record now. While a record runs,
+- **Timer mode** (clock icon): a date and start time, and a start button that starts a
+  record now, or running since the entered start time. There is no end time. While a record runs,
   the bar shows it in the same fields, editable, with its date and start time, a live clock
   and a stop button. Changes are saved as they are made.
 - **Manual mode** (list icon): a date with start and end time, and an add button that adds a

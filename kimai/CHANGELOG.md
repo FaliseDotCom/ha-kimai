@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.24
+
+- Quick start bar: timer mode shows the date and start time again, so a timer can be started
+  as running since an earlier time. Only the end time is left out.
+
 ## 2.67.0.23
 
 - Quick start bar: switching to manual mode while a record runs no longer shows an empty
