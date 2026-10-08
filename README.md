@@ -15,9 +15,10 @@ else to set up.
 - Kimai with a bundled database; no separate database app needed.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
-- Four extra [plugins](#plugins): a **quick start bar** for starting and stopping time
+- Five extra [plugins](#plugins): a **quick start bar** for starting and stopping time
   recording, **reporting extras** with charts on Kimai's reports, **short time entries** such
-  as typing `945` for 9:45, and **inline timesheet editing** right in the record list.
+  as typing `945` for 9:45, **inline timesheet editing** right in the record list, and
+  **timesheet extras** such as collapsible days.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -44,7 +45,7 @@ Assistant.
 
 ## Plugins
 
-The app ships with four Kimai plugins, written for this app. All are optional: each can be
+The app ships with five Kimai plugins, written for this app. All are optional: each can be
 turned off without affecting the rest of Kimai.
 
 ### Quick start bar
@@ -92,6 +93,15 @@ preferences.
 
 [How it works](kimai/bundles/InlineTimesheetEditBundle/README.md)
 
+### Timesheet extras
+
+Improvements to **My times** and **All times**. With Kimai's daily stats turned on, each day's
+total row moves to the top of the day and can be clicked to collapse the day to just that
+row. One button collapses or expands all days, and the browser remembers which days are
+collapsed.
+
+[How it works](kimai/bundles/TimesheetExtrasBundle/README.md)
+
 The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use the plugins,
 and how to turn them off.
 
@@ -114,6 +124,12 @@ PHP, Twig, JavaScript and CSS. Pull requests should follow these conventions:
   [Development](.docs/development.md#1-lint) shows how to run both with Docker.
 - **User-facing changes:** update [`kimai/DOCS.md`](kimai/DOCS.md) and add an entry to
   [`kimai/CHANGELOG.md`](kimai/CHANGELOG.md).
+
+## AI coding guidelines
+
+AI coding assistants working on this repository should apply the `php`, `phpstan`,
+`javascript` and `css` skills: PHP for the plugins' bundles, PHPStan at level 6 after PHP
+changes, JavaScript and CSS for the plugins' scripts and stylesheets.
 
 ## License
 

@@ -190,8 +190,9 @@ Never expose port 8001 directly to the internet without HTTPS.
 
 ## Extras in this app
 
-The app adds four Kimai plugins, made for this app and maintained in the same repository:
-a quick start bar, reporting extras, short time entries and inline timesheet editing.
+The app adds five Kimai plugins, made for this app and maintained in the same repository:
+a quick start bar, reporting extras, short time entries, inline timesheet editing and
+timesheet extras.
 
 ### Quick start bar
 
@@ -382,6 +383,23 @@ correct it.
 Each user can turn this off with **Edit records directly in the list** in their preferences
 (click your name, then **Preferences**).
 
+### Timesheet extras
+
+**Collapsible days.** Turn on **Show daily stats in timesheet** in your preferences (click
+your name, then **Preferences**) to get a row per day with the day's total on **My times** and
+**All times**. That row then sits at the top of its day instead of below it.
+
+- Click a day's row to collapse the day to just that row, with its total; click it again to
+  expand it.
+- The button before **Customize display**, at the top of the list, collapses all days. When
+  all days are collapsed, it expands them all.
+- Your browser remembers which days are collapsed, separately for **My times** and **All
+  times**. After **Collapse all**, days on other pages and new days start collapsed too,
+  until you press **Expand all**.
+
+Selecting all records with the checkbox at the top of the list also selects the records in
+collapsed days.
+
 ### Turning an extra off
 
 Create a folder with the extra's name inside the `plugins` folder of the app's
@@ -393,6 +411,7 @@ configuration folder, put an empty file named `.disabled` in it, and restart the
 - `plugins/ShortTimeEntriesBundle/.disabled` turns off the short time entries.
 - `plugins/InlineTimesheetEditBundle/.disabled` turns off inline editing for everyone; to
   turn it off for one user only, see [Inline timesheet editing](#inline-timesheet-editing).
+- `plugins/TimesheetExtrasBundle/.disabled` turns off the timesheet extras.
 
 Remove the folder and restart to turn the extra back on.
 

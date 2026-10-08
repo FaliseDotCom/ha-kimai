@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="nl" datatype="plaintext" original="none">
+    <body>
+      <trans-unit id="timesheet_days.collapse_all" resname="timesheet_days.collapse_all">
+        <source>timesheet_days.collapse_all</source>
+        <target>Alle dagen inklappen</target>
+      </trans-unit>
+      <trans-unit id="timesheet_days.expand_all" resname="timesheet_days.expand_all">
+        <source>timesheet_days.expand_all</source>
+        <target>Alle dagen uitklappen</target>
+      </trans-unit>
+      <trans-unit id="timesheet_days.collapse_day" resname="timesheet_days.collapse_day">
+        <source>timesheet_days.collapse_day</source>
+        <target>Registraties van deze dag verbergen</target>
+      </trans-unit>
+      <trans-unit id="timesheet_days.expand_day" resname="timesheet_days.expand_day">
+        <source>timesheet_days.expand_day</source>
+        <target>Registraties van deze dag tonen</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

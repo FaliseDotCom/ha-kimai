@@ -1,0 +1,36 @@
+/* Collapsible days in Kimai's record lists. */
+
+.timesheet-days-day
+{
+  cursor: pointer;
+}
+
+.timesheet-days-hidden
+{
+  display: none;
+}
+
+/* The day's button sits before the date and points right while the day is collapsed. */
+.timesheet-days-toggle
+{
+  margin-inline-end: 0.25rem;
+  vertical-align: baseline;
+}
+
+.timesheet-days-toggle > i
+{
+  transition: transform 0.15s ease-in-out;
+}
+
+.timesheet-days-collapsed .timesheet-days-toggle > i
+{
+  transform: rotate( -90deg );
+}
+
+@media ( prefers-reduced-motion: reduce )
+{
+  .timesheet-days-toggle > i
+  {
+    transition: none;
+  }
+}

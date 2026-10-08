@@ -63,6 +63,7 @@ installed in any Kimai installation and listed in the
 | `QuickTimerBarBundle` | [kimai-quick-timer-bar-bundle](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle) |
 | `ShortTimeEntriesBundle` | [kimai-short-time-entries-bundle](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle) |
 | `InlineTimesheetEditBundle` | [kimai-inline-timesheet-edit-bundle](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle) |
+| `TimesheetExtrasBundle` | [kimai-timesheet-extras-bundle](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle) |
 
 The mirror's name is the package name in the plugin's `composer.json`. Never commit to a
 mirror: the next publish would refuse to overwrite it.

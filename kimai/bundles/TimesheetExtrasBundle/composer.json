@@ -1,0 +1,29 @@
+{
+  "name": "falisedotcom/kimai-timesheet-extras-bundle",
+  "description": "Improvements to Kimai's record lists: day rows at the top of each day, collapsible days and a collapse all button",
+  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "type": "kimai-plugin",
+  "version": "1.0.0",
+  "keywords": [ "kimai", "kimai-plugin" ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sander Falise"
+    }
+  ],
+  "extra":
+  {
+    "kimai":
+    {
+      "require": 26700,
+      "name": "Timesheet extras"
+    }
+  },
+  "autoload":
+  {
+    "psr-4":
+    {
+      "KimaiPlugin\\TimesheetExtrasBundle\\": ""
+    }
+  }
+}

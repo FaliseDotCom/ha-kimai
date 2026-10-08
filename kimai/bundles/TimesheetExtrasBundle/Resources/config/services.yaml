@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  KimaiPlugin\TimesheetExtrasBundle\:
+    resource: '../../*'
+    exclude:
+      - '../../Resources/'
+
+  KimaiPlugin\TimesheetExtrasBundle\Controller\:
+    resource: '../../Controller'
+    tags: [ 'controller.service_arguments' ]

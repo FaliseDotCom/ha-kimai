@@ -22,6 +22,7 @@ kimai/
     QuickTimerBarBundle/        Quick start bar below the top bar
     ShortTimeEntriesBundle/     Short time and duration entry in Kimai's forms
     InlineTimesheetEditBundle/  Editing records directly in the record list
+    TimesheetExtrasBundle/      Improvements to the record lists, such as collapsible days
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
@@ -136,6 +137,7 @@ They only use Kimai's extension points and services:
 | `QuickTimerBarBundle` | `ThemeEvent::CONTENT_START` on every page     | `TimesheetService` (create, validate, save, restart, stop), project, activity and tag queries |
 | `ShortTimeEntriesBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
 | `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
+| `TimesheetExtrasBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists, when the user has `daily_stats` on | The list markup (`tr.summary` day rows, the `col_date` cell class) and the table buttons in the page header |
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
 button (`.ticktac`). Its script moves it into a row at the start of `.page-wrapper`, directly

@@ -12,6 +12,7 @@ MariaDB database, so it works on its own with no other apps required.
 - Quick start bar: type what you are working on, pick a project, press start.
 - Reporting extras: charts on the weekly, monthly and yearly reports, and a summary report.
 - Quicker time entry: type `945` for 9:45, or `10` for a ten-minute duration.
+- Collapsible days in the record list, with each day's total at the top.
 - Creates the first administrator account for you.
 - Keeps all data in Home Assistant backups.
 - Supports Kimai plugins and `local.yaml` customisation.

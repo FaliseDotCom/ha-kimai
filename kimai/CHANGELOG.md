@@ -4,6 +4,14 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.25
+
+- New **timesheet extras** plugin. With **Show daily stats in timesheet** turned on, the row
+  with each day's total on **My times** and **All times** now sits at the top of the day
+  instead of below it. Click it to collapse the day to just that row; a button next to the
+  list's own buttons collapses or expands all days. The browser remembers which days are
+  collapsed.
+
 ## 2.67.0.24
 
 - Quick start bar: timer mode shows the date and start time again, so a timer can be started
