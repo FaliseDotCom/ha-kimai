@@ -1,5 +1,5 @@
 {
-  "name": "falisedotcom/kimai-timesheet-extras-bundle",
+  "name": "falisedotcom/kimai-timesheet-extras",
   "description": "Improvements to Kimai's record lists: day rows at the top of each day, collapsible days and a collapse all button",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
