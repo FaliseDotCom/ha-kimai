@@ -47,7 +47,7 @@ button sits in the page header, which a reload keeps.
 Kimai 2.67.0 or later.
 
 1. Download the zip of the latest
-   [release](https://github.com/FaliseDotCom/kimai-timesheet-extras/releases) and
+   [release](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle/releases) and
    unzip it into `var/plugins/` in your Kimai installation, so the plugin ends up in
    `var/plugins/TimesheetExtrasBundle/`.
 2. Rebuild Kimai's cache: `bin/console kimai:reload --env=prod`.
@@ -62,7 +62,7 @@ English and Dutch, in `Resources/translations/timesheet_extras.*.xlf`.
 
 This plugin is developed in the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai)
 repository, in `kimai/bundles/TimesheetExtrasBundle/`. The
-[kimai-timesheet-extras](https://github.com/FaliseDotCom/kimai-timesheet-extras)
+[kimai-timesheet-extras-bundle](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle)
 repository is a read-only mirror of that folder for releases: report issues and send changes
 to the app repository.
 
