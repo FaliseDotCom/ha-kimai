@@ -14,7 +14,8 @@
 {# The script restores the mode the user last chose. #}
 <div class="card mb-3 timer-bar{% if is_running %} timer-bar-running{% endif %}" data-timer-bar data-mode="timer">
   {% if is_running %}
-    {# Timer mode while a record runs: the running record, saved as it changes. #}
+    {# The running record, saved as it changes. Timer mode shows its clock and stop button;
+       manual mode an end time and a button that saves it as a finished record. #}
     <form method="post" action="{{ path('timer_bar_update') }}" class="card-body timer-bar-form"
       data-timer-bar-form data-state="running">
       <input type="hidden" name="_token" value="{{ csrf_token('timer_bar') }}">
@@ -29,14 +30,23 @@
         <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
           data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
           title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
-        <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}">0:00:00</time>
+        <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}" data-timer-bar-timer>0:00:00</time>
+        <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
+        <input type="text" name="end_time" class="form-control timer-bar-time"
+          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
+          title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off"
+          data-timer-bar-manual data-timer-bar-end-time>
       </div>
 
       {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
 
       <button type="submit" formaction="{{ path('timer_bar_stop') }}" class="btn btn-danger btn-icon timer-bar-button"
-        title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop>
+        title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop data-timer-bar-timer>
         <i class="{{ 'stop'|icon(true) }}"></i>
+      </button>
+      <button type="submit" formaction="{{ path('timer_bar_finish') }}" class="btn btn-success btn-icon timer-bar-button"
+        title="{{ 'timer_bar.finish'|trans }}" aria-label="{{ 'timer_bar.finish'|trans }}" data-timer-bar-finish data-timer-bar-manual>
+        <i class="fas fa-check"></i>
       </button>
 
       <p class="timer-bar-error text-danger" role="alert" data-timer-bar-error hidden></p>
@@ -62,7 +72,7 @@
         data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
         title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off">
     </div>
-    <span class="timer-bar-elapsed timer-bar-idle-clock" aria-hidden="true">0:00:00</span>
+    <span class="timer-bar-elapsed timer-bar-idle-clock" aria-hidden="true" data-timer-bar-timer>0:00:00</span>
 
     {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
 

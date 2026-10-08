@@ -16,7 +16,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Creates and changes time records from the quick start bar: records that start now, records
- * entered with a start and end time, continued records, and changes to the running record.
+ * entered with a start and end time, continued records, and changes to the running record,
+ * including finishing it at a given end time.
  * Everything goes through Kimai's TimesheetService, so its validation, rounding and
  * running-record limit apply.
  */
@@ -82,14 +83,16 @@ final class EntryWriter
   }
 
   /**
-   * Changes the running record: what it is, and optionally when it started.
+   * Changes the running record: what it is, optionally when it started, and optionally when
+   * it ended, which turns it into a finished record.
    *
    * @param Timesheet $timesheet The running record.
    * @param EntryInput $input What the user entered.
    * @param DateTimeImmutable|null $begin The new start, or null to keep it.
+   * @param DateTimeImmutable|null $end The end, or null to keep it running.
    * @return Timesheet
    */
-  public function update( Timesheet $timesheet, EntryInput $input, ?DateTimeImmutable $begin ) : Timesheet
+  public function update( Timesheet $timesheet, EntryInput $input, ?DateTimeImmutable $begin, ?DateTimeImmutable $end = null ) : Timesheet
   {
     foreach ( $timesheet->getTags()->toArray() as $tag )
     {
@@ -101,6 +104,11 @@ final class EntryWriter
     if ( $begin !== null )
     {
       $timesheet->setBegin( DateTime::createFromImmutable( $begin ) );
+    }
+
+    if ( $end !== null )
+    {
+      $timesheet->setEnd( DateTime::createFromImmutable( $end ) );
     }
 
     $this->timesheetService->validateTimesheet( $timesheet );

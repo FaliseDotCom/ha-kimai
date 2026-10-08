@@ -26,8 +26,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Starts, adds, changes, continues and stops time records from the quick start bar, and
- * describes past records for copying into it.
+ * Starts, adds, changes, continues, stops and finishes time records from the quick start bar,
+ * and describes past records for copying into it.
  */
 #[Route( path: '/timer-bar' )]
 #[IsGranted( 'create_own_timesheet' )]
@@ -37,6 +37,7 @@ final class TimerBarController extends AbstractController
   public const ROUTE_START = 'timer_bar_start';
   public const ROUTE_UPDATE = 'timer_bar_update';
   public const ROUTE_STOP = 'timer_bar_stop';
+  public const ROUTE_FINISH = 'timer_bar_finish';
   public const ROUTE_CONTINUE = 'timer_bar_continue';
   public const ROUTE_ENTRY = 'timer_bar_entry';
 
@@ -139,6 +140,40 @@ final class TimerBarController extends AbstractController
     {
       return $this->respondToUpdate( $request, null, $this->describeViolations( $exception ) );
     }
+  }
+
+  /**
+   * Saves the running record as a finished one, with the entered date, start and end time and
+   * the other fields as they are in the bar. Used in manual mode while a record runs.
+   *
+   * @param Request $request The posted running bar form, with an end time.
+   * @return Response
+   */
+  #[Route( path: '/finish', name: self::ROUTE_FINISH, methods: [ 'POST' ] )]
+  public function finish( Request $request ) : Response
+  {
+    $user = $this->getUser();
+    $entry = $this->repository->findRunningEntryById( $user, $request->request->getInt( 'timesheet' ) );
+    $input = $entry !== null && $this->isTokenValid( $request ) ? $this->inputReader->read( $request, $user ) : null;
+
+    if ( $entry === null || $input === null )
+    {
+      $this->flashError( 'timer_bar.invalid_selection' );
+
+      return $this->redirectBack( $request );
+    }
+
+    $period = $this->getEnteredPeriod( $request, $user );
+    if ( $period === null || $period[ 0 ] === null || $period[ 1 ] === null )
+    {
+      $this->flashError( 'timer_bar.invalid_time' );
+
+      return $this->redirectBack( $request );
+    }
+
+    $this->flashFailure( fn() => $this->writer->update( $entry, $input, $period[ 0 ], $period[ 1 ] ) );
+
+    return $this->redirectBack( $request );
   }
 
   /**

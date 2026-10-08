@@ -169,12 +169,13 @@
   color: var(--tblr-primary);
 }
 
-/* Timer mode: the running record when there is one, otherwise the start form without times.
-   Manual mode: the start form with date, start and end time, also while a record runs. */
-.timer-bar[data-mode="timer"].timer-bar-running .timer-bar-form[data-state="idle"],
-.timer-bar[data-mode="manual"] .timer-bar-form[data-state="running"],
-.timer-bar[data-mode="timer"] .timer-bar-times[data-timer-bar-manual],
-.timer-bar[data-mode="manual"] .timer-bar-idle-clock
+/* The running record when there is one, otherwise the start form; in manual mode a copied
+   record shows the start form instead. Timer mode shows the clocks and the stop button,
+   manual mode the date and times and the button that adds or saves with an end time. */
+.timer-bar-running:not([data-copying]) .timer-bar-form[data-state="idle"],
+.timer-bar[data-copying] .timer-bar-form[data-state="running"],
+.timer-bar[data-mode="timer"] [data-timer-bar-manual],
+.timer-bar[data-mode="manual"] [data-timer-bar-timer]
 {
   display: none;
 }

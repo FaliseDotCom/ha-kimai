@@ -13,8 +13,9 @@ of every page, above the page's own buttons and filters.
   the bar shows it in the same fields, editable, with its date and start time, a live clock
   and a stop button. Changes are saved as they are made.
 - **Manual mode** (list icon): a date with start and end time, and an add button that adds a
-  finished record. This also works while a record runs; the running record keeps going and
-  returns in timer mode.
+  finished record. While a record runs, the bar shows that record with an end time instead
+  of the clock, and a save button that finishes it with the entered date, start and end time.
+  A record copied with a play button (see below) temporarily takes its place.
 
 The two small icons next to the main button switch modes, as in Toggl Track; the browser
 remembers the last choice. Times accept short forms such as `915` or `945p`, and an end time
@@ -72,7 +73,8 @@ differing only in its namespace; change both together.
 ## How it starts and stops records
 
 The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/update`, `/timer-bar/stop`
-and `/timer-bar/continue`, protected by a CSRF token. In manual mode the play button reads
+and `/timer-bar/continue`, protected by a CSRF token; in manual mode the running record is
+finished through `/timer-bar/finish`. In manual mode the play button reads
 the record from `/timer-bar/entry` as JSON, which only answers for the user's own records. The script sends changes to the running
 record to `/timer-bar/update` in the background and gets JSON back; everything else returns
 to the page it was used on. Records are created and stopped through Kimai's `TimesheetService`, and continuing goes

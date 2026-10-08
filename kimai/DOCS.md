@@ -224,9 +224,13 @@ runs: the description, project, activity, tags, billable setting, and the date a
 started. Each change is
 saved as soon as you leave the field or pick an option; there is no save button, and Enter
 saves too. Changing the start time moves the clock. If Kimai refuses a change, for example
-a start time in the future, the reason appears below the bar. Switching to manual mode
-while a record runs lets you add another, finished record; the running one keeps going and
-comes back when you switch to timer mode.
+a start time in the future, the reason appears below the bar.
+
+**In manual mode while a record runs**, the bar keeps showing the running record, but with
+an end time instead of the clock, and a green ✓ button instead of the stop button. Change its
+date and times if needed, enter the end time and press ✓ or Enter: the record is saved as a
+finished record with exactly those times. This is the way to fix up a record you started
+with a play button but did not actually work on until later.
 
 **+** next to the project picker adds a new project: type its name and its customer, an
 existing one or a new one. **+** next to the activity picker adds a new activity; it can be

@@ -58,6 +58,10 @@
         <source>timer_bar.copy</source>
         <target>Fill in the quick start bar, to enter its date and times</target>
       </trans-unit>
+      <trans-unit id="timer_bar.finish" resname="timer_bar.finish">
+        <source>timer_bar.finish</source>
+        <target>Save with this end time</target>
+      </trans-unit>
       <trans-unit id="timer_bar.mode_timer" resname="timer_bar.mode_timer">
         <source>timer_bar.mode_timer</source>
         <target>Timer mode: start now, stop later</target>

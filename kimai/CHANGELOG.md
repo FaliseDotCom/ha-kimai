@@ -4,6 +4,13 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.23
+
+- Quick start bar: switching to manual mode while a record runs no longer shows an empty
+  bar. It shows the running record with an end time instead of the clock, and the ✓ button
+  saves it as a finished record with the entered date, start and end time. A record started
+  with a play button can now be given the times it actually took.
+
 ## 2.67.0.22
 
 - Reporting extras: the working hours dashboard widget is now called **Your working hours by

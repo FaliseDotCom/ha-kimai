@@ -187,6 +187,21 @@
   const MODE_BUTTON_SELECTOR = '[data-timer-bar-mode]';
 
   /**
+   * Selector of the inputs that only manual mode uses: the date and times of the start form,
+   * and the end time of the running record. They are required there and off in timer mode.
+   *
+   * @type {string}
+   */
+  const MANUAL_INPUT_SELECTOR = '[data-timer-bar-manual] input, input[data-timer-bar-manual]';
+
+  /**
+   * Selector of the end time of the running record.
+   *
+   * @type {string}
+   */
+  const END_TIME_SELECTOR = '[data-timer-bar-end-time]';
+
+  /**
    * Selector of the continue buttons added to the entry rows.
    *
    * @type {string}
@@ -652,9 +667,11 @@
   }
 
   /**
-   * Switches the bar to a mode. The stylesheet shows the matching form and fields; this turns
-   * the date and times of the start form on in manual mode only, where the start and end
-   * time are required, and shows on the main button whether it starts or adds.
+   * Switches the bar to a mode. The stylesheet shows the matching fields and buttons: in
+   * manual mode the running record gets an end time and a save button instead of its clock
+   * and stop button. This turns the manual-only inputs on in manual mode, where they are
+   * required, stops showing a copied record, and shows on the start form's main button
+   * whether it starts or adds.
    *
    * @param {HTMLElement} bar The quick start bar.
    * @param {string} mode One of MODES.
@@ -667,11 +684,12 @@
     const continueForm = bar.querySelector( CONTINUE_FORM_SELECTOR );
 
     bar.dataset.mode = mode;
+    delete bar.dataset.copying;
     bar.querySelectorAll( MODE_BUTTON_SELECTOR ).forEach( ( button ) =>
     {
       button.setAttribute( 'aria-pressed', String( button.dataset.timerBarMode === mode ) );
     } );
-    bar.querySelectorAll( '[data-timer-bar-manual] input' ).forEach( ( input ) =>
+    bar.querySelectorAll( MANUAL_INPUT_SELECTOR ).forEach( ( input ) =>
     {
       input.disabled = !manual;
       input.required = manual;
@@ -761,7 +779,8 @@
   }
 
   /**
-   * Copies a past record into the start form in manual mode, instead of starting it now.
+   * Copies a past record into the start form in manual mode, instead of starting it now. While
+   * a record runs, the start form takes its place until the mode is switched.
    *
    * @param {HTMLFormElement} continueForm The hidden continue form, which knows where to ask.
    * @param {string} id The record ID.
@@ -784,6 +803,7 @@
         return;
       }
 
+      continueForm.closest( BAR_SELECTOR ).dataset.copying = 'true';
       fillForm( form, result );
     }
     catch ( error )
@@ -861,7 +881,8 @@
 
   /**
    * Saves changes to the running entry as they are made: there is no save button, and Enter
-   * saves too. Only the stop button submits the form.
+   * saves too. Only the stop button submits the form, or in manual mode the button that saves
+   * it with its end time; there Enter does the same.
    *
    * @param {HTMLFormElement} form The running bar form.
    * @returns {void}
@@ -875,19 +896,38 @@
       timer = window.setTimeout( () => saveRunning( form ), SAVE_DELAY );
     };
 
-    form.addEventListener( 'change', schedule );
+    // The end time only counts when the record is saved as finished.
+    form.addEventListener( 'change', ( event ) =>
+    {
+      if ( !( event.target instanceof Element && event.target.matches( END_TIME_SELECTOR ) ) )
+      {
+        schedule();
+      }
+    } );
     form.addEventListener( 'timer-bar:selection', schedule );
 
     // Enter in a field would submit the form with its first button, the stop button. Leave
-    // the field instead: that saves the change, after other scripts completed short times.
+    // the field instead, so other scripts complete short times; then save the change, or in
+    // manual mode save the record with its end time.
     form.addEventListener( 'keydown', ( event ) =>
     {
-      if ( event.key === 'Enter' && event.target instanceof HTMLInputElement )
+      if ( event.key !== 'Enter' || !( event.target instanceof HTMLInputElement ) )
       {
-        event.preventDefault();
-        event.target.blur();
-        schedule();
+        return;
       }
+
+      event.preventDefault();
+      event.target.blur();
+
+      const finish = form.querySelector( '[data-timer-bar-finish]' );
+      if ( form.closest( BAR_SELECTOR )?.dataset.mode === MODES.manual && finish !== null )
+      {
+        window.clearTimeout( timer );
+        window.setTimeout( () => form.requestSubmit( finish ) );
+        return;
+      }
+
+      schedule();
     } );
   }
 

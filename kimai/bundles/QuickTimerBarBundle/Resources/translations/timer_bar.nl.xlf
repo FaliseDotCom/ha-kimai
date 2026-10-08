@@ -58,6 +58,10 @@
         <source>timer_bar.copy</source>
         <target>In de snelstartbalk invullen, om datum en tijden in te voeren</target>
       </trans-unit>
+      <trans-unit id="timer_bar.finish" resname="timer_bar.finish">
+        <source>timer_bar.finish</source>
+        <target>Opslaan met deze eindtijd</target>
+      </trans-unit>
       <trans-unit id="timer_bar.mode_timer" resname="timer_bar.mode_timer">
         <source>timer_bar.mode_timer</source>
         <target>Timermodus: nu starten, later stoppen</target>
