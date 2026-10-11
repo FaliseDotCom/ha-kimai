@@ -161,6 +161,8 @@ main()
     fatal "$BUNDLES_DIR has uncommitted changes. Commit or stash them first."
   fi
 
+  "$REPO_ROOT/scripts/check-plugins.sh" || fatal "Fix the plugin check first."
+
   local bundles=( "$@" )
   if [ ${#bundles[@]} -eq 0 ]
   then

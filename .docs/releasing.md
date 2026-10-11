@@ -80,7 +80,8 @@ mirror: the next publish would refuse to overwrite it.
    For each plugin, the script uses `git subtree split` to extract the folder's history,
    pushes it to the mirror's `main` branch, and tags the `composer.json` version when the
    mirror does not have it yet. Only committed work is published; the script stops when
-   `kimai/bundles/` has uncommitted changes.
+   `kimai/bundles/` has uncommitted changes, or when `scripts/check-plugins.sh` finds a
+   controller without a permission check.
 3. With the [GitHub CLI](https://cli.github.com/) installed and logged in
    (`winget install GitHub.cli`, then `gh auth login`), the script also creates a GitHub
    release for a new version, with a zip whose top folder is the plugin's folder name, so it

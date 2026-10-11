@@ -27,6 +27,7 @@ kimai/
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
 scripts/mirror-plugins.sh    Publishes each plugin to its own read-only mirror repository
+scripts/check-plugins.sh     Fails when a plugin controller has no permission check
 ```
 
 ## How the app works
@@ -202,6 +203,17 @@ docker run --rm --entrypoint bash \
 Without Kimai's development dependencies the Symfony stubs are missing, so PHPStan reports
 `argument.templateType` and `generics.notGeneric` on form classes. Kimai's own form classes
 show the same two errors in this setup; anything else is a real finding.
+
+Then check that every plugin controller requires a permission:
+
+```bash
+scripts/check-plugins.sh
+```
+
+Kimai's `access_control` rule for `^/{_locale}/` holds the placeholder literally, which
+Symfony does not expand, so it never matches and logged-out visitors are not stopped there.
+A plugin route is only protected by its controller's own `#[IsGranted]`, so every controller
+class needs one at class level. `scripts/mirror-plugins.sh` runs the check before publishing.
 
 ### 2. Build and run with Docker
 
