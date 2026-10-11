@@ -915,14 +915,15 @@
   }
 
   /**
-   * Starts the bar in the mode the user last chose, and wires up the mode buttons.
+   * Starts the bar in the mode the user last chose, and wires up the mode buttons. Without
+   * mode buttons, when Kimai's tracking mode lets users enter no times, it stays in timer mode.
    *
    * @param {HTMLElement} bar The quick start bar.
    * @returns {void}
    */
   function initModes( bar )
   {
-    applyMode( bar, readStoredMode() );
+    applyMode( bar, bar.querySelector( MODE_BUTTON_SELECTOR ) === null ? MODES.timer : readStoredMode() );
 
     bar.querySelectorAll( MODE_BUTTON_SELECTOR ).forEach( ( button ) =>
     {

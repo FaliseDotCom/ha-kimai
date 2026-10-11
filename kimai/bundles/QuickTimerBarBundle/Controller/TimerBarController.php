@@ -16,6 +16,7 @@ use KimaiPlugin\QuickTimerBarBundle\Service\EntryInputReader;
 use KimaiPlugin\QuickTimerBarBundle\Service\EntryWriter;
 use KimaiPlugin\QuickTimerBarBundle\Service\TimeInput;
 use KimaiPlugin\QuickTimerBarBundle\Service\TimerBarViewFactory;
+use KimaiPlugin\QuickTimerBarBundle\Service\TrackingModeTimes;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +43,13 @@ final class TimerBarController extends AbstractController
   public const ROUTE_ENTRY = 'timer_bar_entry';
 
   /**
+   * Error shown when times are posted that Kimai's tracking mode does not let users enter.
+   *
+   * @var string
+   */
+  private const ERROR_TIMES_NOT_ALLOWED = 'timer_bar.times_not_allowed';
+
+  /**
    * The page users return to when the request names no valid page.
    *
    * @var string
@@ -56,6 +64,7 @@ final class TimerBarController extends AbstractController
    * @param TimeInput $timeInput Reads typed times.
    * @param TranslatorInterface $translator Translates error messages for the script.
    * @param TimerBarViewFactory $viewFactory Describes records the way the bar shows them.
+   * @param TrackingModeTimes $trackingMode Tells which times Kimai's tracking mode allows.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
@@ -64,7 +73,8 @@ final class TimerBarController extends AbstractController
     private readonly EntryWriter $writer,
     private readonly TimeInput $timeInput,
     private readonly TranslatorInterface $translator,
-    private readonly TimerBarViewFactory $viewFactory
+    private readonly TimerBarViewFactory $viewFactory,
+    private readonly TrackingModeTimes $trackingMode
   )
   {
   }
@@ -97,6 +107,13 @@ final class TimerBarController extends AbstractController
       return $this->redirectBack( $request );
     }
 
+    if ( !$this->areTimesAllowed( $period ) )
+    {
+      $this->flashError( self::ERROR_TIMES_NOT_ALLOWED );
+
+      return $this->redirectBack( $request );
+    }
+
     [ $begin, $end ] = $period;
     $this->flashFailure( fn() => $end === null
       ? $this->writer->start( $user, $input, $begin )
@@ -125,8 +142,12 @@ final class TimerBarController extends AbstractController
     }
 
     $beginTime = trim( (string) $request->request->get( 'begin_time' ) );
-    $begin = $beginTime === '' ? null : $this->getRunningBegin( $request, $entry, $user );
+    if ( $beginTime !== '' && !$this->trackingMode->canEnterBegin() )
+    {
+      return $this->respondToUpdate( $request, null, self::ERROR_TIMES_NOT_ALLOWED );
+    }
 
+    $begin = $beginTime === '' ? null : $this->getRunningBegin( $request, $entry, $user );
     if ( $beginTime !== '' && $begin === null )
     {
       return $this->respondToUpdate( $request, null, 'timer_bar.invalid_time' );
@@ -159,6 +180,13 @@ final class TimerBarController extends AbstractController
     if ( $entry === null || $input === null )
     {
       $this->flashError( 'timer_bar.invalid_selection' );
+
+      return $this->redirectBack( $request );
+    }
+
+    if ( !$this->trackingMode->canEnterTimes() )
+    {
+      $this->flashError( self::ERROR_TIMES_NOT_ALLOWED );
 
       return $this->redirectBack( $request );
     }
@@ -260,6 +288,19 @@ final class TimerBarController extends AbstractController
   private function isTokenValid( Request $request ) : bool
   {
     return $this->isCsrfTokenValid( self::CSRF_TOKEN_ID, (string) $request->request->get( '_token' ) );
+  }
+
+  /**
+   * Tells whether Kimai's tracking mode allows the entered times: a start time needs an
+   * editable start, an end time an editable end.
+   *
+   * @param array{0: DateTimeImmutable|null, 1: DateTimeImmutable|null} $period The entered start and end.
+   * @return bool
+   */
+  private function areTimesAllowed( array $period ) : bool
+  {
+    return ( $period[ 0 ] === null || $this->trackingMode->canEnterBegin() )
+      && ( $period[ 1 ] === null || $this->trackingMode->canEnterEnd() );
   }
 
   /**

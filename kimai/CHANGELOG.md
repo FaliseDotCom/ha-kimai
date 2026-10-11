@@ -21,6 +21,8 @@ version the app contains; see the
   - Quick start bar and inline timesheet editing: a new tag is only saved together with its
     record, after Kimai accepted both. A refused change no longer leaves new tags behind, and
     tag names with characters Kimai does not allow are refused.
+  - Quick start bar: in Kimai's **punch in/out** and **fixed start time** tracking modes, the
+    bar no longer lets users enter a date, start or end time, or add finished records.
 
 ## 2.67.0.25
 

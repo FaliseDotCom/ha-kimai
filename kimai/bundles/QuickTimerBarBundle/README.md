@@ -22,6 +22,10 @@ The two small icons next to the main button switch modes, as in Toggl Track; the
 remembers the last choice. Times accept short forms such as `915` or `945p`, and an end time
 before the start time means the next day.
 
+Kimai's **punch in/out** and **fixed start time** tracking modes do not let users choose
+times. In those modes the bar has no date, times or manual mode: records start and stop now,
+and the server refuses posted times.
+
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.
 

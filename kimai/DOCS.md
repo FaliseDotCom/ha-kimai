@@ -255,7 +255,8 @@ along with a colon that blinks with the seconds.
 
 The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
 for rounding and for how many records may run at once apply. When only one record may run,
-starting a new one stops the running one.
+starting a new one stops the running one. In the **punch in/out** and **fixed start time**
+tracking modes, the bar has no date, times or manual mode: records start and stop now.
 
 Each user can hide the bar for themselves: turn off **Show quick start bar** in their
 preferences (click your name, then **Preferences**). Kimai's own start button then comes

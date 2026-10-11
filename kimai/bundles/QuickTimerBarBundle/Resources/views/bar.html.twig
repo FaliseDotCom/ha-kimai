@@ -1,6 +1,9 @@
 {% trans_default_domain 'timer_bar' %}
 {% set running = timer_bar.running %}
 {% set is_running = running is not empty %}
+{# In Kimai's "punch in/out" and "fixed start time" tracking modes, records start and stop now:
+   no date, times or manual mode. #}
+{% set can_enter_times = timer_bar.canEnterTimes %}
 {% set new_entry = {
   description: '',
   projectId: timer_bar.defaultProjectId,
@@ -27,29 +30,37 @@
       {{ include('@QuickTimerBar/_fields.html.twig', { entry: running }) }}
 
       <div class="timer-bar-times">
-        <input type="date" name="date" class="form-control timer-bar-date" value="{{ running.beginDate }}"
-          title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
-        <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
-          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
-          title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
+        {% if can_enter_times %}
+          <input type="date" name="date" class="form-control timer-bar-date" value="{{ running.beginDate }}"
+            title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+          <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
+            data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
+            title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
+        {% endif %}
         <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}" data-timer-bar-timer>0:00:00</time>
-        <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
-        <input type="text" name="end_time" class="form-control timer-bar-time"
-          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
-          title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off"
-          data-timer-bar-manual data-timer-bar-end-time>
+        {% if can_enter_times %}
+          <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
+          <input type="text" name="end_time" class="form-control timer-bar-time"
+            data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
+            title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off"
+            data-timer-bar-manual data-timer-bar-end-time>
+        {% endif %}
       </div>
 
-      {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+      {% if can_enter_times %}
+        {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+      {% endif %}
 
       <button type="submit" formaction="{{ path('timer_bar_stop') }}" class="btn btn-danger btn-icon timer-bar-button"
         title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop data-timer-bar-timer>
         <i class="{{ 'stop'|icon(true) }}"></i>
       </button>
-      <button type="submit" formaction="{{ path('timer_bar_finish') }}" class="btn btn-success btn-icon timer-bar-button"
-        title="{{ 'timer_bar.finish'|trans }}" aria-label="{{ 'timer_bar.finish'|trans }}" data-timer-bar-finish data-timer-bar-manual>
-        <i class="fas fa-check"></i>
-      </button>
+      {% if can_enter_times %}
+        <button type="submit" formaction="{{ path('timer_bar_finish') }}" class="btn btn-success btn-icon timer-bar-button"
+          title="{{ 'timer_bar.finish'|trans }}" aria-label="{{ 'timer_bar.finish'|trans }}" data-timer-bar-finish data-timer-bar-manual>
+          <i class="fas fa-check"></i>
+        </button>
+      {% endif %}
 
       <p class="timer-bar-error text-danger" role="alert" data-timer-bar-error hidden></p>
     </form>
@@ -65,20 +76,26 @@
     {{ include('@QuickTimerBar/_fields.html.twig', { entry: new_entry }) }}
 
     <div class="timer-bar-times">
-      <input type="date" name="date" class="form-control timer-bar-date" value="{{ timer_bar.today }}"
-        title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
-      <input type="text" name="begin_time" class="form-control timer-bar-time"
-        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
-        title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off"
-        data-timer-bar-begin-time data-timer-bar-required-manual>
+      {% if can_enter_times %}
+        <input type="date" name="date" class="form-control timer-bar-date" value="{{ timer_bar.today }}"
+          title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+        <input type="text" name="begin_time" class="form-control timer-bar-time"
+          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
+          title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off"
+          data-timer-bar-begin-time data-timer-bar-required-manual>
+      {% endif %}
       <span class="timer-bar-elapsed timer-bar-idle-clock" aria-hidden="true" data-timer-bar-timer>0:00:00</span>
-      <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
-      <input type="text" name="end_time" class="form-control timer-bar-time"
-        data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
-        title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off" data-timer-bar-manual>
+      {% if can_enter_times %}
+        <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
+        <input type="text" name="end_time" class="form-control timer-bar-time"
+          data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
+          title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off" data-timer-bar-manual>
+      {% endif %}
     </div>
 
-    {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+    {% if can_enter_times %}
+      {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+    {% endif %}
 
     <button type="submit" class="btn btn-success btn-icon timer-bar-button" data-timer-bar-submit
       data-title-timer="{{ 'timer_bar.start'|trans }}" data-title-manual="{{ 'timer_bar.add'|trans }}"

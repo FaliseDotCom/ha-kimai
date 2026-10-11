@@ -10,6 +10,10 @@
         <source>timer_bar.invalid_time</source>
         <target>Enter a valid start and end time, for example 9:00 or 945.</target>
       </trans-unit>
+      <trans-unit id="timer_bar.times_not_allowed" resname="timer_bar.times_not_allowed">
+        <source>timer_bar.times_not_allowed</source>
+        <target>Kimai's tracking mode does not allow entering times: records start and stop now.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

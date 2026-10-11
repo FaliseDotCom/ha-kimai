@@ -34,6 +34,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *   tags: array<int, TagOption>,
  *   canCreateTags: bool,
  *   canEditBillable: bool,
+ *   canEnterTimes: bool,
  *   quickCreate: QuickCreateView,
  *   defaultProjectId: int,
  *   defaultActivityId: int,
@@ -48,12 +49,14 @@ final class TimerBarViewFactory
    * @param AuthorizationCheckerInterface $security Checks the tag and billable permissions.
    * @param TimeInput $timeInput Formats times in the user's clock.
    * @param QuickCreator $creator Tells what the user may create, and offers the customer names.
+   * @param TrackingModeTimes $trackingMode Tells whether Kimai's tracking mode lets users enter times.
    */
   public function __construct(
     private readonly TimerBarRepository $repository,
     private readonly AuthorizationCheckerInterface $security,
     private readonly TimeInput $timeInput,
-    private readonly QuickCreator $creator
+    private readonly QuickCreator $creator,
+    private readonly TrackingModeTimes $trackingMode
   )
   {
   }
@@ -81,6 +84,7 @@ final class TimerBarViewFactory
       'tags' => $this->describeTags( $this->repository->findTags() ),
       'canCreateTags' => $this->security->isGranted( 'create_tag' ),
       'canEditBillable' => $this->security->isGranted( 'edit_billable_own_timesheet' ),
+      'canEnterTimes' => $this->trackingMode->canEnterTimes(),
       'quickCreate' => $this->describeQuickCreate( $user ),
       'defaultProjectId' => $suggestions[ 0 ][ 'projectId' ] ?? 0,
       'defaultActivityId' => $suggestions[ 0 ][ 'activityId' ] ?? 0,

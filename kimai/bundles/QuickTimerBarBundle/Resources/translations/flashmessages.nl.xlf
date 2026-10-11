@@ -10,6 +10,10 @@
         <source>timer_bar.invalid_time</source>
         <target>Vul een geldige begin- en eindtijd in, bijvoorbeeld 9:00 of 945.</target>
       </trans-unit>
+      <trans-unit id="timer_bar.times_not_allowed" resname="timer_bar.times_not_allowed">
+        <source>timer_bar.times_not_allowed</source>
+        <target>De registratiemodus van Kimai staat het invoeren van tijden niet toe: registraties starten en stoppen nu.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
