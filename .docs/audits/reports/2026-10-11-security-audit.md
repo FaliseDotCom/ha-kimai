@@ -17,21 +17,24 @@ Results of the [security audit plan](../security-audit-plan.md), run on 2026-10-
 
 - Critical: 0
 - High: 1
-- Medium: 4
-- Low: 4
+- Medium: 3
+- Low: 5
 - Informational: 10
+
+SA-02 was reported as Medium and is rated Low after verification; see its entry.
 
 No route is reachable without a login, every state change needs POST and a CSRF token, every
 query is parameterised, and no finding allows script injection today. The most important
-problems are:
+problems were:
 
 - the summary report showing record descriptions from projects a team lead may not see (SA-01);
-- two places where a record change is written to the database before Kimai validates it
-  (SA-02);
 - the quick start bar not applying Kimai's tracking mode and edit and stop permissions (SA-03,
-  SA-04).
+  SA-04);
+- stored names that could break pages for other users (SA-05).
 
-All findings are open.
+**Status on 2026-10-11:** SA-01 to SA-09 are fixed in app version 2.67.0.26, each in its own
+commit, and checked on the local test instance. SA-13 is partly fixed. The other
+informational findings are open.
 
 ## Findings
 
@@ -58,11 +61,20 @@ All findings are open.
   empty or include one of the viewer's teams). Keep the totals as Kimai's reports show them, and
   collapse the restricted descriptions into one "other records" line. Test with a member in two
   teams.
-- **Status:** Open.
+- **Status:** Fixed in `2e608b6`. Descriptions of other users' records on projects or activities
+  outside the viewer's teams are shown as one "(records outside your teams)" line; the totals
+  are unchanged. Checked with a team lead and a member in two teams.
 
-### SA-02 — A record change is saved before Kimai validates it when a new tag is created
+### SA-02 — New tags are saved before Kimai validates the record
 
-- **Severity:** Medium
+- **Severity:** Low (reported as Medium)
+- **Verification:** The reported impact does not hold. `Timesheet` uses Doctrine's
+  `DEFERRED_EXPLICIT` change tracking policy, so a flush only writes a record after an explicit
+  `persist()` of it, and the early flush saved the tag but not the record's changes. A test on
+  the test instance confirmed it: an inline edit and a quick start bar update with a new
+  description and an invalid new tag were refused, the descriptions stayed unchanged, and only
+  the tags were stored, including characters Kimai's `Tag` validation refuses. What remains is
+  that refused saves leave tags behind and that new tags skip validation.
 - **Plugins:** inline editing and quick start bar
 - **Where:**
   - Inline editing: `Service/EntryEditor.php:160-169` (fields applied, then
@@ -90,7 +102,9 @@ All findings are open.
   `validateTimesheet()` succeeds. Also run the whole change in
   `TimesheetRepository::begin()`/`commit()`/`rollback()`, as Kimai's `saveNewTimesheet()` does,
   and validate each new `Tag` (see SA-13).
-- **Status:** Open.
+- **Status:** Fixed in `b9388ec`. New tags are only added to the record, which saves them through
+  its cascade after Kimai validated both, so its `Tag` validation applies and a refused change
+  leaves nothing behind.
 
 ### SA-03 — The quick start bar ignores Kimai's tracking mode
 
@@ -112,7 +126,10 @@ All findings are open.
   and start time when `!canEditBegin()`, and the end time and the finish route when
   `!canEditEnd()`. Hide those fields and manual mode in the template. Optionally allow them with
   `view_other_timesheet`, as Kimai's API does.
-- **Status:** Open.
+- **Status:** Fixed in `577fb48`. Without an editable start and end, the bar shows no date, times
+  or manual mode, and the server refuses posted times and the finish route. Kimai's own forms
+  do not allow times in these modes for any role, so neither does the bar. Checked in punch
+  mode.
 
 ### SA-04 — The quick start bar skips Kimai's edit and stop permissions
 
@@ -131,7 +148,9 @@ All findings are open.
   through `/timer-bar/finish`.
 - **Recommendation:** Check `edit` on the record before update and finish, and `stop` before stop.
   Show the running record read-only when `edit` is denied.
-- **Status:** Open.
+- **Status:** Fixed in `f660be3`. Update and finish need the `edit` voter and stop the `stop`
+  voter. Without `edit` the running record is shown read-only; without `stop` there is no stop
+  button. Checked with both permissions removed from `ROLE_USER`.
 
 ### SA-05 — JSON in script elements can break pages for other users
 
@@ -158,7 +177,9 @@ All findings are open.
 - **Recommendation:** Encode with HTML-safe flags:
   `json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_HEX_APOS') b-or constant('JSON_HEX_QUOT'))`,
   or move the data into an auto-escaped `data-` attribute, as the other plugins do.
-- **Status:** Open.
+- **Status:** Fixed in `ccf8dbb` with `JSON_HEX_TAG` and `JSON_HEX_AMP`, also for the detail links.
+  Checked with a description and an alias containing `<!--<script>`: before the fix the JSON no
+  longer parsed and the rest of the page was swallowed, after it both pages work.
 
 ### SA-06 — Open redirect through a tab character in `_target_path`
 
@@ -177,7 +198,8 @@ All findings are open.
 - **Recommendation:** Refuse control characters and whitespace, for example
   `#^/(?![/\\])[^\x00-\x20\x7f]*$#`. Better, only redirect to a path the router matches. Ignore
   `_target_path` when the token is invalid.
-- **Status:** Open.
+- **Status:** Fixed in `8606783`. The path may no longer contain control characters, whitespace or
+  backslashes. Checked: `/<tab>/evil.com` now returns to the fallback page.
 
 ### SA-07 — Quick-created projects ignore "copy teams on create"
 
@@ -191,7 +213,8 @@ All findings are open.
   team lead quick-creates "Acme – Secret pitch". Every user in every team sees the project and
   its new customer in their pickers and can book on it.
 - **Recommendation:** Call `saveProject( $project, new Context( $user ) )` in both copies.
-- **Status:** Open.
+- **Status:** Fixed in `12aff0d`. Checked with the setting on: projects created with either "+"
+  button got the creator's team.
 
 ### SA-08 — Server error text is shown through Kimai's alert, which inserts HTML
 
@@ -206,7 +229,8 @@ All findings are open.
   future Kimai version, would turn this into stored XSS.
 - **Recommendation:** Escape the message before passing it, for example with Kimai's `escape`
   plugin (`escapeForHtml`), or show errors in an element filled through `textContent`.
-- **Status:** Open.
+- **Status:** Fixed in `67b8b27`. The plugin escapes the message itself before passing it to the
+  alert. Checked with a mocked error containing markup: it is shown as text.
 
 ### SA-09 — The summary report result set is unbounded
 
@@ -222,7 +246,10 @@ All findings are open.
   user can only do this over their own records.
 - **Recommendation:** Limit the descriptions per group (a top N with an "N more" line), or limit
   the period for all-time queries over all users.
-- **Status:** Open.
+- **Status:** Fixed in `b0145ff`. Periods charted per month are summed per month in the query,
+  which divides the rows for long periods by up to 31, and each group lists its 49 longest
+  descriptions plus one line counting the rest. The number of distinct descriptions per month
+  still sets the row count, so a very large installation can still make this report slow.
 
 ### Informational
 
@@ -250,6 +277,8 @@ findings next time, and some are cheap hardening.
   has no server-side limit on the number of new tags per request. Kimai's own tag field behaves
   the same. Validate each new tag and cap the count. Related: when a quick-created project is
   refused, the new customer created for it stays behind (`QuickCreator.php:133-138`).
+  **Partly fixed** in `b9388ec`: new tags are now validated with the record (see SA-02). The
+  count limit and the leftover customer are open.
 - **SA-14 — The user report charts can show a different user than Kimai's table.** The chart
   subscriber reads `?user=` itself and accepts disabled team members, which Kimai's form refuses.
   The table then falls back to the viewer while the charts show the disabled member. Access is
@@ -281,7 +310,11 @@ These two functional bugs came up during the review. They have no security impac
 
 ## Adjustments and rejected findings
 
-No finding was rejected. Three were adjusted during verification:
+No finding was rejected. Four were adjusted during verification:
+
+- **SA-02** is rated Low instead of Medium. Two reviewers reported that the early flush also
+  saved the record's changes; a test while fixing it showed that Kimai's change tracking policy
+  for records prevents that (see SA-02).
 
 - **The JSON-in-script issue** was reported by three reviewers. It is merged into SA-05 and
   raised to Medium for the quick start bar, because project names also reach the bar's
