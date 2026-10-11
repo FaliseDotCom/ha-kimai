@@ -14,6 +14,10 @@ version the app contains; see the
   durations used to update only every ten seconds.
 - Inline timesheet editing: the running record is no longer edited in the list; change it in
   the quick start bar, or with **Edit** in its menu when the bar is off.
+- Security fixes from the [security audit](https://github.com/FaliseDotCom/ha-kimai/blob/main/.docs/audits/reports/2026-10-11-security-audit.md):
+  - Reporting extras: the summary report no longer shows descriptions of team members' records
+    on projects, customers or activities limited to teams you are not in. Their time still
+    counts in the totals, as in Kimai's own reports.
 
 ## 2.67.0.25
 

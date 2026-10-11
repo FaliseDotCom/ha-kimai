@@ -291,7 +291,8 @@ contains today, and otherwise the start of the current period.
 - a bar chart of the time per day (for periods up to two months) or per month, coloured by
   project, customer, activity or user;
 - a doughnut chart and a breakdown per project, customer, activity or user, which opens to
-  show the time per description.
+  show the time per description. Descriptions of other people's records on projects,
+  customers or activities limited to teams you are not in are hidden; their time still counts.
 
 **Dashboard widget.** **Your working hours by project per week** shows one week on the dashboard in the
 same style: a bar chart of the hours per day stacked by project, and a doughnut chart with each
