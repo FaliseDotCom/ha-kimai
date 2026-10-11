@@ -47,6 +47,8 @@ version the app contains; see the
     when a disabled user is asked for.
   - Short time entries: the script is no longer added to the two-factor login page, where it
     could not load.
+  - Reporting extras: the charts of the dashboard widget also load for users without access to
+    the reports.
 
 ## 2.67.0.25
 
