@@ -259,6 +259,7 @@ final class TimerBarController extends AbstractController
    * @return JsonResponse
    */
   #[Route( path: '/entry', name: self::ROUTE_ENTRY, methods: [ 'GET' ] )]
+  #[IsGranted( 'view_own_timesheet' )]
   public function describeEntry( Request $request ) : JsonResponse
   {
     $user = $this->getUser();
