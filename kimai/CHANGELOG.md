@@ -23,6 +23,9 @@ version the app contains; see the
     tag names with characters Kimai does not allow are refused.
   - Quick start bar: in Kimai's **punch in/out** and **fixed start time** tracking modes, the
     bar no longer lets users enter a date, start or end time, or add finished records.
+  - Quick start bar: changing and stopping the running record now need Kimai's permissions to
+    edit and stop it. Without them, the bar shows the record read-only or without a stop
+    button.
 
 ## 2.67.0.25
 

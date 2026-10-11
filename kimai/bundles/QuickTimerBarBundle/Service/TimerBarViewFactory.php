@@ -28,6 +28,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @phpstan-type QuickCreateView array{project: bool, customer: bool, activity: bool, customers: array<int, string>}
  * @phpstan-type TimerBarView array{
  *   running: EntryView|array{},
+ *   canEditRunning: bool,
+ *   canStopRunning: bool,
  *   customers: array<int, CustomerGroup>,
  *   activities: array<int, ActivityOption>,
  *   suggestions: array<int, SuggestionOption>,
@@ -78,6 +80,8 @@ final class TimerBarViewFactory
 
     return [
       'running' => $running === null ? [] : $this->describeEntry( $running, $user, $locale ),
+      'canEditRunning' => $running !== null && $this->security->isGranted( 'edit', $running ),
+      'canStopRunning' => $running !== null && $this->security->isGranted( 'stop', $running ),
       'customers' => $this->groupProjectsByCustomer( $projects ),
       'activities' => $this->describeActivities( $activities ),
       'suggestions' => $suggestions,

@@ -43,6 +43,20 @@ final class TimerBarController extends AbstractController
   public const ROUTE_ENTRY = 'timer_bar_entry';
 
   /**
+   * Kimai's timesheet voter attribute for changing a record.
+   *
+   * @var string
+   */
+  public const PERMISSION_EDIT = 'edit';
+
+  /**
+   * Kimai's timesheet voter attribute for stopping a running record.
+   *
+   * @var string
+   */
+  public const PERMISSION_STOP = 'stop';
+
+  /**
    * Error shown when times are posted that Kimai's tracking mode does not let users enter.
    *
    * @var string
@@ -133,7 +147,7 @@ final class TimerBarController extends AbstractController
   public function update( Request $request ) : Response
   {
     $user = $this->getUser();
-    $entry = $this->repository->findRunningEntryById( $user, $request->request->getInt( 'timesheet' ) );
+    $entry = $this->findRunningEntry( $request, self::PERMISSION_EDIT );
     $input = $entry !== null && $this->isTokenValid( $request ) ? $this->inputReader->read( $request, $user ) : null;
 
     if ( $entry === null || $input === null )
@@ -174,7 +188,7 @@ final class TimerBarController extends AbstractController
   public function finish( Request $request ) : Response
   {
     $user = $this->getUser();
-    $entry = $this->repository->findRunningEntryById( $user, $request->request->getInt( 'timesheet' ) );
+    $entry = $this->findRunningEntry( $request, self::PERMISSION_EDIT );
     $input = $entry !== null && $this->isTokenValid( $request ) ? $this->inputReader->read( $request, $user ) : null;
 
     if ( $entry === null || $input === null )
@@ -258,7 +272,7 @@ final class TimerBarController extends AbstractController
   #[Route( path: '/stop', name: self::ROUTE_STOP, methods: [ 'POST' ] )]
   public function stop( Request $request ) : Response
   {
-    $entry = $this->repository->findRunningEntryById( $this->getUser(), $request->request->getInt( 'timesheet' ) );
+    $entry = $this->findRunningEntry( $request, self::PERMISSION_STOP );
 
     if ( $entry === null || !$this->isTokenValid( $request ) )
     {
@@ -277,6 +291,21 @@ final class TimerBarController extends AbstractController
     }
 
     return $this->redirectBack( $request );
+  }
+
+  /**
+   * Returns the user's running record named in the posted form, when Kimai lets the user change
+   * it in the given way; otherwise null.
+   *
+   * @param Request $request The posted form, with the record ID in its timesheet field.
+   * @param string $permission Kimai's timesheet voter attribute, such as edit or stop.
+   * @return Timesheet|null
+   */
+  private function findRunningEntry( Request $request, string $permission ) : ?Timesheet
+  {
+    $entry = $this->repository->findRunningEntryById( $this->getUser(), $request->request->getInt( 'timesheet' ) );
+
+    return $entry !== null && $this->isGranted( $permission, $entry ) ? $entry : null;
   }
 
   /**

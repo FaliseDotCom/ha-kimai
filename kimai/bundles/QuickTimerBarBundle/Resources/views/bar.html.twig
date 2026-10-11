@@ -27,35 +27,40 @@
       <input type="hidden" name="_target_path" value="{{ target_path }}">
       <input type="hidden" name="timesheet" value="{{ running.id }}">
 
-      {{ include('@QuickTimerBar/_fields.html.twig', { entry: running }) }}
+      {# Read-only when Kimai does not let the user change the record. #}
+      <fieldset class="timer-bar-fieldset"{% if not timer_bar.canEditRunning %} disabled{% endif %}>
+        {{ include('@QuickTimerBar/_fields.html.twig', { entry: running }) }}
 
-      <div class="timer-bar-times">
-        {% if can_enter_times %}
-          <input type="date" name="date" class="form-control timer-bar-date" value="{{ running.beginDate }}"
-            title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
-          <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
-            data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
-            title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
-        {% endif %}
-        <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}" data-timer-bar-timer>0:00:00</time>
-        {% if can_enter_times %}
-          <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
-          <input type="text" name="end_time" class="form-control timer-bar-time"
-            data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
-            title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off"
-            data-timer-bar-manual data-timer-bar-end-time>
-        {% endif %}
-      </div>
+        <div class="timer-bar-times">
+          {% if can_enter_times %}
+            <input type="date" name="date" class="form-control timer-bar-date" value="{{ running.beginDate }}"
+              title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+            <input type="text" name="begin_time" class="form-control timer-bar-time" value="{{ running.beginTime }}"
+              data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
+              title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off">
+          {% endif %}
+          <time class="timer-bar-elapsed" datetime="{{ running.begin }}" data-timer-bar-begin="{{ running.begin }}" data-timer-bar-timer>0:00:00</time>
+          {% if can_enter_times %}
+            <span class="timer-bar-time-separator" aria-hidden="true" data-timer-bar-manual>&ndash;</span>
+            <input type="text" name="end_time" class="form-control timer-bar-time"
+              data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.end'|trans }}"
+              title="{{ 'timer_bar.end'|trans }}" aria-label="{{ 'timer_bar.end'|trans }}" autocomplete="off"
+              data-timer-bar-manual data-timer-bar-end-time>
+          {% endif %}
+        </div>
 
-      {% if can_enter_times %}
-        {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+        {% if can_enter_times %}
+          {{ include('@QuickTimerBar/_mode_switch.html.twig') }}
+        {% endif %}
+      </fieldset>
+
+      {% if timer_bar.canStopRunning %}
+        <button type="submit" formaction="{{ path('timer_bar_stop') }}" class="btn btn-danger btn-icon timer-bar-button"
+          title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop data-timer-bar-timer>
+          <i class="{{ 'stop'|icon(true) }}"></i>
+        </button>
       {% endif %}
-
-      <button type="submit" formaction="{{ path('timer_bar_stop') }}" class="btn btn-danger btn-icon timer-bar-button"
-        title="{{ 'timer_bar.stop'|trans }}" aria-label="{{ 'timer_bar.stop'|trans }}" data-timer-bar-stop data-timer-bar-timer>
-        <i class="{{ 'stop'|icon(true) }}"></i>
-      </button>
-      {% if can_enter_times %}
+      {% if can_enter_times and timer_bar.canEditRunning %}
         <button type="submit" formaction="{{ path('timer_bar_finish') }}" class="btn btn-success btn-icon timer-bar-button"
           title="{{ 'timer_bar.finish'|trans }}" aria-label="{{ 'timer_bar.finish'|trans }}" data-timer-bar-finish data-timer-bar-manual>
           <i class="fas fa-check"></i>

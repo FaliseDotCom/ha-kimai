@@ -207,6 +207,13 @@
   display: none;
 }
 
+/* Groups the running entry's fields, so they turn read-only together, without changing the
+   layout */
+.timer-bar-fieldset
+{
+  display: contents;
+}
+
 /* Error when a change to the running entry could not be saved */
 .timer-bar-error
 {

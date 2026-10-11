@@ -26,6 +26,10 @@ Kimai's **punch in/out** and **fixed start time** tracking modes do not let user
 times. In those modes the bar has no date, times or manual mode: records start and stop now,
 and the server refuses posted times.
 
+Changing and stopping the running record follow Kimai's `edit` and `stop` permissions for it
+(`edit_own_timesheet`, `stop_own_timesheet`, exported records, lockdown). Without `edit` the
+running record is shown read-only; without `stop` there is no stop button.
+
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.
 
