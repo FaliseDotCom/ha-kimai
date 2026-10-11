@@ -36,6 +36,8 @@ version the app contains; see the
   - Reporting extras: periods longer than two months are summed per month in the database,
     and each group in the summary report lists at most 50 descriptions, with one line for the
     rest, so reports over long periods stay quick.
+  - Inline timesheet editing: a duration or break of more than a year is refused with a message
+    instead of an error page.
 
 ## 2.67.0.25
 
