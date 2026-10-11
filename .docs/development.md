@@ -171,6 +171,13 @@ in their namespace. `ShortTimeEntriesBundle` and `InlineTimesheetEditBundle` eac
 `Resources/public/input-parsing.js`, because a published plugin cannot load files from
 another plugin. Change both copies together.
 
+The plugins assume PHP's usual model, in which every request starts with a fresh service
+container, as in the Kimai image's Apache setup. `DashboardLinksSubscriber` relies on it: it
+sets the `route` option on Kimai's shared dashboard widget services for the current request.
+Under a persistent worker runtime, such as FrankenPHP's worker mode or RoadRunner, that option
+would carry over to other users' requests; reset it after the dashboard is rendered before
+moving to such a runtime.
+
 Each plugin folder is also published on its own, to a read-only mirror repository (see
 [Releasing](releasing.md#publishing-the-plugins)). Keep a plugin's folder self-contained: its
 own `LICENSE`, and links in its `README.md` to files outside the folder as full GitHub URLs.
