@@ -32,9 +32,10 @@ problems were:
   SA-04);
 - stored names that could break pages for other users (SA-05).
 
-**Status on 2026-10-11:** SA-01 to SA-09 are fixed in app version 2.67.0.26, each in its own
-commit, and checked on the local test instance. SA-13 is partly fixed. The other
-informational findings are open.
+**Status on 2026-10-11:** every finding is dealt with in app version 2.67.0.26, each in its own
+commit, and checked on the local test instance. SA-01 to SA-15 and SA-17 to SA-19 are fixed,
+SA-10 with a check that runs before publishing, and SA-16 is documented. The two functional
+bugs under "Other observations" are fixed too. What remains of SA-09 is accepted (see there).
 
 ## Findings
 
@@ -250,6 +251,8 @@ informational findings are open.
   which divides the rows for long periods by up to 31, and each group lists its 49 longest
   descriptions plus one line counting the rest. The number of distinct descriptions per month
   still sets the row count, so a very large installation can still make this report slow.
+  That remainder is accepted: it needs a user who may see many users, and only slows their own
+  request.
 
 ### Informational
 
@@ -262,45 +265,64 @@ findings next time, and some are cheap hardening.
   `#[IsGranted]`. All eight controllers have one, and anonymous requests to the asset routes are
   redirected to the login. Keep the class-level attribute a hard rule for new controllers. A
   check that fails on a controller without one would catch mistakes.
+  **Fixed** in `caf9d83`: `scripts/check-plugins.sh` fails on a controller class without a
+  class-level `#[IsGranted]`, `scripts/mirror-plugins.sh` runs it before publishing, and the
+  development notes explain the rule.
 - **SA-11 — Asset responses.** The five asset controllers set public caching for a day, but
   Symfony's session listener rewrites it to private and uncached. The assets are therefore
   downloaded again on every page load, which costs performance, not security. If this is
   changed, keep the responses private. The reporting assets need `view_reporting` while the
   dashboard widget that loads them needs only `view_own_timesheet`. A user with the widget but
   without reporting gets no charts.
+  **Fixed** in `80e728b` (the reporting assets need only a login) and `0266f76` (all assets are
+  private, cached for a day and revalidated with `Last-Modified`, with Symfony's
+  `Symfony-Session-NoAutoCacheControl` header).
 - **SA-12 — Very large minute values cause a server error.** In inline editing,
   `EntryEditor::parseMinutes()` accepts any number of digits. A huge duration or break gives a
   type error or a date the database refuses. That is a 500 response, and nothing is saved.
   Limit the input length and answer with a validation message.
+  **Fixed** in `8dfa4b7`: values above a year get the duration message.
 - **SA-13 — New tags are not validated and their number is not limited.** Both plugins save new
   tags without validating the `Tag` entity (special characters, uniqueness). The quick start bar
   has no server-side limit on the number of new tags per request. Kimai's own tag field behaves
   the same. Validate each new tag and cap the count. Related: when a quick-created project is
   refused, the new customer created for it stays behind (`QuickCreator.php:133-138`).
-  **Partly fixed** in `b9388ec`: new tags are now validated with the record (see SA-02). The
-  count limit and the leftover customer are open.
+  **Fixed** in `b9388ec` (new tags are validated with the record, see SA-02), `94a9b78` (at
+  most 20 new tags per change: inline editing refuses more, the quick start bar uses the first
+  20) and `11d9df3` (a new customer and its project are created in one transaction).
 - **SA-14 — The user report charts can show a different user than Kimai's table.** The chart
   subscriber reads `?user=` itself and accepts disabled team members, which Kimai's form refuses.
   The table then falls back to the viewer while the charts show the disabled member. Access is
   still limited to users the viewer may report on.
+  **Fixed** in `5ec4d7c`: the charts accept only the users Kimai's user picker offers.
 - **SA-15 — Array query parameters cause an error page.** `?user[]=1`, `?date[]=x` and
   `?working_time_week[]=x` make Symfony's `InputBag` throw in the reporting subscriber and the
   working time widget. Only that page load fails. Check that the values are strings.
+  **Fixed** in `a4b5aa0` with a small `QueryParameters` service that ignores lists.
 - **SA-16 — The dashboard link subscriber changes shared widget services.** This is harmless
   with PHP's per-request model, which the Kimai image uses. Under a persistent worker runtime it
   would leak one user's link option into other users' requests.
+  **Documented** in `f2b471b`, in the development notes and the plugin's README, with what to
+  change before moving to such a runtime.
 - **SA-17 — The short time entries script tag is added to the two-factor page.** The asset
   request is refused there, so the only effect is a failed script load. Add the tag only when
   the user is fully logged in.
+  **Fixed** in `bd1b5ce`: the tag needs `IS_AUTHENTICATED_REMEMBERED`. Checked on normal pages and
+  the login page; the two-factor page itself was not tested, because the test instance has no
+  two-factor login set up.
 - **SA-18 — Collapsed days are stored per browser, not per user.** Two accounts in one browser
   share the collapsed-days state, which is only dates and a flag. Records in collapsed days stay
   selected by the table's select-all checkbox, as the plugin's README documents.
+  **Fixed** in `225a63e`: the storage key includes the user ID. Days collapsed before the update
+  open once.
 - **SA-19 — `/timer-bar/entry` does not check `view_own_timesheet`.** It only returns fields of
   the user's own record, without rates.
+  **Fixed** in `b485105`.
 
 ### Other observations
 
-These two functional bugs came up during the review. They have no security impact.
+These two functional bugs came up during the review. They have no security impact. Both are
+fixed: the activity search in `410bf50`, the queued row in `5223fbd`.
 
 - In both copies of `QuickCreator`, the search for an existing activity only looks at global
   activities, so an activity that belongs to a project is created again instead of reused,
@@ -315,7 +337,6 @@ No finding was rejected. Four were adjusted during verification:
 - **SA-02** is rated Low instead of Medium. Two reviewers reported that the early flush also
   saved the record's changes; a test while fixing it showed that Kimai's change tracking policy
   for records prevents that (see SA-02).
-
 - **The JSON-in-script issue** was reported by three reviewers. It is merged into SA-05 and
   raised to Medium for the quick start bar, because project names also reach the bar's
   suggestions and can break every page for other users.
