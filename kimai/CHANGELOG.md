@@ -26,6 +26,8 @@ version the app contains; see the
   - Quick start bar: changing and stopping the running record now need Kimai's permissions to
     edit and stop it. Without them, the bar shows the record read-only or without a stop
     button.
+  - Quick start bar and reporting extras: a description or name containing `<!--<script>` no
+    longer breaks the rest of the page.
 
 ## 2.67.0.25
 

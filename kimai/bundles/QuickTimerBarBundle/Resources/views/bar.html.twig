@@ -124,7 +124,8 @@
       {% endfor %}
     </datalist>
   {% endif %}
-  <script type="application/json" data-timer-bar-suggestions>{{ timer_bar.suggestions|json_encode|raw }}</script>
+  {# JSON_HEX_TAG keeps names such as "<!--<script>" from ending or hiding the script element. #}
+  <script type="application/json" data-timer-bar-suggestions>{{ timer_bar.suggestions|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
 
   {% if show_continue %}
     <form method="post" action="{{ path('timer_bar_continue') }}" hidden data-timer-bar-continue
