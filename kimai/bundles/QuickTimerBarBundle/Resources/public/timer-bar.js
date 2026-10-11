@@ -2,7 +2,8 @@
  * Behaviour of the Kimai quick start bar: places it below the top bar, fills in project and
  * activity from recent entries, offers only the activities that fit the chosen project,
  * switches between timer mode (start now) and manual mode (add a finished record), saves
- * changes to the running entry as they are made, and runs the clock of the running entry.
+ * changes to the running entry as they are made, runs the clocks of the running entry here
+ * and wherever Kimai shows it, and marks the running entry in the record lists.
  */
 ( function ()
 {
@@ -116,6 +117,36 @@
   const TICK_INTERVAL = 1000;
 
   /**
+   * Selector of the durations Kimai shows for running records, for example in the record
+   * lists and dashboard widgets. Kimai's own script rewrites them every ten seconds.
+   *
+   * @type {string}
+   */
+  const KIMAI_SINCE_SELECTOR = '[data-since]:not([data-since=""])';
+
+  /**
+   * Attribute that takes over the start time of a running duration from Kimai's data-since,
+   * so this script ticks it instead of Kimai's.
+   *
+   * @type {string}
+   */
+  const SINCE_ATTRIBUTE = 'data-timer-bar-since';
+
+  /**
+   * Class of the digits between the colons of a ticking clock.
+   *
+   * @type {string}
+   */
+  const CLOCK_PART_CLASS = 'timer-bar-clock-part';
+
+  /**
+   * Class of the ticking colons of a running clock.
+   *
+   * @type {string}
+   */
+  const COLON_CLASS = 'timer-bar-colon';
+
+  /**
    * Selector of the hidden form that continues a past entry.
    *
    * @type {string}
@@ -217,6 +248,42 @@
   const CONTINUE_BUTTON_SELECTOR = '.timer-bar-continue';
 
   /**
+   * Class of the running entry's row in the record lists.
+   *
+   * @type {string}
+   */
+  const RUNNING_ROW_CLASS = 'timer-bar-running-row';
+
+  /**
+   * Class of the pulsing button that replaces the running entry's row buttons.
+   *
+   * @type {string}
+   */
+  const RUNNING_BUTTON_CLASS = 'timer-bar-now';
+
+  /**
+   * Selector of the parts of the running entry's row that keep their own click: the bulk
+   * selection checkbox and links.
+   *
+   * @type {string}
+   */
+  const ROW_CONTROL_SELECTOR = 'td.multiCheckbox, a[href]';
+
+  /**
+   * Class that briefly highlights the bar when the running entry's row sends the user there.
+   *
+   * @type {string}
+   */
+  const ATTENTION_CLASS = 'timer-bar-attention';
+
+  /**
+   * Media query for users who prefer less motion.
+   *
+   * @type {string}
+   */
+  const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+
+  /**
    * Milliseconds to wait after a change before saving the running entry, so quick changes
    * are saved together.
    *
@@ -240,25 +307,147 @@
   }
 
   /**
-   * Keeps the clock of the running entry up to date. Kimai itself keeps the duration in the
-   * browser tab title.
+   * Creates one ticking colon.
    *
-   * @param {HTMLElement} clock The element that shows the elapsed time.
+   * @returns {HTMLSpanElement}
+   */
+  function createColon()
+  {
+    const colon = document.createElement( 'span' );
+    colon.className = COLON_CLASS;
+    colon.textContent = ':';
+
+    return colon;
+  }
+
+  /**
+   * Lets every colon's animation start at the last full second, so all colons tick together,
+   * when the digits change. Done on every tick, because the browser restarts animations, for
+   * example when Kimai reloads the list along with this stylesheet.
+   *
    * @returns {void}
    */
-  function startClock( clock )
+  function alignColons()
   {
-    const update = () =>
+    const start = document.timeline.currentTime - Date.now() % TICK_INTERVAL;
+
+    document.querySelectorAll( '.' + COLON_CLASS ).forEach( ( colon ) =>
+    {
+      colon.getAnimations().forEach( ( animation ) => { animation.startTime = start; } );
+    } );
+  }
+
+  /**
+   * Shows a duration in a clock, with ticking colons. Only the digits that changed are
+   * replaced, so the colons keep ticking.
+   *
+   * @param {HTMLElement} element The clock.
+   * @param {string} text The duration, for example 1:05:09.
+   * @returns {void}
+   */
+  function renderClock( element, text )
+  {
+    if ( element.dataset.timerBarText === text )
+    {
+      return;
+    }
+
+    const parts = text.split( ':' );
+    const current = element.querySelectorAll( '.' + CLOCK_PART_CLASS );
+    element.dataset.timerBarText = text;
+
+    if ( current.length === parts.length )
+    {
+      parts.forEach( ( part, index ) => { current[ index ].textContent = part; } );
+      return;
+    }
+
+    element.replaceChildren( ...parts.flatMap( ( part, index ) =>
+    {
+      const digits = document.createElement( 'span' );
+      digits.className = CLOCK_PART_CLASS;
+      digits.textContent = part;
+
+      return index === 0 ? [ digits ] : [ createColon(), digits ];
+    } ) );
+  }
+
+  /**
+   * Formats a running duration the way Kimai does, by the user's duration format.
+   *
+   * @param {string} since The start of the record, as an ISO 8601 date and time.
+   * @returns {string}
+   */
+  function formatKimaiDuration( since )
+  {
+    try
+    {
+      return window.kimai.getPlugin( 'date' ).formatDuration( since );
+    }
+    catch ( error )
+    {
+      // Without Kimai's date plugin: hours and minutes, Kimai's default format.
+      return formatClock( ( Date.now() - Date.parse( since ) ) / 1000 ).replace( /:\d{2}$/, '' );
+    }
+  }
+
+  /**
+   * Takes the running durations Kimai shows over from Kimai's script. The one in Kimai's
+   * hidden start button stays with Kimai, which keeps the browser tab title up to date with it.
+   *
+   * @returns {void}
+   */
+  function adoptKimaiDurations()
+  {
+    document.querySelectorAll( KIMAI_SINCE_SELECTOR ).forEach( ( element ) =>
+    {
+      if ( element.closest( NAVBAR_TIMER_SELECTOR ) !== null )
+      {
+        return;
+      }
+
+      element.setAttribute( SINCE_ATTRIBUTE, element.dataset.since );
+      element.removeAttribute( 'data-since' );
+    } );
+  }
+
+  /**
+   * Updates every running clock on the page: the bar's, with seconds, and Kimai's durations,
+   * in Kimai's format.
+   *
+   * @returns {void}
+   */
+  function tickClocks()
+  {
+    adoptKimaiDurations();
+
+    document.querySelectorAll( CLOCK_SELECTOR ).forEach( ( clock ) =>
     {
       const begin = Date.parse( clock.dataset.timerBarBegin );
       if ( !Number.isNaN( begin ) )
       {
-        clock.textContent = formatClock( ( Date.now() - begin ) / 1000 );
+        renderClock( clock, formatClock( ( Date.now() - begin ) / 1000 ) );
       }
-    };
+    } );
 
-    update();
-    window.setInterval( update, TICK_INTERVAL );
+    document.querySelectorAll( '[' + SINCE_ATTRIBUTE + ']' ).forEach( ( element ) =>
+    {
+      renderClock( element, formatKimaiDuration( element.getAttribute( SINCE_ATTRIBUTE ) ) );
+    } );
+
+    alignColons();
+  }
+
+  /**
+   * Keeps every running clock up to date, on the full seconds, so the digits change together
+   * with the ticking colons. Kimai itself keeps the duration in the browser tab title.
+   *
+   * @returns {void}
+   */
+  function startTicking()
+  {
+    tickClocks();
+    window.setTimeout( startTicking, TICK_INTERVAL - Date.now() % TICK_INTERVAL );
   }
 
   /**
@@ -961,7 +1150,7 @@
       const cell = row.querySelector( 'td.col_actions' ) ?? row.lastElementChild;
 
       row.setAttribute( CONTINUE_MARKER, '' );
-      if ( match === null || cell === null || idField === null )
+      if ( match === null || cell === null || idField === null || row.classList.contains( RUNNING_ROW_CLASS ) )
       {
         return;
       }
@@ -992,15 +1181,133 @@
   }
 
   /**
-   * Adds continue buttons now and whenever Kimai reloads the entry table.
+   * Marks the running entry's row in the record lists, and replaces its buttons with a
+   * pulsing one: continuing or changing a running entry from its row does not fit, the bar
+   * does that.
    *
-   * @param {HTMLFormElement} form The hidden continue form.
+   * @param {HTMLElement} bar The quick start bar of a running entry.
    * @returns {void}
    */
-  function initContinue( form )
+  function markRunningRows( bar )
   {
-    addContinueButtons( form );
-    new MutationObserver( () => addContinueButtons( form ) ).observe( document.body, { childList: true, subtree: true } );
+    const label = bar.dataset.labelRunning ?? '';
+
+    document.querySelectorAll( ENTRY_ROW_SELECTOR + ':not(.' + RUNNING_ROW_CLASS + ')' ).forEach( ( row ) =>
+    {
+      const match = ENTRY_ID_PATTERN.exec( row.dataset.href ?? '' );
+      const cell = row.querySelector( 'td.col_actions' ) ?? row.lastElementChild;
+      if ( match === null || match[ 1 ] !== bar.dataset.timerBarRunning || cell === null )
+      {
+        return;
+      }
+
+      const button = document.createElement( 'button' );
+      button.type = 'button';
+      button.className = 'btn btn-sm btn-success btn-icon ' + RUNNING_BUTTON_CLASS;
+      button.title = label;
+      button.setAttribute( 'aria-label', label );
+      button.innerHTML = '<i class="fas fa-play"></i>';
+
+      row.classList.add( RUNNING_ROW_CLASS );
+      row.title = label;
+      cell.prepend( button );
+    } );
+  }
+
+  /**
+   * Brings the running entry into view in the bar, with the focus on its description, and
+   * briefly highlights the bar. A copied record in manual mode makes way for it.
+   *
+   * @param {HTMLElement} bar The quick start bar of a running entry.
+   * @returns {void}
+   */
+  function showRunning( bar )
+  {
+    const description = bar.querySelector( FORM_SELECTOR + '[data-state="' + STATE_RUNNING + '"] [data-timer-bar-description]' );
+    if ( description === null )
+    {
+      return;
+    }
+
+    delete bar.dataset.copying;
+    bar.scrollIntoView( { behavior: window.matchMedia( REDUCED_MOTION_QUERY ).matches ? 'auto' : 'smooth', block: 'center' } );
+    description.focus( { preventScroll: true } );
+
+    // Restarts the highlight when it is still running from an earlier click.
+    bar.classList.remove( ATTENTION_CLASS );
+    void bar.offsetWidth;
+    bar.classList.add( ATTENTION_CLASS );
+  }
+
+  /**
+   * Sends clicks on the running entry's row to the bar, instead of Kimai's edit dialog or
+   * inline editing.
+   *
+   * @param {HTMLElement} bar The quick start bar of a running entry.
+   * @returns {void}
+   */
+  function initRunningRows( bar )
+  {
+    // Capture phase: decides about the click before Kimai's own row handling.
+    document.addEventListener( 'click', ( event ) =>
+    {
+      const target = event.target instanceof Element ? event.target : null;
+      if ( target === null || target.closest( 'tr.' + RUNNING_ROW_CLASS ) === null || target.closest( ROW_CONTROL_SELECTOR ) !== null )
+      {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      showRunning( bar );
+    }, true );
+
+    bar.addEventListener( 'animationend', ( event ) =>
+    {
+      if ( event.target === bar )
+      {
+        bar.classList.remove( ATTENTION_CLASS );
+      }
+    } );
+  }
+
+  /**
+   * Marks the running entry's row and adds continue buttons, now and whenever Kimai reloads
+   * the entry table.
+   *
+   * @param {HTMLElement} bar The quick start bar.
+   * @returns {void}
+   */
+  function initRows( bar )
+  {
+    const running = ( bar.dataset.timerBarRunning ?? '' ) !== '';
+    const continueForm = bar.querySelector( CONTINUE_FORM_SELECTOR );
+    if ( !running && continueForm === null )
+    {
+      return;
+    }
+
+    // The running row first, so it does not get a continue button.
+    const decorate = () =>
+    {
+      if ( running )
+      {
+        markRunningRows( bar );
+      }
+
+      if ( continueForm !== null )
+      {
+        addContinueButtons( continueForm );
+      }
+    };
+
+    if ( running )
+    {
+      initRunningRows( bar );
+    }
+
+    decorate();
+    new MutationObserver( decorate ).observe( document.body, { childList: true, subtree: true } );
   }
 
   /**
@@ -1081,7 +1388,7 @@
 
     document.querySelectorAll( FORM_SELECTOR ).forEach( initForm );
     document.querySelectorAll( BAR_SELECTOR ).forEach( initModes );
-    document.querySelectorAll( CLOCK_SELECTOR ).forEach( startClock );
-    document.querySelectorAll( CONTINUE_FORM_SELECTOR ).forEach( initContinue );
+    startTicking();
+    document.querySelectorAll( BAR_SELECTOR ).forEach( initRows );
   } );
 } )();

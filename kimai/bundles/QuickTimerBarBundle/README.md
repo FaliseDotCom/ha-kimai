@@ -30,6 +30,17 @@ new record starts now with the same description, project, activity, tags and bil
 setting. In manual mode it copies those into the bar instead, so a date, start and end time
 can be entered before adding it.
 
+The running record stands out in Kimai's record lists (**My times** and **All times**): its
+row is tinted with the bar's green edge, and a pulsing green play button replaces its play
+button and Kimai's actions menu. A click anywhere on the row, except its checkbox and links,
+scrolls to the bar, puts the focus in the description and briefly highlights the bar.
+
+Every running clock on the page ticks each second with a blinking colon: the bar's own, and
+every duration Kimai shows for a running record (its `[data-since]` elements, in Kimai's
+duration format). The script takes those over from Kimai's script, which only updates them
+every ten seconds, except the one in Kimai's hidden start button, which keeps the browser tab
+title up to date. All colons blink in step with the full seconds.
+
 Each user can turn the bar off with **Show quick start bar** in their preferences; Kimai's
 own start button then returns. The bar is on by default.
 

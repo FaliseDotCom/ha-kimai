@@ -4,6 +4,17 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.26
+
+- Quick start bar: the running record stands out in the record lists, tinted with the bar's
+  green edge. A pulsing green play button takes the place of its play button and menu, and
+  clicking the record scrolls up to the bar, where it can be changed.
+- Quick start bar: a running record's time now ticks wherever it is shown, in the bar, the
+  record lists and the dashboard, with a colon that blinks with the seconds. Kimai's own
+  durations used to update only every ten seconds.
+- Inline timesheet editing: the running record is no longer edited in the list; change it in
+  the quick start bar, or with **Edit** in its menu when the bar is off.
+
 ## 2.67.0.25
 
 - New **timesheet extras** plugin. With **Show daily stats in timesheet** turned on, the row

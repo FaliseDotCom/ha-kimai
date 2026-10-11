@@ -247,6 +247,12 @@ continues that record: a new record starts now with the same description, projec
 tags and billable setting. In manual mode it copies those into the bar instead, without
 starting anything: enter the date, start and end time, and press **Add**.
 
+The running record stands out in the lists on **My times** and **All times**: it is tinted,
+with the same green edge as the bar, and has a pulsing green play button instead of its play
+button and menu. Click it anywhere to scroll up to the bar, ready to change it there.
+Wherever a running record's time is shown, in the bar, the lists or on the dashboard, it ticks
+along with a colon that blinks with the seconds.
+
 The bar starts and stops records the same way the rest of Kimai does, so Kimai's settings
 for rounding and for how many records may run at once apply. When only one record may run,
 starting a new one stops the running one.
@@ -374,7 +380,8 @@ new project (with a new or existing customer) or activity and select it right aw
 
 Only your own records can be edited this way, also on **All times**, and only the fields
 Kimai lets you change: exported or locked records, and times in a tracking mode that does not
-allow editing them, are left alone. Clicking a record no longer opens Kimai's edit dialog,
+allow editing them, are left alone. So is the running record: change it in the quick start
+bar, which a click on it scrolls to. Clicking a record no longer opens Kimai's edit dialog,
 also not for someone else's record: use **Edit** in the record's actions menu for that.
 Changing the project or activity recalculates billable and the rates, as in Kimai's own
 dialog. If Kimai refuses a change, its reason is shown and the record stays open so you can

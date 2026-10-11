@@ -62,6 +62,10 @@
         <source>timer_bar.finish</source>
         <target>Opslaan met deze eindtijd</target>
       </trans-unit>
+      <trans-unit id="timer_bar.running_row" resname="timer_bar.running_row">
+        <source>timer_bar.running_row</source>
+        <target>Loopt nu. Klik om het in de snelstartbalk te wijzigen</target>
+      </trans-unit>
       <trans-unit id="timer_bar.mode_timer" resname="timer_bar.mode_timer">
         <source>timer_bar.mode_timer</source>
         <target>Timermodus: nu starten, later stoppen</target>
