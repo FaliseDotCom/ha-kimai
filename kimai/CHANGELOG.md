@@ -18,6 +18,9 @@ version the app contains; see the
   - Reporting extras: the summary report no longer shows descriptions of team members' records
     on projects, customers or activities limited to teams you are not in. Their time still
     counts in the totals, as in Kimai's own reports.
+  - Quick start bar and inline timesheet editing: a new tag is only saved together with its
+    record, after Kimai accepted both. A refused change no longer leaves new tags behind, and
+    tag names with characters Kimai does not allow are refused.
 
 ## 2.67.0.25
 

@@ -45,7 +45,7 @@ final class TimerBarRepository
    * @param ProjectRepository $projectRepository Finds the projects a user may book on.
    * @param ActivityRepository $activityRepository Finds the activities a user may book on.
    * @param TimesheetRepository $timesheetRepository Finds running and past entries.
-   * @param TagRepository $tagRepository Finds and stores tags.
+   * @param TagRepository $tagRepository Finds tags.
    */
   public function __construct(
     private readonly EntityManagerInterface $entityManager,
@@ -124,7 +124,9 @@ final class TimerBarRepository
   }
 
   /**
-   * Returns the tag with the given name, creating it when it does not exist yet.
+   * Returns the tag with the given name, creating it when it does not exist yet. A new tag is
+   * not saved here: the record saves it along with itself, after Kimai validated both. Saving
+   * it here would also save the record's pending changes before validation.
    *
    * @param string $name The tag name.
    * @return Tag
@@ -139,7 +141,6 @@ final class TimerBarRepository
 
     $tag = new Tag();
     $tag->setName( $name );
-    $this->tagRepository->saveTag( $tag );
 
     return $tag;
   }
