@@ -10,6 +10,7 @@ use KimaiPlugin\ShortTimeEntriesBundle\Controller\AssetController;
 use KimaiPlugin\ShortTimeEntriesBundle\ShortTimeEntriesBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Adds the plugin's script to every page for logged-in users.
@@ -24,9 +25,21 @@ final class ScriptSubscriber implements EventSubscriberInterface
   private const SCRIPT = 'short-time-entries.js';
 
   /**
-   * @param UrlGeneratorInterface $urlGenerator Builds the script address.
+   * The login level the script's own route needs. Halfway through a two-factor login the user
+   * is known but does not have it yet, so the script could not load.
+   *
+   * @var string
    */
-  public function __construct( private readonly UrlGeneratorInterface $urlGenerator )
+  private const LOGGED_IN = 'IS_AUTHENTICATED_REMEMBERED';
+
+  /**
+   * @param UrlGeneratorInterface $urlGenerator Builds the script address.
+   * @param AuthorizationCheckerInterface $security Tells whether the user is fully logged in.
+   */
+  public function __construct(
+    private readonly UrlGeneratorInterface $urlGenerator,
+    private readonly AuthorizationCheckerInterface $security
+  )
   {
   }
 
@@ -43,14 +56,14 @@ final class ScriptSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the script tag; the login page and other anonymous pages are skipped.
+   * Adds the script tag; the login and two-factor pages and other anonymous pages are skipped.
    *
    * @param ThemeEvent $event The event that collects scripts for the end of the page.
    * @return void
    */
   public function onJavascript( ThemeEvent $event ) : void
   {
-    if ( !$event->getUser() instanceof User )
+    if ( !$event->getUser() instanceof User || !$this->security->isGranted( self::LOGGED_IN ) )
     {
       return;
     }

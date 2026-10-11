@@ -3,7 +3,7 @@
   "description": "Quicker time and duration entry in Kimai's forms: type 945 for 9:45 or 90 for an hour and a half",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [

@@ -45,6 +45,8 @@ version the app contains; see the
     such as ?user[]=1, no longer shows an error page.
   - Reporting extras: the charts on the user reports show the same user as Kimai's table, also
     when a disabled user is asked for.
+  - Short time entries: the script is no longer added to the two-factor login page, where it
+    could not load.
 
 ## 2.67.0.25
 
