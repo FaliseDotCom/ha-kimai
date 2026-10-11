@@ -403,7 +403,7 @@ your name, then **Preferences**) to get a row per day with the day's total on **
 - The button before **Customize display**, at the top of the list, collapses all days. When
   all days are collapsed, it expands them all.
 - Your browser remembers which days are collapsed, separately for **My times** and **All
-  times**. After **Collapse all**, days on other pages and new days start collapsed too,
+  times** and for each user. After **Collapse all**, days on other pages and new days start collapsed too,
   until you press **Expand all**.
 
 Selecting all records with the checkbox at the top of the list also selects the records in

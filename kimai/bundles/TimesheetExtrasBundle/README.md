@@ -15,7 +15,7 @@ the day's records; this plugin moves it to the top, so it reads as the day's hea
 - A button next to the list's own buttons (before **Customize display**) collapses all days,
   or expands them all when none is expanded.
 - The browser remembers which days are collapsed, separately for **My times** and **All
-  times**. **Collapse all** and **Expand all** also apply to days on other pages and days
+  times** and for each user. **Collapse all** and **Expand all** also apply to days on other pages and days
   still to come: after **Collapse all**, a new day starts collapsed.
 
 Without the daily stats preference there are no day rows, and the plugin adds nothing.
@@ -36,7 +36,7 @@ be collapsed but are not remembered. When the list is not sorted by date, the sa
 appear more than once; those parts collapse together.
 
 The state lives in the browser's `localStorage`, under
-`timesheet-extras.collapsed-days.own` and `timesheet-extras.collapsed-days.all`: whether days
+`timesheet-extras.collapsed-days.own.<user ID>` and `timesheet-extras.collapsed-days.all.<user ID>`: whether days
 are collapsed by default, and the days that differ from that default (at most 500, oldest
 dropped first). Kimai reloads the list after changes by replacing the page content and
 dispatching `kimai.reloadedContent`; the script then prepares the new rows. The collapse all

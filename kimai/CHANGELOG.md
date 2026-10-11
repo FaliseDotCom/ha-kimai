@@ -51,6 +51,8 @@ version the app contains; see the
     the reports.
   - All plugins: browsers now keep the plugins' scripts and stylesheets for a day instead of
     downloading them on every page.
+  - Timesheet extras: collapsed days are remembered per user, so two accounts in one browser no
+    longer share them. Days collapsed before this update open once.
 
 ## 2.67.0.25
 

@@ -112,8 +112,10 @@ final class ScriptSubscriber implements EventSubscriberInterface
       return;
     }
 
+    // The user ID keeps the collapsed days of two accounts in one browser apart.
     $attributes = [
       'list' => $list,
+      'user' => (string) $event->getUser()?->getId(),
       'messages' => (string) json_encode( $this->translateMessages() ),
     ];
 

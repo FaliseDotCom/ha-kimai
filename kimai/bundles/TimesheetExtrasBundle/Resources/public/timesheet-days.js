@@ -20,11 +20,11 @@ const SCRIPT = [ ...document.scripts ].find( ( script ) => script.src === import
 const MESSAGES = JSON.parse( SCRIPT?.dataset.messages ?? '{}' );
 
 /**
- * Key under which the browser remembers the collapsed days of this list.
+ * Key under which the browser remembers the collapsed days of this list, per user.
  *
  * @type {string}
  */
-const STORAGE_KEY = 'timesheet-extras.collapsed-days.' + ( SCRIPT?.dataset.list ?? 'own' );
+const STORAGE_KEY = 'timesheet-extras.collapsed-days.' + ( SCRIPT?.dataset.list ?? 'own' ) + '.' + ( SCRIPT?.dataset.user ?? '' );
 
 /**
  * At most this many days are remembered as differing from the default; the oldest go first.
