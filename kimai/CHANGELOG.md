@@ -32,6 +32,7 @@ version the app contains; see the
     address with a tab or other control character can no longer lead to another site.
   - Quick start bar and inline timesheet editing: a project created with a **+** button gets
     your teams when Kimai's **copy teams on create** setting is on, as in Kimai's own form.
+  - Inline timesheet editing: error messages are shown as text, never as HTML.
 
 ## 2.67.0.25
 
