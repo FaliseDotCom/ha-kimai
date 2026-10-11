@@ -16,6 +16,8 @@ version the app contains; see the
   the quick start bar, or with **Edit** in its menu when the bar is off.
 - Quick start bar and inline timesheet editing: adding an activity with the **+** button now
   picks an existing activity of the project with that name instead of creating a second one.
+- Inline timesheet editing: a record clicked while another one is being saved also opens when
+  the click was on a column without a field.
 - Security fixes from the [security audit](https://github.com/FaliseDotCom/ha-kimai/blob/main/.docs/audits/reports/2026-10-11-security-audit.md):
   - Reporting extras: the summary report no longer shows descriptions of team members' records
     on projects, customers or activities limited to teams you are not in. Their time still
