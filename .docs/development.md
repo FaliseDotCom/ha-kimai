@@ -159,7 +159,10 @@ rounding and running-record limit apply.
 Each plugin serves its own script and stylesheet through a controller route
 (`/…/assets/{name}`, limited to a fixed list of files), because Kimai has no asset pipeline
 for plugins. A version parameter based on the files' modification time busts browser
-caches after an update.
+caches after an update. The responses are private and cached for a day, then revalidated with
+`Last-Modified`. Symfony makes every response of a request that reads the session uncached,
+so the asset controllers set its `Symfony-Session-NoAutoCacheControl` header; keep the
+responses private, because the routes need a login.
 
 `QuickTimerBarBundle` and `InlineTimesheetEditBundle` each carry `Service/QuickCreator.php`,
 which creates projects, customers and activities from the "+" buttons; the copies differ only

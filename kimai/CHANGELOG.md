@@ -49,6 +49,8 @@ version the app contains; see the
     could not load.
   - Reporting extras: the charts of the dashboard widget also load for users without access to
     the reports.
+  - All plugins: browsers now keep the plugins' scripts and stylesheets for a day instead of
+    downloading them on every page.
 
 ## 2.67.0.25
 
