@@ -39,6 +39,8 @@ version the app contains; see the
   - Inline timesheet editing: a duration or break of more than a year is refused with a message
     instead of an error page.
   - Quick start bar and inline timesheet editing: one change creates at most 20 new tags.
+  - Quick start bar and inline timesheet editing: when Kimai refuses a project created with a +
+    button, the new customer for it is no longer kept.
 
 ## 2.67.0.25
 
