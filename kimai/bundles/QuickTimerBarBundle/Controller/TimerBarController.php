@@ -64,6 +64,15 @@ final class TimerBarController extends AbstractController
   private const ERROR_TIMES_NOT_ALLOWED = 'timer_bar.times_not_allowed';
 
   /**
+   * A path on this site to return to. "//host" and "/\host" would lead to another site, and so
+   * would control characters and whitespace, which browsers remove from addresses: "/<tab>/host"
+   * becomes "//host".
+   *
+   * @var string
+   */
+  private const SAME_SITE_PATH = '#^/(?![/\\\\])[^\x00-\x20\x7f\\\\]*$#';
+
+  /**
    * The page users return to when the request names no valid page.
    *
    * @var string
@@ -465,8 +474,7 @@ final class TimerBarController extends AbstractController
   {
     $target = (string) $request->request->get( '_target_path' );
 
-    // Only same-site paths: "//host" and "/\host" would send the browser to another site.
-    if ( preg_match( '#^/(?![/\\\\])#', $target ) === 1 )
+    if ( preg_match( self::SAME_SITE_PATH, $target ) === 1 )
     {
       return $this->redirect( $target );
     }

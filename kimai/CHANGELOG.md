@@ -28,6 +28,8 @@ version the app contains; see the
     button.
   - Quick start bar and reporting extras: a description or name containing `<!--<script>` no
     longer breaks the rest of the page.
+  - Quick start bar: after a start or stop, the bar only returns to paths on this site; an
+    address with a tab or other control character can no longer lead to another site.
 
 ## 2.67.0.25
 
