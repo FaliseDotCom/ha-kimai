@@ -33,6 +33,9 @@ version the app contains; see the
   - Quick start bar and inline timesheet editing: a project created with a **+** button gets
     your teams when Kimai's **copy teams on create** setting is on, as in Kimai's own form.
   - Inline timesheet editing: error messages are shown as text, never as HTML.
+  - Reporting extras: periods longer than two months are summed per month in the database,
+    and each group in the summary report lists at most 50 descriptions, with one line for the
+    rest, so reports over long periods stay quick.
 
 ## 2.67.0.25
 
