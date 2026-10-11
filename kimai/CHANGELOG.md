@@ -30,6 +30,8 @@ version the app contains; see the
     longer breaks the rest of the page.
   - Quick start bar: after a start or stop, the bar only returns to paths on this site; an
     address with a tab or other control character can no longer lead to another site.
+  - Quick start bar and inline timesheet editing: a project created with a **+** button gets
+    your teams when Kimai's **copy teams on create** setting is on, as in Kimai's own form.
 
 ## 2.67.0.25
 
