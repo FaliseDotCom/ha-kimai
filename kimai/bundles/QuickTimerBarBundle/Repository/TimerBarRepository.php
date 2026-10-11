@@ -125,8 +125,8 @@ final class TimerBarRepository
 
   /**
    * Returns the tag with the given name, creating it when it does not exist yet. A new tag is
-   * not saved here: the record saves it along with itself, after Kimai validated both. Saving
-   * it here would also save the record's pending changes before validation.
+   * not saved here: the record saves it along with itself, after Kimai validated both, so a
+   * refused change leaves no tag behind.
    *
    * @param string $name The tag name.
    * @return Tag

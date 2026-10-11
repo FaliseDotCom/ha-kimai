@@ -31,6 +31,13 @@ final class EntryWriter
   private const TAG_LENGTH = [ 2, 100 ];
 
   /**
+   * Most new tags one request may create.
+   *
+   * @var int
+   */
+  private const MAX_NEW_TAGS = 20;
+
+  /**
    * @param TimesheetService $timesheetService Creates and saves time records the way Kimai does.
    * @param TimerBarRepository $repository Finds and creates tags.
    * @param AuthorizationCheckerInterface $security Checks the billable and tag permissions.
@@ -201,6 +208,7 @@ final class EntryWriter
 
   /**
    * Returns the tags with the given names, creating missing ones when the user may create tags.
+   * Only the first names up to MAX_NEW_TAGS are used, so one request cannot create many tags.
    *
    * @param array<int, string> $names Tag names.
    * @return array<int, Tag>
@@ -212,7 +220,7 @@ final class EntryWriter
       return [];
     }
 
-    return array_map( [ $this->repository, 'findOrCreateTag' ], $names );
+    return array_map( [ $this->repository, 'findOrCreateTag' ], array_slice( $names, 0, self::MAX_NEW_TAGS ) );
   }
 
   /**

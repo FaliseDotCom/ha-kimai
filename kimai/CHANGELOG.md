@@ -38,6 +38,7 @@ version the app contains; see the
     rest, so reports over long periods stay quick.
   - Inline timesheet editing: a duration or break of more than a year is refused with a message
     instead of an error page.
+  - Quick start bar and inline timesheet editing: one change creates at most 20 new tags.
 
 ## 2.67.0.25
 
