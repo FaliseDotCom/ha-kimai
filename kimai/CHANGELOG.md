@@ -43,6 +43,8 @@ version the app contains; see the
     **+** button, the new customer for it is no longer kept.
   - Reporting extras: a report or dashboard address with a list where one value is expected,
     such as ?user[]=1, no longer shows an error page.
+  - Reporting extras: the charts on the user reports show the same user as Kimai's table, also
+    when a disabled user is asked for.
 
 ## 2.67.0.25
 
