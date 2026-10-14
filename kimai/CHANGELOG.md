@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.27
+
+- Reporting extras: the doughnut charts on the user reports, the summary report and the
+  working hours widget show the total time in their centre.
+
 ## 2.67.0.26
 
 - Quick start bar: the running record stands out in the record lists, tinted with the bar's
