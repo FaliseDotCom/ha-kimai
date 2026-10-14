@@ -368,7 +368,7 @@ day totals and prices stay right.
 | Column | How it is edited |
 | ------ | ---------------- |
 | Date | Moves the record to another day; start, end and duration stay the same. |
-| Begin | Changes the start; the end stays, so the duration changes. |
+| Begin | Changes the start; the end time stays, so the duration changes. An end on the next day moves back to the start's day when it now fits there. |
 | End | Changes the end; an end before the start is on the next day. |
 | Duration, Break | Type `1:30`, `90`, `1.5` or `1h30m`; a new duration moves the end. |
 | Customer, Project | Pick a project, grouped by customer. The activity list then shows that project's activities; if the record's activity does not fit, pick a new one. |

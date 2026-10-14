@@ -4,6 +4,13 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.29
+
+- Inline timesheet editing: changing the start of a record whose end had moved to the next
+  day, for example after typing an end before the start, now moves the end back to the
+  start's day when it fits there. A record of 19:30 to 19:15 changed to start at 19:00 used
+  to last 24:15 instead of 0:15.
+
 ## 2.67.0.28
 
 - Quick start bar: the play button on each record is a white circle with a green play icon,
