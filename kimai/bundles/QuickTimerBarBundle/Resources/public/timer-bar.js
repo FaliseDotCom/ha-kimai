@@ -1158,7 +1158,7 @@
 
       const button = document.createElement( 'button' );
       button.type = 'button';
-      button.className = 'btn btn-sm btn-ghost-success btn-icon timer-bar-continue';
+      button.className = 'btn btn-sm btn-icon timer-bar-continue';
       labelContinueButton( button, getContinueLabel( form ) );
       button.innerHTML = '<i class="fas fa-play"></i>';
       button.addEventListener( 'click', ( event ) =>

@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.28
+
+- Quick start bar: the play button on each record is a white circle with a green play icon,
+  the inverse of the running record's green button, and lifts further on hover.
+
 ## 2.67.0.27
 
 - Reporting extras: the doughnut charts on the user reports, the summary report and the

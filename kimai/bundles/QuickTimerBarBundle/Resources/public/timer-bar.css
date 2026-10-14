@@ -235,6 +235,36 @@ td:has(> .timer-bar-now)
   white-space: nowrap;
 }
 
+/* Both row buttons are the same round button; the continue button is its inverse, a white
+   circle with a green play icon that lifts further on hover */
+.timer-bar-continue,
+.timer-bar-now
+{
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.btn.timer-bar-continue
+{
+  border-color: transparent;
+  background-color: var(--tblr-bg-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  color: var(--tblr-success);
+  transition: box-shadow 0.15s ease-out;
+}
+
+.btn.timer-bar-continue:hover,
+.btn.timer-bar-continue:focus-visible,
+.btn.timer-bar-continue:active
+{
+  border-color: transparent;
+  background-color: var(--tblr-bg-surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: var(--tblr-success);
+}
+
 /* The running record in the record lists: tinted, with the bar's green edge, and a pulsing
    button in place of its row buttons. A click anywhere on it opens it in the bar. */
 .timer-bar-running-row
@@ -263,10 +293,6 @@ tr.timer-bar-running-row > td:first-child::before
 
 .timer-bar-now
 {
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  border-radius: 50%;
   animation: timer-bar-pulse 1.6s ease-out infinite;
 }
 
@@ -315,6 +341,11 @@ tr.timer-bar-running-row > td:first-child::before
   .timer-bar-colon
   {
     animation: none;
+  }
+
+  .btn.timer-bar-continue
+  {
+    transition: none;
   }
 }
 
