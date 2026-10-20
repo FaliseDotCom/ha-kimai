@@ -41,7 +41,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *   defaultProjectId: int,
  *   defaultActivityId: int,
  *   timeFormat: string,
- *   today: string
+ *   today: string,
+ *   timezone: string
  * }
  */
 final class TimerBarViewFactory
@@ -94,6 +95,7 @@ final class TimerBarViewFactory
       'defaultActivityId' => $suggestions[ 0 ][ 'activityId' ] ?? 0,
       'timeFormat' => $this->timeInput->getFormats( $locale )[ 'js' ],
       'today' => ( new DateTimeImmutable( 'today', $timezone ) )->format( 'Y-m-d' ),
+      'timezone' => $timezone->getName(),
     ];
   }
 

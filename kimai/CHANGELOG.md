@@ -4,6 +4,12 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.30
+
+- Quick start bar: the date moves on to the new day when the page stays open past midnight,
+  for example overnight, so a start time or a record entered the next morning no longer
+  lands on the day before. A date chosen by hand stays as it is.
+
 ## 2.67.0.29
 
 - Inline timesheet editing: changing the start of a record whose end had moved to the next

@@ -292,6 +292,21 @@
   const SAVE_DELAY = 400;
 
   /**
+   * Selector of the start form's date, which follows today while the page stays open. Its
+   * data-timezone holds the user's time zone, in which the day changes.
+   *
+   * @type {string}
+   */
+  const TODAY_SELECTOR = '[data-timer-bar-today]';
+
+  /**
+   * Milliseconds between checks whether the day has changed.
+   *
+   * @type {number}
+   */
+  const TODAY_CHECK_INTERVAL = 60000;
+
+  /**
    * Formats a number of seconds as hours, minutes and seconds, for example 1:05:09.
    *
    * @param {number} totalSeconds The duration in seconds.
@@ -797,7 +812,73 @@
     if ( form.dataset.state === STATE_RUNNING )
     {
       initAutoSave( form );
+      return;
     }
+
+    followToday( form );
+  }
+
+  /**
+   * Returns today's date as Y-m-d in a time zone, or in the browser's time zone when the
+   * given one is unknown.
+   *
+   * @param {string} timezone The time zone, for example Europe/Amsterdam.
+   * @returns {string}
+   */
+  function getToday( timezone )
+  {
+    const options = { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' };
+    let parts;
+
+    try
+    {
+      parts = new Intl.DateTimeFormat( 'en', options ).formatToParts( new Date() );
+    }
+    catch ( error )
+    {
+      delete options.timeZone;
+      parts = new Intl.DateTimeFormat( 'en', options ).formatToParts( new Date() );
+    }
+
+    const part = ( type ) => parts.find( ( item ) => item.type === type ).value;
+
+    return part( 'year' ) + '-' + part( 'month' ) + '-' + part( 'day' );
+  }
+
+  /**
+   * Moves the start form's date on to the new day when the page stays open past midnight, for
+   * example overnight. A date the user chose stays as it is.
+   *
+   * @param {HTMLFormElement} form The start form.
+   * @returns {void}
+   */
+  function followToday( form )
+  {
+    const date = form.querySelector( TODAY_SELECTOR );
+    if ( date === null )
+    {
+      return;
+    }
+
+    let today = date.value;
+    const update = () =>
+    {
+      const now = getToday( date.dataset.timezone );
+      if ( now === today )
+      {
+        return;
+      }
+
+      if ( date.value === today )
+      {
+        date.value = now;
+      }
+
+      today = now;
+    };
+
+    window.setInterval( update, TODAY_CHECK_INTERVAL );
+    document.addEventListener( 'visibilitychange', update );
   }
 
   /**

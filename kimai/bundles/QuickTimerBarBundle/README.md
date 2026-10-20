@@ -20,7 +20,8 @@ of every page, above the page's own buttons and filters.
 
 The two small icons next to the main button switch modes, as in Toggl Track; the browser
 remembers the last choice. Times accept short forms such as `915` or `945p`, and an end time
-before the start time means the next day.
+before the start time means the next day. The date starts on today and moves on to the new
+day when the page stays open past midnight, unless another date was chosen.
 
 Kimai's **punch in/out** and **fixed start time** tracking modes do not let users choose
 times. In those modes the bar has no date, times or manual mode: records start and stop now,

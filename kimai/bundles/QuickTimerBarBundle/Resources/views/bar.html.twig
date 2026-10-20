@@ -82,8 +82,10 @@
 
     <div class="timer-bar-times">
       {% if can_enter_times %}
+        {# The script moves the date on to the new day when the page stays open past midnight. #}
         <input type="date" name="date" class="form-control timer-bar-date" value="{{ timer_bar.today }}"
-          title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required>
+          title="{{ 'timer_bar.date'|trans }}" aria-label="{{ 'timer_bar.date'|trans }}" required
+          data-timer-bar-today data-timezone="{{ timer_bar.timezone }}">
         <input type="text" name="begin_time" class="form-control timer-bar-time"
           data-timepicker="on" data-format="{{ timer_bar.timeFormat }}" placeholder="{{ 'timer_bar.begin'|trans }}"
           title="{{ 'timer_bar.begin'|trans }}" aria-label="{{ 'timer_bar.begin'|trans }}" autocomplete="off"
