@@ -276,14 +276,20 @@ kimai:
 
 ### Reporting extras
 
-**Weekly, monthly and yearly view for one user.** Kimai's own reports under **Reporting** get
-two charts above their table: a bar chart of the hours per day (per month in the yearly
-view), stacked by project, and a doughnut chart of each project's share. They follow the
-week, month, year and user picked in the report. In the table below the charts, projects
-are indented under their customer and activities under their project, and customer and
-project names link to their detail pages if you may open those. Buttons next to the period
-picker switch to the other two views for the same user, for example **Week** and **Month**
-in the yearly view. The new view shows the period with today in it when the current one
+**Quarterly views.** **Reporting** > **Quarterly view for one user** and **Quarterly view for
+all users** work like Kimai's yearly views, for one quarter: a column per month, the same
+filters and the same download. The arrows next to the quarter step to the previous or next
+quarter; the menu between them picks one of the last twelve. Quarters follow the calendar,
+January to March and so on. They are listed after Kimai's own reports.
+
+**Weekly, monthly, quarterly and yearly view for one user.** These reports under
+**Reporting** get two charts above their table: a bar chart of the hours per day (per month
+in the quarterly and yearly view), stacked by project, and a doughnut chart of each project's
+share. They follow the period and user picked in the report. In the table below the charts,
+projects are indented under their customer and activities under their project, and customer
+and project names link to their detail pages if you may open those. Buttons next to the
+period picker switch to the other views for the same user, for example **Week**, **Month**
+and **Quarter** in the yearly view. The new view shows the period with today in it when the current one
 contains today, and otherwise the start of the current period.
 
 **Summary report.** **Reporting** > **Summary** shows where your time went in one page:

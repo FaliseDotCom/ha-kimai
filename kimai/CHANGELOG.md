@@ -4,6 +4,14 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.31
+
+- Reporting extras: **Quarterly view for one user** and **Quarterly view for all users**
+  under **Reporting**, in the style of Kimai's yearly views with a column per month. The
+  arrows next to the quarter step to the previous or next quarter. The quarterly view for one
+  user gets the same charts as the other user reports, and the weekly, monthly and yearly
+  views get a **Quarter** button next to **Week**, **Month** and **Year**.
+
 ## 2.67.0.30
 
 - Quick start bar: the date moves on to the new day when the page stays open past midnight,

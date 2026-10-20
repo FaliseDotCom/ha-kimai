@@ -10,8 +10,8 @@ and turns it into reports, exports and invoices. This app bundles Kimai with its
 MariaDB database, so it works on its own with no other apps required.
 
 - Quick start bar: type what you are working on, pick a project, press start.
-- Reporting extras: charts on the weekly, monthly and yearly reports, a summary report and
-  dashboard widgets.
+- Reporting extras: quarterly reports, charts on the weekly, monthly, quarterly and yearly
+  reports, a summary report and dashboard widgets.
 - Quicker time entry: type `945` for 9:45, or `10` for a ten-minute duration.
 - Inline editing: click a record in the list and change it right there.
 - Collapsible days in the record list, with each day's total at the top.
