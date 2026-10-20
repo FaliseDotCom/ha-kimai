@@ -56,7 +56,8 @@ start. Switch to manual mode, as in Toggl Track, to fill in a date, start and en
 something you already did. While a record runs, the bar shows it with a live clock and a stop button, and everything about it,
 including its start time, can be changed right there. Recent
 descriptions are suggested as you type, and every record on **My times** gets a play button
-that starts the same work again.
+that starts the same work again. The running record stands out in the record lists, and its
+time ticks along wherever it is shown.
 
 It replaces Kimai's own start button and sits on its own row directly below the top bar of
 every page.
@@ -68,12 +69,14 @@ every page.
 Additions to Kimai's **Reporting** section:
 
 - The **weekly, monthly and yearly report for one user** get a bar chart of the hours per day
-  (or month), stacked by project, and a doughnut chart with a legend, above Kimai's table. In
-  the table, projects are indented under their customer, and customer and project names link
+  (or month), stacked by project, and a doughnut chart with a legend and the total time in
+  its centre, above Kimai's table. In the table, projects are indented under their customer, and customer and project names link
   to their detail pages. Buttons next to the period picker switch between the three views.
 - A **Summary** report shows any period on one page: totals, a bar chart over time, a
   doughnut chart, and a breakdown per project, customer, activity or user down to each
   description.
+- Two **dashboard widgets**: your working hours by project per week, in the same chart style,
+  and an hours overview that separates your own hours from everyone's.
 
 [How it works](kimai/bundles/ReportingGraphsBundle/README.md)
 

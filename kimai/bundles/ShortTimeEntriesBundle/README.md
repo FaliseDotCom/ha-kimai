@@ -40,9 +40,10 @@ unchanged. A plain number used to mean hours in Kimai; with this plugin it means
 
 ## How it works
 
-One module script, added to every page for logged-in users through Kimai's
-`ThemeEvent::JAVASCRIPT`. It listens for `change` events in the capture phase, so it also
-works in forms that Kimai loads into dialogs later, and runs before Kimai's own handlers.
+One module script, added to every page for fully logged-in users through Kimai's
+`ThemeEvent::JAVASCRIPT`; it is left out halfway through a two-factor login, where its own
+route would refuse it. The plugin serves the script itself, and browsers keep it for a day.
+It listens for `change` events in the capture phase, so it also works in forms that Kimai loads into dialogs later, and runs before Kimai's own handlers.
 Fields are recognised by Kimai's own markup: `input[data-timepicker="on"]` for times and
 `input.duration-input` for durations. Before a form is submitted, all its time and duration
 fields are completed too.

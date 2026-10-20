@@ -34,9 +34,9 @@ running record is shown read-only; without `stop` there is no stop button.
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.
 
-On **My times** each record gets a play button. In timer mode it continues the record: a
-new record starts now with the same description, project, activity, tags and billable
-setting. In manual mode it copies those into the bar instead, so a date, start and end time
+On **My times** each record gets a play button, a white circle with a green play icon. In
+timer mode it continues the record: a new record starts now with the same description,
+project, activity, tags and billable setting. In manual mode it copies those into the bar instead, so a date, start and end time
 can be entered before adding it.
 
 The running record stands out in Kimai's record lists (**My times** and **All times**): its
@@ -64,7 +64,7 @@ installation.
 ## Requirements
 
 Kimai 2.67.0 or later. No JavaScript build step is needed; the plugin serves its own script
-and stylesheet.
+and stylesheet, which browsers keep for a day. A release changes the version in their address.
 
 ## Installation
 
@@ -81,9 +81,11 @@ A **+** button next to the project picker adds a project from just its name and 
 an existing one or a new one; a **+** next to the activity picker adds an activity. The new
 item is selected straight away. Kimai's defaults apply (a new customer gets the default
 country, currency, language and time zone), and everything can be changed later in Kimai's
-own forms. A name that already exists is reused instead of creating a duplicate. A new
-activity is global, unless the selected project only allows its own activities; then it
-belongs to that project.
+own forms. A name that already exists is reused instead of creating a duplicate, also an
+activity that belongs to the selected project. A new activity is global, unless the selected
+project only allows its own activities; then it belongs to that project. A new project gets
+the creator's teams when Kimai's **copy teams on create** setting is on, as in Kimai's own
+form, and a new customer is only kept when Kimai accepts its project too.
 
 The buttons need Kimai's `create_project` and `create_activity` permissions; a new customer
 also needs `create_customer`. `Service/QuickCreator.php` creates everything through Kimai's
@@ -96,9 +98,10 @@ differing only in its namespace; change both together.
 The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/update`, `/timer-bar/stop`
 and `/timer-bar/continue`, protected by a CSRF token; in manual mode the running record is
 finished through `/timer-bar/finish`. In manual mode the play button reads
-the record from `/timer-bar/entry` as JSON, which only answers for the user's own records. The script sends changes to the running
-record to `/timer-bar/update` in the background and gets JSON back; everything else returns
-to the page it was used on. Records are created and stopped through Kimai's `TimesheetService`, and continuing goes
+the record from `/timer-bar/entry` as JSON, which needs `view_own_timesheet` and only
+answers for the user's own records. The script sends changes to the running record to
+`/timer-bar/update` in the background and gets JSON back; everything else returns to the
+page it was used on, and only to a path on this site. Records are created and stopped through Kimai's `TimesheetService`, and continuing goes
 through Kimai's restart events like Kimai's own "repeat" action, so Kimai's own rules apply:
 
 - validation, such as required fields, budgets and locked periods;
@@ -108,7 +111,9 @@ through Kimai's restart events like Kimai's own "repeat" action, so Kimai's own 
 The bar is shown to users with the `create_own_timesheet` permission. It only offers, and
 only accepts, projects and activities the user may book on according to Kimai's own team
 and visibility rules. The billable toggle needs `edit_billable_own_timesheet`, creating tags
-needs `create_tag`, and the continue button only accepts the user's own records.
+needs `create_tag`, and the continue button only accepts the user's own records. New tags are
+only saved together with their record, after Kimai accepted both; one request creates at most
+20 of them, and further new names are ignored.
 
 ## Translations
 

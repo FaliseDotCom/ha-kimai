@@ -42,6 +42,9 @@ dropped first). Kimai reloads the list after changes by replacing the page conte
 dispatching `kimai.reloadedContent`; the script then prepares the new rows. The collapse all
 button sits in the page header, which a reload keeps.
 
+The plugin serves its own script and stylesheet; browsers keep them for a day, and a release
+changes the version in their address.
+
 ## Requirements and installation
 
 Kimai 2.67.0 or later.
