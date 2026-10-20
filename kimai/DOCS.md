@@ -292,6 +292,12 @@ period picker switch to the other views for the same user, for example **Week**,
 and **Quarter** in the yearly view. The new view shows the period with today in it when the
 current one contains today, and otherwise the start of the current period.
 
+Select **Customer** or **Total** at the top of the table to sort it by name or by hours, and
+select it again to reverse the order. Projects and activities are sorted within their
+customer and project, and the reports remember your choice in this browser. The hours in the
+legend under the doughnut chart open the records they count, like the totals in the table;
+**Other** opens the records of all the projects it combines.
+
 **Summary report.** **Reporting** > **Summary** shows where your time went in one page:
 
 - totals for the period: total time, billable time and, if you may see rates, the amount;

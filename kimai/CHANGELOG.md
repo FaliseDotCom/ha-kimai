@@ -4,6 +4,15 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.32
+
+- Reporting extras: the hours in the legend under the doughnut chart on the user reports open
+  the records they count, the same as the totals in the table. **Other** opens the records of
+  all the projects it combines.
+- Reporting extras: the table of the user reports sorts by customer or by total, both ways,
+  with the **Customer** and **Total** headings. Projects and activities sort within their
+  customer and project, and the choice is remembered in the browser.
+
 ## 2.67.0.31
 
 - Reporting extras: **Quarterly view for one user** and **Quarterly view for all users**
