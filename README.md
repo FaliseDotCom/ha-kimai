@@ -70,10 +70,11 @@ Additions to Kimai's **Reporting** section:
 
 - **Quarterly views** for one user and for all users, in the style of Kimai's yearly views,
   with a quarter picker that steps a quarter back or forward.
-- The **weekly, monthly, quarterly and yearly report for one user** get a bar chart of the hours per day
-  (or month), stacked by project, and a doughnut chart with a legend and the total time in
-  its centre, above Kimai's table. In the table, projects are indented under their customer, and customer and project names link
-  to their detail pages. Buttons next to the period picker switch between the four views.
+- The **weekly, monthly, quarterly and yearly report for one user** get a bar chart of the
+  hours per day (or month), stacked by project, and a doughnut chart with a legend and the
+  total time in its centre, above Kimai's table. In the table, projects are indented under
+  their customer, and customer and project names link to their detail pages. Buttons next to
+  the period picker switch between the four views.
 - A **Summary** report shows any period on one page: totals, a bar chart over time, a
   doughnut chart, and a breakdown per project, customer, activity or user down to each
   description.
@@ -134,7 +135,8 @@ PHP, Twig, JavaScript and CSS. Pull requests should follow these conventions:
 
 AI coding assistants working on this repository should apply the `php`, `phpstan`,
 `javascript` and `css` skills: PHP for the plugins' bundles, PHPStan at level 6 after PHP
-changes, JavaScript and CSS for the plugins' scripts and stylesheets.
+changes, JavaScript and CSS for the plugins' scripts and stylesheets. The plugins' Twig
+templates follow the same formatting rules: two-space indentation and spaces inside braces.
 
 ## License
 
