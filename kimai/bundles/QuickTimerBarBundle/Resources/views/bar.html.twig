@@ -14,9 +14,10 @@
 <link rel="stylesheet" href="{{ path('timer_bar_asset', { 'name': 'timer-bar.css', 'v': timer_bar_version }) }}">
 <script src="{{ path('timer_bar_asset', { 'name': 'timer-bar.js', 'v': timer_bar_version }) }}" defer></script>
 
-{# The script restores the mode the user last chose, and marks the running record in the
-   record lists below. #}
+{# The script restores the mode the user last chose, marks the running record in the record
+   lists below, and reloads the page when another tab or window starts or stops a record. #}
 <div class="card mb-3 timer-bar{% if is_running %} timer-bar-running{% endif %}" data-timer-bar data-mode="timer"
+  data-status-url="{{ path('timer_bar_status') }}"
   {% if is_running %}data-timer-bar-running="{{ running.id }}" data-label-running="{{ 'timer_bar.running_row'|trans }}"{% endif %}>
   {% if is_running %}
     {# The running record, saved as it changes. Timer mode shows its clock and stop button;

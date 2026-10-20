@@ -1,6 +1,7 @@
 # Timesheet extras for Kimai
 
-Improvements to [Kimai](https://www.kimai.org/)'s record lists. It ships with the
+Improvements to [Kimai](https://www.kimai.org/)'s record lists: collapsible days and
+closable search filters. It ships with the
 [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md),
 but works in any Kimai installation.
 
@@ -24,6 +25,16 @@ Selecting all records with the checkbox in the table header also selects the rec
 collapsed days, as Kimai's batch actions work on the whole page. Kimai's confirmation shows
 how many records are selected.
 
+## Closable filters
+
+Kimai's filter menu next to the search field on its lists (records, customers, projects and
+so on) only closes with its own filter button. This plugin closes it on a click or tap
+anywhere outside it, and adds a **Close** button next to its **Search** button.
+
+The select boxes and date pickers in the menu open at the end of the page, outside the menu;
+pressing in them keeps the menu open. The menu closes on the press rather than the click, so
+selecting text in a field and letting go outside the menu keeps it open too.
+
 ## How it works
 
 On the `timesheet` and `admin_timesheet` routes (and their paginated variants), and only
@@ -34,6 +45,12 @@ hides the rows between one day row and the next when a day is collapsed. The day
 identified by the text of its `col_date` cell; when the date column is hidden, days can still
 be collapsed but are not remembered. When the list is not sorted by date, the same day can
 appear more than once; those parts collapse together.
+
+The filters script, `search-filter.js`, is added to every page for logged-in users, because
+most of Kimai's lists have a filter menu; it does nothing on pages without one. It finds
+Kimai's menu (`.search-dropdown`) and closes it through its own Bootstrap toggle button, and
+labels the close button with Kimai's own `action.close` translation. Presses in Tom Select's
+dropdowns (`.ts-dropdown`) and Litepicker (`.litepicker` and its backdrop) count as inside.
 
 The state lives in the browser's `localStorage`, under
 `timesheet-extras.collapsed-days.own.<user ID>` and `timesheet-extras.collapsed-days.all.<user ID>`: whether days

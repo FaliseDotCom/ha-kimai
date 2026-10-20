@@ -258,6 +258,11 @@ for rounding and for how many records may run at once apply. When only one recor
 starting a new one stops the running one. In the **punch in/out** and **fixed start time**
 tracking modes, the bar has no date, times or manual mode: records start and stop now.
 
+With Kimai open in more than one tab or window, a record started or stopped in one shows up
+in the others: they check every 30 seconds, and as soon as you switch to them, and reload
+when it changed. A tab waits with that while a dialog is open, while you are typing, and
+after you changed a field that is not saved yet, such as a description typed in the bar.
+
 Each user can hide the bar for themselves: turn off **Show quick start bar** in their
 preferences (click your name, then **Preferences**). Kimai's own start button then comes
 back, and the play buttons on **My times** go away.
@@ -420,6 +425,10 @@ your name, then **Preferences**) to get a row per day with the day's total on **
 
 Selecting all records with the checkbox at the top of the list also selects the records in
 collapsed days.
+
+**Closable filters.** The filter menu next to the search field on Kimai's lists closes when you
+click anywhere outside it, and has a **Close** button next to **Search**. Kimai's own filter
+menu only closes with the filter button.
 
 ### Turning an extra off
 

@@ -4,6 +4,14 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.33
+
+- Quick start bar: a record started or stopped in another tab or window now shows up in the
+  bar. Each tab checks every 30 seconds and when it comes back into view, and reloads when the
+  running record changed, unless a dialog is open or something typed there is not saved yet.
+- Timesheet extras: the filter menu on Kimai's lists closes on a click outside it, and has a
+  **Close** button next to **Search**.
+
 ## 2.67.0.32
 
 - Reporting extras: the hours in the legend under the doughnut chart on the user reports open

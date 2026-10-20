@@ -34,6 +34,14 @@ running record is shown read-only; without `stop` there is no stop button.
 When Kimai starts or stops a record elsewhere on the page, for example with its "repeat"
 action, the page reloads so the bar shows the current state.
 
+The same goes for other tabs and windows: every 30 seconds while the page is in view, and when
+it comes back into view or gets the focus, the script asks `/timer-bar/status` which record
+runs, and reloads the page when that is not the one the bar shows. It waits for a later check
+while a reload would lose work: while a Kimai dialog is open, while a field has the focus, and
+after the user changed a field that is not saved yet (anything outside the running bar, Kimai's
+dialogs and its search filters, plus the running bar's end time). Pages in view keep the
+session alive this way.
+
 On **My times** each record gets a play button, a white circle with a green play icon. In
 timer mode it continues the record: a new record starts now with the same description,
 project, activity, tags and billable setting. In manual mode it copies those into the bar instead, so a date, start and end time
@@ -97,7 +105,8 @@ differing only in its namespace; change both together.
 
 The bar posts to its own routes, `/timer-bar/start`, `/timer-bar/update`, `/timer-bar/stop`
 and `/timer-bar/continue`, protected by a CSRF token; in manual mode the running record is
-finished through `/timer-bar/finish`. In manual mode the play button reads
+finished through `/timer-bar/finish`. `/timer-bar/status` answers with the ID of the running
+record as JSON, or 0. In manual mode the play button reads
 the record from `/timer-bar/entry` as JSON, which needs `view_own_timesheet` and only
 answers for the user's own records. The script sends changes to the running record to
 `/timer-bar/update` in the background and gets JSON back; everything else returns to the

@@ -14,8 +14,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Adds the collapsible days script and stylesheet to the record lists when the user has
- * Kimai's daily stats turned on, because the day rows only exist then.
+ * Adds the closable search filters script to every page, and the collapsible days script and
+ * stylesheet to the record lists when the user has Kimai's daily stats turned on, because the
+ * day rows only exist then.
  */
 final class ScriptSubscriber implements EventSubscriberInterface
 {
@@ -25,6 +26,21 @@ final class ScriptSubscriber implements EventSubscriberInterface
    * @var string
    */
   public const TRANSLATION_DOMAIN = 'timesheet_extras';
+
+  /**
+   * The script that closes the search filters on a press outside them, and adds their close
+   * button. Kimai's lists have search filters on many pages, so it is added to every page.
+   *
+   * @var string
+   */
+  private const FILTER_SCRIPT = 'search-filter.js';
+
+  /**
+   * Kimai's own label of close buttons, in its messages domain.
+   *
+   * @var string
+   */
+  private const CLOSE_MESSAGE = 'action.close';
 
   /**
    * The script that makes the days collapsible.
@@ -99,13 +115,24 @@ final class ScriptSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the collapsible days script to the record lists.
+   * Adds the search filters script to every page, and the collapsible days script to the
+   * record lists.
    *
    * @param ThemeEvent $event The event that collects scripts for the end of the page.
    * @return void
    */
   public function onJavascript( ThemeEvent $event ) : void
   {
+    $user = $event->getUser();
+    if ( !$user instanceof User )
+    {
+      return;
+    }
+
+    $event->addContent( $this->renderScript( self::FILTER_SCRIPT, [
+      'close' => $this->translator->trans( self::CLOSE_MESSAGE ),
+    ] ) );
+
     $list = $this->getDaysList( $event );
     if ( $list === '' )
     {
@@ -113,19 +140,29 @@ final class ScriptSubscriber implements EventSubscriberInterface
     }
 
     // The user ID keeps the collapsed days of two accounts in one browser apart.
-    $attributes = [
+    $event->addContent( $this->renderScript( self::DAYS_SCRIPT, [
       'list' => $list,
-      'user' => (string) $event->getUser()?->getId(),
+      'user' => (string) $user->getId(),
       'messages' => (string) json_encode( $this->translateMessages() ),
-    ];
+    ] ) );
+  }
 
-    $html = '<script type="module" src="' . htmlspecialchars( $this->getAssetUrl( self::DAYS_SCRIPT ), ENT_QUOTES ) . '"';
+  /**
+   * Returns the tag of a module script, with values for it in data attributes.
+   *
+   * @param string $name The file name of the script.
+   * @param array<string, string> $attributes The values, by data attribute name without its prefix.
+   * @return string
+   */
+  private function renderScript( string $name, array $attributes ) : string
+  {
+    $html = '<script type="module" src="' . htmlspecialchars( $this->getAssetUrl( $name ), ENT_QUOTES ) . '"';
     foreach ( $attributes as $key => $value )
     {
       $html .= ' data-' . $key . '="' . htmlspecialchars( $value, ENT_QUOTES ) . '"';
     }
 
-    $event->addContent( $html . '></script>' );
+    return $html . '></script>';
   }
 
   /**

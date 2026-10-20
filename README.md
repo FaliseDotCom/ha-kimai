@@ -18,7 +18,7 @@ else to set up.
 - Five extra [plugins](#plugins): a **quick start bar** for starting and stopping time
   recording, **reporting extras** with charts on Kimai's reports, **short time entries** such
   as typing `945` for 9:45, **inline timesheet editing** right in the record list, and
-  **timesheet extras** such as collapsible days.
+  **timesheet extras** such as collapsible days and closable filters.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -57,7 +57,8 @@ something you already did. While a record runs, the bar shows it with a live clo
 including its start time, can be changed right there. Recent
 descriptions are suggested as you type, and every record on **My times** gets a play button
 that starts the same work again. The running record stands out in the record lists, and its
-time ticks along wherever it is shown.
+time ticks along wherever it is shown. Records started or stopped in another tab show up in
+the bar too.
 
 It replaces Kimai's own start button and sits on its own row directly below the top bar of
 every page.
@@ -105,7 +106,8 @@ preferences.
 Improvements to **My times** and **All times**. With Kimai's daily stats turned on, each day's
 total row moves to the top of the day and can be clicked to collapse the day to just that
 row. One button collapses or expands all days, and the browser remembers which days are
-collapsed.
+collapsed. On all of Kimai's lists, the filter menu closes on a click outside it and gets a
+close button.
 
 [How it works](kimai/bundles/TimesheetExtrasBundle/README.md)
 

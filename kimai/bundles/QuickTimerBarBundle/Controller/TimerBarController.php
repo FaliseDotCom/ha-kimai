@@ -28,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Starts, adds, changes, continues, stops and finishes time records from the quick start bar,
- * and describes past records for copying into it.
+ * describes past records for copying into it, and tells which record runs.
  */
 #[Route( path: '/timer-bar' )]
 #[IsGranted( 'create_own_timesheet' )]
@@ -41,6 +41,7 @@ final class TimerBarController extends AbstractController
   public const ROUTE_FINISH = 'timer_bar_finish';
   public const ROUTE_CONTINUE = 'timer_bar_continue';
   public const ROUTE_ENTRY = 'timer_bar_entry';
+  public const ROUTE_STATUS = 'timer_bar_status';
 
   /**
    * Kimai's timesheet voter attribute for changing a record.
@@ -271,6 +272,20 @@ final class TimerBarController extends AbstractController
     }
 
     return new JsonResponse( $this->viewFactory->describeEntry( $entry, $user, $request->getLocale() ) );
+  }
+
+  /**
+   * Tells which record the bar shows as running, as JSON, so the script can notice a record
+   * started or stopped in another tab or window: its ID, or 0 when nothing runs.
+   *
+   * @return JsonResponse
+   */
+  #[Route( path: '/status', name: self::ROUTE_STATUS, methods: [ 'GET' ] )]
+  public function status() : JsonResponse
+  {
+    $entry = $this->repository->findRunningEntry( $this->getUser() );
+
+    return new JsonResponse( [ 'running' => $entry?->getId() ?? 0 ] );
   }
 
   /**

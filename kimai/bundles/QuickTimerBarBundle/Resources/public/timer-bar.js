@@ -3,7 +3,8 @@
  * activity from recent entries, offers only the activities that fit the chosen project,
  * switches between timer mode (start now) and manual mode (add a finished record), saves
  * changes to the running entry as they are made, runs the clocks of the running entry here
- * and wherever Kimai shows it, and marks the running entry in the record lists.
+ * and wherever Kimai shows it, marks the running entry in the record lists, and reloads the
+ * page when another tab or window starts or stops a record.
  */
 ( function ()
 {
@@ -305,6 +306,37 @@
    * @type {number}
    */
   const TODAY_CHECK_INTERVAL = 60000;
+
+  /**
+   * Milliseconds between checks whether another tab or window started or stopped a record.
+   *
+   * @type {number}
+   */
+  const STATUS_CHECK_INTERVAL = 30000;
+
+  /**
+   * Selector of the places whose fields may change without the page counting as edited:
+   * the running bar, which saves its changes itself (except its end time), Kimai's dialogs,
+   * which keep the page from reloading while open, and Kimai's search filters, which only
+   * apply when submitted.
+   *
+   * @type {string}
+   */
+  const UNTRACKED_EDIT_SELECTOR = '[data-timer-bar-form][data-state="running"], .modal, .searchform';
+
+  /**
+   * Selector of an open Kimai dialog.
+   *
+   * @type {string}
+   */
+  const OPEN_MODAL_SELECTOR = '.modal.show';
+
+  /**
+   * Selector of the fields a user may be typing in.
+   *
+   * @type {string}
+   */
+  const EDITABLE_SELECTOR = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])';
 
   /**
    * Formats a number of seconds as hours, minutes and seconds, for example 1:05:09.
@@ -1443,6 +1475,101 @@
   }
 
   /**
+   * Fetches which record runs: its ID, or an empty string when nothing runs. Returns null when
+   * the answer is unusable, for example after the login expired.
+   *
+   * @param {string} url The address of the status route.
+   * @returns {Promise<?string>}
+   */
+  async function fetchRunningId( url )
+  {
+    try
+    {
+      const response = await fetch( url, { headers: { Accept: 'application/json' }, credentials: 'same-origin' } );
+      if ( !response.ok )
+      {
+        return null;
+      }
+
+      const result = await response.json();
+      return typeof result.running === 'number' ? ( result.running > 0 ? String( result.running ) : '' ) : null;
+    }
+    catch ( error )
+    {
+      return null;
+    }
+  }
+
+  /**
+   * Tells whether the page can reload without losing the user's work: it is in view, no
+   * dialog is open, the user is not typing, and no field outside the running bar was edited.
+   *
+   * @param {boolean} edited Whether a field outside the running bar was edited.
+   * @returns {boolean}
+   */
+  function canReload( edited )
+  {
+    const active = document.activeElement;
+
+    return document.visibilityState === 'visible'
+      && !edited
+      && document.querySelector( OPEN_MODAL_SELECTOR ) === null
+      && !( active instanceof Element && active.matches( EDITABLE_SELECTOR ) );
+  }
+
+  /**
+   * Reloads the page when another tab or window started or stopped a record, so the bar shows
+   * the current state. Checks periodically while the page is in view, and when it comes back
+   * into view or gets the focus. While the reload would lose the user's work, it waits for
+   * the next check.
+   *
+   * @param {HTMLElement} bar The quick start bar.
+   * @returns {void}
+   */
+  function followOtherTabs( bar )
+  {
+    const url = bar.dataset.statusUrl ?? '';
+    if ( url === '' )
+    {
+      return;
+    }
+
+    const shown = bar.dataset.timerBarRunning ?? '';
+    let edited = false;
+    let checking = false;
+
+    const markEdited = ( event ) =>
+    {
+      if ( event.target instanceof Element
+        && ( event.target.closest( UNTRACKED_EDIT_SELECTOR ) === null || event.target.matches( END_TIME_SELECTOR ) ) )
+      {
+        edited = true;
+      }
+    };
+
+    const check = async () =>
+    {
+      if ( checking || document.visibilityState !== 'visible' )
+      {
+        return;
+      }
+
+      checking = true;
+      const running = await fetchRunningId( url );
+      checking = false;
+      if ( running !== null && running !== shown && canReload( edited ) )
+      {
+        window.location.reload();
+      }
+    };
+
+    [ 'input', 'change' ].forEach( ( name ) => document.addEventListener( name, markEdited ) );
+    window.setInterval( check, STATUS_CHECK_INTERVAL );
+    window.addEventListener( 'focus', check );
+    document.addEventListener( 'visibilitychange', check );
+  }
+
+  /**
    * Removes the copies of the bar that come with content Kimai reloads into the page; the bar
    * already placed below the top bar stays.
    *
@@ -1472,5 +1599,7 @@
     document.querySelectorAll( BAR_SELECTOR ).forEach( initModes );
     startTicking();
     document.querySelectorAll( BAR_SELECTOR ).forEach( initRows );
+    // Last, so changes the setup makes to the fields do not count as the user's edits.
+    document.querySelectorAll( BAR_SELECTOR ).forEach( followOtherTabs );
   } );
 } )();
