@@ -4,6 +4,13 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.34
+
+- Quick start bar: pressing stop right after changing the running record's description,
+  start time or other fields now saves those changes before stopping it. Before, the change
+  could be lost, so the record kept its old description or start time. Changes saved in quick
+  succession also arrive in order now, so an older one cannot overwrite a newer one.
+
 ## 2.67.0.33
 
 - Quick start bar: a record started or stopped in another tab or window now shows up in the

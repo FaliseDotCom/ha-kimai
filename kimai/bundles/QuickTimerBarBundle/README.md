@@ -12,7 +12,8 @@ of every page, above the page's own buttons and filters.
 - **Timer mode** (clock icon): a date and start time, and a start button that starts a
   record now, or running since the entered start time. There is no end time. While a record runs,
   the bar shows it in the same fields, editable, with its date and start time, a live clock
-  and a stop button. Changes are saved as they are made.
+  and a stop button. Changes are saved as they are made, one after another, and the stop
+  button saves what the bar shows before it stops the record.
 - **Manual mode** (list icon): a date with start and end time, and an add button that adds a
   finished record. While a record runs, the bar shows that record with an end time instead
   of the clock, and a save button that finishes it with the entered date, start and end time.

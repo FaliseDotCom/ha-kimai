@@ -1205,11 +1205,24 @@
   function initAutoSave( form )
   {
     let timer = 0;
+
+    /**
+     * The latest save; the next one waits for it, so an older save cannot arrive last and
+     * overwrite a newer change.
+     *
+     * @type {Promise<void>}
+     */
+    let saving = Promise.resolve();
+
     const schedule = () =>
     {
       window.clearTimeout( timer );
-      timer = window.setTimeout( () => saveRunning( form ), SAVE_DELAY );
+      timer = window.setTimeout( () => { saving = saving.then( () => saveRunning( form ) ); }, SAVE_DELAY );
     };
+
+    // The stop button and manual mode's save button post every field and save them first. A
+    // save still waiting would only arrive after the record stopped.
+    form.addEventListener( 'submit', () => window.clearTimeout( timer ) );
 
     // The end time only counts when the record is saved as finished.
     form.addEventListener( 'change', ( event ) =>

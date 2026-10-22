@@ -65,6 +65,20 @@ final class TimerBarController extends AbstractController
   private const ERROR_TIMES_NOT_ALLOWED = 'timer_bar.times_not_allowed';
 
   /**
+   * Error shown when the posted project and activity cannot be booked, or the form is invalid.
+   *
+   * @var string
+   */
+  private const ERROR_INVALID_SELECTION = 'timer_bar.invalid_selection';
+
+  /**
+   * Error shown when a typed time cannot be read.
+   *
+   * @var string
+   */
+  private const ERROR_INVALID_TIME = 'timer_bar.invalid_time';
+
+  /**
    * A path on this site to return to. "//host" and "/\host" would lead to another site, and so
    * would control characters and whitespace, which browsers remove from addresses: "/<tab>/host"
    * becomes "//host".
@@ -118,7 +132,7 @@ final class TimerBarController extends AbstractController
 
     if ( $input === null )
     {
-      $this->flashError( 'timer_bar.invalid_selection' );
+      $this->flashError( self::ERROR_INVALID_SELECTION );
 
       return $this->redirectBack( $request );
     }
@@ -126,7 +140,7 @@ final class TimerBarController extends AbstractController
     $period = $this->getEnteredPeriod( $request, $user );
     if ( $period === null )
     {
-      $this->flashError( 'timer_bar.invalid_time' );
+      $this->flashError( self::ERROR_INVALID_TIME );
 
       return $this->redirectBack( $request );
     }
@@ -156,35 +170,16 @@ final class TimerBarController extends AbstractController
   #[Route( path: '/update', name: self::ROUTE_UPDATE, methods: [ 'POST' ] )]
   public function update( Request $request ) : Response
   {
-    $user = $this->getUser();
     $entry = $this->findRunningEntry( $request, self::PERMISSION_EDIT );
-    $input = $entry !== null && $this->isTokenValid( $request ) ? $this->inputReader->read( $request, $user ) : null;
 
-    if ( $entry === null || $input === null )
+    if ( $entry === null || !$this->isTokenValid( $request ) )
     {
-      return $this->respondToUpdate( $request, null, 'timer_bar.invalid_selection' );
-    }
-
-    $beginTime = trim( (string) $request->request->get( 'begin_time' ) );
-    if ( $beginTime !== '' && !$this->trackingMode->canEnterBegin() )
-    {
-      return $this->respondToUpdate( $request, null, self::ERROR_TIMES_NOT_ALLOWED );
+      return $this->respondToUpdate( $request, null, self::ERROR_INVALID_SELECTION );
     }
 
-    $begin = $beginTime === '' ? null : $this->getRunningBegin( $request, $entry, $user );
-    if ( $beginTime !== '' && $begin === null )
-    {
-      return $this->respondToUpdate( $request, null, 'timer_bar.invalid_time' );
-    }
+    $error = $this->saveRunningChanges( $request, $entry );
 
-    try
-    {
-      return $this->respondToUpdate( $request, $this->writer->update( $entry, $input, $begin ), '' );
-    }
-    catch ( ValidationFailedException $exception )
-    {
-      return $this->respondToUpdate( $request, null, $this->describeViolations( $exception ) );
-    }
+    return $this->respondToUpdate( $request, $error === '' ? $entry : null, $error );
   }
 
   /**
@@ -203,7 +198,7 @@ final class TimerBarController extends AbstractController
 
     if ( $entry === null || $input === null )
     {
-      $this->flashError( 'timer_bar.invalid_selection' );
+      $this->flashError( self::ERROR_INVALID_SELECTION );
 
       return $this->redirectBack( $request );
     }
@@ -218,7 +213,7 @@ final class TimerBarController extends AbstractController
     $period = $this->getEnteredPeriod( $request, $user );
     if ( $period === null || $period[ 0 ] === null || $period[ 1 ] === null )
     {
-      $this->flashError( 'timer_bar.invalid_time' );
+      $this->flashError( self::ERROR_INVALID_TIME );
 
       return $this->redirectBack( $request );
     }
@@ -289,7 +284,9 @@ final class TimerBarController extends AbstractController
   }
 
   /**
-   * Stops one of the user's running time records.
+   * Stops one of the user's running time records. The stop button posts the whole running bar,
+   * so changes the script has not saved yet, such as a description or start time changed just
+   * before pressing stop, are saved first; when they are refused, the record keeps running.
    *
    * @param Request $request The posted stop form.
    * @return Response
@@ -302,6 +299,14 @@ final class TimerBarController extends AbstractController
     if ( $entry === null || !$this->isTokenValid( $request ) )
     {
       $this->flashError( 'timesheet.stop.error' );
+
+      return $this->redirectBack( $request );
+    }
+
+    $error = $this->hasRunningChanges( $request, $entry ) ? $this->saveRunningChanges( $request, $entry ) : '';
+    if ( $error !== '' )
+    {
+      $this->flashUpdateError( $error );
 
       return $this->redirectBack( $request );
     }
@@ -331,6 +336,72 @@ final class TimerBarController extends AbstractController
     $entry = $this->repository->findRunningEntryById( $this->getUser(), $request->request->getInt( 'timesheet' ) );
 
     return $entry !== null && $this->isGranted( $permission, $entry ) ? $entry : null;
+  }
+
+  /**
+   * Tells whether the posted form carries the running bar's fields and the user may change the
+   * record. Without the edit permission the bar's fields are disabled and not posted.
+   *
+   * @param Request $request The posted running bar form.
+   * @param Timesheet $entry The running record.
+   * @return bool
+   */
+  private function hasRunningChanges( Request $request, Timesheet $entry ) : bool
+  {
+    return $request->request->has( 'project' ) && $this->isGranted( self::PERMISSION_EDIT, $entry );
+  }
+
+  /**
+   * Saves the posted running bar onto the running record: what it is and, when a start time
+   * was entered, its new start. Returns an empty string when saved, otherwise a translation key
+   * or message explaining the failure.
+   *
+   * @param Request $request The posted running bar form.
+   * @param Timesheet $entry The running record.
+   * @return string
+   */
+  private function saveRunningChanges( Request $request, Timesheet $entry ) : string
+  {
+    $user = $this->getUser();
+    $input = $this->inputReader->read( $request, $user );
+    if ( $input === null )
+    {
+      return self::ERROR_INVALID_SELECTION;
+    }
+
+    $beginTime = trim( (string) $request->request->get( 'begin_time' ) );
+    if ( $beginTime !== '' && !$this->trackingMode->canEnterBegin() )
+    {
+      return self::ERROR_TIMES_NOT_ALLOWED;
+    }
+
+    $begin = $beginTime === '' ? null : $this->getRunningBegin( $request, $entry, $user );
+    if ( $beginTime !== '' && $begin === null )
+    {
+      return self::ERROR_INVALID_TIME;
+    }
+
+    try
+    {
+      $this->writer->update( $entry, $input, $begin );
+    }
+    catch ( ValidationFailedException $exception )
+    {
+      return $this->describeViolations( $exception );
+    }
+
+    return '';
+  }
+
+  /**
+   * Shows why a change to the running record failed, as a flash message.
+   *
+   * @param string $error A translation key or message explaining the failure.
+   * @return void
+   */
+  private function flashUpdateError( string $error ) : void
+  {
+    $this->flashError( 'action.update.error', $this->translator->trans( $error, [], 'flashmessages' ) );
   }
 
   /**
@@ -427,7 +498,7 @@ final class TimerBarController extends AbstractController
     {
       if ( $entry === null )
       {
-        $this->flashError( 'action.update.error', $error );
+        $this->flashUpdateError( $error );
       }
 
       return $this->redirectBack( $request );
