@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.35
+
+- Reporting extras: the quarterly views now sit between the monthly and yearly views in the
+  reporting overview and in the report menu, instead of at the end of the list.
+
 ## 2.67.0.34
 
 - Quick start bar: pressing stop right after changing the running record's description,

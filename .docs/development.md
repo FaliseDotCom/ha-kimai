@@ -140,6 +140,11 @@ They only use Kimai's extension points and services:
 | `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
 | `TimesheetExtrasBundle` | `ThemeEvent::JAVASCRIPT` on every page for the filters; `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists, when the user has `daily_stats` on | The list markup (`tr.summary` day rows, the `col_date` cell class), the table buttons in the page header, and the search filter dropdown (`.search-dropdown`) |
 
+One exception: `ReportingEvent` can only append reports, so `ReportingSubscriber` rewrites the
+event's private `reports` property with reflection to place the quarterly reports between
+Kimai's monthly and yearly ones. When the property no longer exists it leaves the list alone
+and the reports stay at the end; check the reporting overview after upgrading Kimai.
+
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
 button (`.ticktac`). Its script moves it into a row at the start of `.page-wrapper`, directly
 below the top bar; Kimai offers no event for that place. Kimai's entry tables reload by
