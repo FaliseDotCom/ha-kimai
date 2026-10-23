@@ -7,7 +7,9 @@ version the app contains; see the
 ## 2.67.0.35
 
 - Reporting extras: the quarterly views now sit between the monthly and yearly views in the
-  reporting overview and in the report menu, instead of at the end of the list.
+  reporting overview, instead of at the end of the list.
+- Reporting extras: on the reporting overview, the icons of the weekly, monthly, quarterly and
+  yearly views show a letter for their period, and the period in their name is bold.
 
 ## 2.67.0.34
 

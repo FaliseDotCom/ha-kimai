@@ -285,7 +285,11 @@ kimai:
 all users** work like Kimai's yearly views, for one quarter: a column per month, the same
 filters and the same download. The arrows next to the quarter step to the previous or next
 quarter; the menu between them picks one of the last twelve. Quarters follow the calendar,
-January to March and so on. They are listed after Kimai's own reports.
+January to March and so on. They are listed between the monthly and yearly views.
+
+**Reporting overview.** On the **Reporting** page, the icons of the weekly, monthly,
+quarterly and yearly views carry a letter for their period (**W**, **M**, **Q**, **Y**), and
+the period in their name is bold, so the views are easier to tell apart.
 
 **Weekly, monthly, quarterly and yearly view for one user.** These reports under
 **Reporting** get two charts above their table: a bar chart of the hours per day (per month

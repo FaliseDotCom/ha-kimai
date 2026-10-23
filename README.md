@@ -70,7 +70,9 @@ every page.
 Additions to Kimai's **Reporting** section:
 
 - **Quarterly views** for one user and for all users, in the style of Kimai's yearly views,
-  with a quarter picker that steps a quarter back or forward.
+  with a quarter picker that steps a quarter back or forward. On the reporting overview they
+  sit between the monthly and yearly views, and every period view's icon carries its period
+  letter.
 - The **weekly, monthly, quarterly and yearly report for one user** get a bar chart of the
   hours per day (or month), stacked by project, and a doughnut chart with a legend and the
   total time in its centre, above Kimai's table. In the table, projects are indented under
