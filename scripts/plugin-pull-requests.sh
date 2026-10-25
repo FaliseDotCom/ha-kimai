@@ -60,8 +60,8 @@ import_body()
   printf '%s\n' \
     "Imported from $url by @$author, with its commits applied to \`$BUNDLES_DIR/$4/\`." \
     '' \
-    'Merge with **Rebase and merge** or **Create a merge commit**, so the commits keep their' \
-    'author. Closing this pull request closes the original too.' \
+    'Merging keeps the commits and their author; squash merging is turned off for that reason.' \
+    'Closing this pull request closes the original too.' \
     '' \
     '## Original description' \
     '' \

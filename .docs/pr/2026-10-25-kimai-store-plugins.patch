@@ -1,0 +1,446 @@
+From 9931cd1db4eb788195a55740eb3acdf4d94c80a7 Mon Sep 17 00:00:00 2001
+From: Sander Falise <sanderfalise@gmail.com>
+Date: Sun, 25 Oct 2026 11:08:19 +0100
+Subject: [PATCH] Add five plugins by FaliseDotCom to the store
+
+Quick start bar, Reporting extras, Short time entries, Inline timesheet
+editing and Timesheet extras: free plugins on GitHub, each with its own
+issue tracker, made to work together. English and Dutch titles and
+intros, and a developer entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ _data/developer.yml                           |  6 +++
+ _data/en/store.yml                            | 15 ++++++++
+ _data/nl/store.yml                            | 15 ++++++++
+ ...isedotcom-inline-timesheet-edit-bundle.yml |  9 +++++
+ .../falisedotcom-quick-timer-bar-bundle.yml   |  9 +++++
+ .../falisedotcom-reporting-graphs-bundle.yml  |  9 +++++
+ ...falisedotcom-short-time-entries-bundle.yml |  9 +++++
+ .../falisedotcom-timesheet-extras-bundle.yml  |  9 +++++
+ ...lisedotcom-inline-timesheet-edit-bundle.md | 32 ++++++++++++++++
+ .../falisedotcom-quick-timer-bar-bundle.md    | 38 +++++++++++++++++++
+ .../falisedotcom-reporting-graphs-bundle.md   | 37 ++++++++++++++++++
+ .../falisedotcom-short-time-entries-bundle.md | 32 ++++++++++++++++
+ .../falisedotcom-timesheet-extras-bundle.md   | 26 +++++++++++++
+ ...lisedotcom-inline-timesheet-edit-bundle.md |  6 +++
+ .../falisedotcom-quick-timer-bar-bundle.md    |  6 +++
+ .../falisedotcom-reporting-graphs-bundle.md   |  6 +++
+ .../falisedotcom-short-time-entries-bundle.md |  6 +++
+ .../falisedotcom-timesheet-extras-bundle.md   |  6 +++
+ 18 files changed, 276 insertions(+)
+ create mode 100644 _data/store/falisedotcom-inline-timesheet-edit-bundle.yml
+ create mode 100644 _data/store/falisedotcom-quick-timer-bar-bundle.yml
+ create mode 100644 _data/store/falisedotcom-reporting-graphs-bundle.yml
+ create mode 100644 _data/store/falisedotcom-short-time-entries-bundle.yml
+ create mode 100644 _data/store/falisedotcom-timesheet-extras-bundle.yml
+ create mode 100644 _includes/store/falisedotcom-inline-timesheet-edit-bundle.md
+ create mode 100644 _includes/store/falisedotcom-quick-timer-bar-bundle.md
+ create mode 100644 _includes/store/falisedotcom-reporting-graphs-bundle.md
+ create mode 100644 _includes/store/falisedotcom-short-time-entries-bundle.md
+ create mode 100644 _includes/store/falisedotcom-timesheet-extras-bundle.md
+ create mode 100644 collections/_store/falisedotcom-inline-timesheet-edit-bundle.md
+ create mode 100644 collections/_store/falisedotcom-quick-timer-bar-bundle.md
+ create mode 100644 collections/_store/falisedotcom-reporting-graphs-bundle.md
+ create mode 100644 collections/_store/falisedotcom-short-time-entries-bundle.md
+ create mode 100644 collections/_store/falisedotcom-timesheet-extras-bundle.md
+
+diff --git a/_data/developer.yml b/_data/developer.yml
+index 9a1a700..793185e 100644
+--- a/_data/developer.yml
++++ b/_data/developer.yml
+@@ -332,3 +332,9 @@ leadmetrix:
+     homepage: https://www.leadmetrix.com
+     github: https://github.com/leadmetrixcom
+     email: support@leadmetrix.com
++
++falisedotcom:
++    name: Sander Falise
++    description: Developer of the Kimai app for Home Assistant and its plugins
++    image: https://avatars.githubusercontent.com/u/457673
++    github: https://github.com/FaliseDotCom
+diff --git a/_data/en/store.yml b/_data/en/store.yml
+index 48dce40..51f7718 100644
+--- a/_data/en/store.yml
++++ b/_data/en/store.yml
+@@ -14,6 +14,21 @@ items:
+     district09-personal-calendar-pref-bundle:
+         title: Personal calendar preference
+         intro: Allows users to set a customized start and end time for the calendar in their personal preferences.
++    falisedotcom-quick-timer-bar-bundle:
++        title: 'Quick start bar'
++        intro: 'Start and stop time recording from one bar below the top bar of every page'
++    falisedotcom-reporting-graphs-bundle:
++        title: 'Reporting extras'
++        intro: 'Quarterly reports, charts on the user reports, a summary report and dashboard widgets'
++    falisedotcom-short-time-entries-bundle:
++        title: 'Short time entries'
++        intro: 'Type 945 for 9:45 or 10 for ten minutes in Kimai''s time and duration fields'
++    falisedotcom-inline-timesheet-edit-bundle:
++        title: 'Inline timesheet editing'
++        intro: 'Edit your own records right in the record list'
++    falisedotcom-timesheet-extras-bundle:
++        title: 'Timesheet extras'
++        intro: 'Collapsible days in the record list and closable search filters'
+     gbs-zip-projectrenderer-bundle:
+         title: ZipProjectRenderer (Export ZIP with one PDF per project)
+         intro: Export one PDF-file per project for multiple selected projects.
+diff --git a/_data/nl/store.yml b/_data/nl/store.yml
+index c877b10..c569241 100644
+--- a/_data/nl/store.yml
++++ b/_data/nl/store.yml
+@@ -11,6 +11,21 @@ items:
+     district09-personal-calendar-pref-bundle:
+         title: 'Persoonlijke kalendervoorkeur'
+         intro: 'Staat gebruikers toe een aangepaste start- en eindtijd kunnen instellen voor de kalender in hun persoonlijke voorkeuren.'
++    falisedotcom-quick-timer-bar-bundle:
++        title: 'Snelstartbalk'
++        intro: 'Start en stop tijdregistratie vanuit één balk onder de bovenbalk van elke pagina'
++    falisedotcom-reporting-graphs-bundle:
++        title: 'Rapportage-extra''s'
++        intro: 'Kwartaaloverzichten, grafieken bij de gebruikersrapporten, een samenvattingsrapport en dashboardwidgets'
++    falisedotcom-short-time-entries-bundle:
++        title: 'Korte tijdnotatie'
++        intro: 'Typ 945 voor 9:45 of 10 voor tien minuten in de tijd- en duurvelden van Kimai'
++    falisedotcom-inline-timesheet-edit-bundle:
++        title: 'Registraties direct bewerken'
++        intro: 'Bewerk je eigen registraties direct in de registratielijst'
++    falisedotcom-timesheet-extras-bundle:
++        title: 'Registratielijst-extra''s'
++        intro: 'Inklapbare dagen in de registratielijst en sluitbare zoekfilters'
+     gbs-zip-projectrenderer-bundle:
+         title: "ZipProjectRenderer (Exporteer ZIP met PDF's per project)"
+         intro: 'Exporteer één PDF-bestand per project voor meerdere geselecteerde projecten.'
+diff --git a/_data/store/falisedotcom-inline-timesheet-edit-bundle.yml b/_data/store/falisedotcom-inline-timesheet-edit-bundle.yml
+new file mode 100644
+index 0000000..38d8b68
+--- /dev/null
++++ b/_data/store/falisedotcom-inline-timesheet-edit-bundle.yml
+@@ -0,0 +1,9 @@
++developer: falisedotcom
++icon: fas fa-edit
++demo: false
++price: 0
++github: https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle
++tags: [plugin]
++bundle:
++    name: "InlineTimesheetEditBundle"
++    clone: "https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle.git"
+diff --git a/_data/store/falisedotcom-quick-timer-bar-bundle.yml b/_data/store/falisedotcom-quick-timer-bar-bundle.yml
+new file mode 100644
+index 0000000..eefa0a1
+--- /dev/null
++++ b/_data/store/falisedotcom-quick-timer-bar-bundle.yml
+@@ -0,0 +1,9 @@
++developer: falisedotcom
++icon: fas fa-play-circle
++demo: false
++price: 0
++github: https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle
++tags: [plugin]
++bundle:
++    name: "QuickTimerBarBundle"
++    clone: "https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle.git"
+diff --git a/_data/store/falisedotcom-reporting-graphs-bundle.yml b/_data/store/falisedotcom-reporting-graphs-bundle.yml
+new file mode 100644
+index 0000000..322766e
+--- /dev/null
++++ b/_data/store/falisedotcom-reporting-graphs-bundle.yml
+@@ -0,0 +1,9 @@
++developer: falisedotcom
++icon: fas fa-chart-pie
++demo: false
++price: 0
++github: https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle
++tags: [plugin]
++bundle:
++    name: "ReportingGraphsBundle"
++    clone: "https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle.git"
+diff --git a/_data/store/falisedotcom-short-time-entries-bundle.yml b/_data/store/falisedotcom-short-time-entries-bundle.yml
+new file mode 100644
+index 0000000..44b5fa9
+--- /dev/null
++++ b/_data/store/falisedotcom-short-time-entries-bundle.yml
+@@ -0,0 +1,9 @@
++developer: falisedotcom
++icon: fas fa-keyboard
++demo: false
++price: 0
++github: https://github.com/FaliseDotCom/kimai-short-time-entries-bundle
++tags: [plugin]
++bundle:
++    name: "ShortTimeEntriesBundle"
++    clone: "https://github.com/FaliseDotCom/kimai-short-time-entries-bundle.git"
+diff --git a/_data/store/falisedotcom-timesheet-extras-bundle.yml b/_data/store/falisedotcom-timesheet-extras-bundle.yml
+new file mode 100644
+index 0000000..10314f9
+--- /dev/null
++++ b/_data/store/falisedotcom-timesheet-extras-bundle.yml
+@@ -0,0 +1,9 @@
++developer: falisedotcom
++icon: fas fa-stream
++demo: false
++price: 0
++github: https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle
++tags: [plugin]
++bundle:
++    name: "TimesheetExtrasBundle"
++    clone: "https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle.git"
+diff --git a/_includes/store/falisedotcom-inline-timesheet-edit-bundle.md b/_includes/store/falisedotcom-inline-timesheet-edit-bundle.md
+new file mode 100644
+index 0000000..b5a0438
+--- /dev/null
++++ b/_includes/store/falisedotcom-inline-timesheet-edit-bundle.md
+@@ -0,0 +1,32 @@
++Edit your own records on **My times** and **All times** right in the list, without opening
++the edit dialog. Click a record, Tab between its fields, and press Enter to save; Escape
++cancels.
++
++- Date, start, end, duration, break, project, activity, description, tags and billable can
++  be changed, as far as Kimai's tracking mode and permissions allow.
++- Times and durations accept short forms such as `945` for 9:45.
++- A **+** next to the project and activity pickers creates a project or activity from just
++  its name.
++- Every change goes through Kimai's own services, so validation, rounding and rates apply.
++
++Each user can turn this off with **Edit records directly in the list** in their preferences.
++
++### Permissions
++
++The plugin adds no permissions of its own. Only finished records the user owns and may edit
++are offered. Billable needs `edit_billable`, new tags need `create_tag`, and new projects and
++activities need `create_project` and `create_activity`.
++
++### Support
++
++Report problems and ideas in the plugin's
++[issues](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle/issues). The full documentation is in its [README](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle#readme).
++
++### Works well with
++
++This plugin is one of five made to work together; each also works on its own:
++
++- [Quick start bar]({% link _store/{{ page.lang }}/falisedotcom-quick-timer-bar-bundle.md %}): start and stop time recording from one bar below the top bar of every page.
++- [Reporting extras]({% link _store/{{ page.lang }}/falisedotcom-reporting-graphs-bundle.md %}): quarterly reports, charts on the user reports, a summary report and dashboard widgets.
++- [Short time entries]({% link _store/{{ page.lang }}/falisedotcom-short-time-entries-bundle.md %}): type 945 for 9:45 or 10 for ten minutes in Kimai's time and duration fields.
++- [Timesheet extras]({% link _store/{{ page.lang }}/falisedotcom-timesheet-extras-bundle.md %}): collapsible days in the record list and closable search filters.
+diff --git a/_includes/store/falisedotcom-quick-timer-bar-bundle.md b/_includes/store/falisedotcom-quick-timer-bar-bundle.md
+new file mode 100644
+index 0000000..53d87ed
+--- /dev/null
++++ b/_includes/store/falisedotcom-quick-timer-bar-bundle.md
+@@ -0,0 +1,38 @@
++Start and stop time recording from one bar, without opening a form. The bar replaces
++Kimai's own start button and sits on its own row directly below the top bar of every page.
++
++- Type what you are working on, pick a project and activity, optionally add tags and mark the
++  record billable, and press start. Recent descriptions are suggested as you type, and picking
++  one fills in the project and activity it was last booked on.
++- Switch to manual mode to enter a date, start and end time for something you already did.
++- While a record runs, the bar shows it with a live clock and a stop button, and everything
++  about it, including its start time, can be changed right there.
++- Every record on **My times** gets a play button that starts the same work again.
++- The running record stands out in the record lists, and records started or stopped in
++  another tab show up in the bar too.
++- Times accept short forms such as `915` or `945p`.
++- A **+** next to the project and activity pickers creates a project or activity from just
++  its name.
++
++Each user can turn the bar off with **Show quick start bar** in their preferences.
++
++### Permissions
++
++The plugin adds no permissions of its own; it follows Kimai's. The bar is shown to users with
++`create_own_timesheet`. Changing and stopping the running record follow Kimai's edit and stop
++rules, the billable toggle needs `edit_billable_own_timesheet`, new tags need `create_tag`, and
++new projects and activities need `create_project` and `create_activity`.
++
++### Support
++
++Report problems and ideas in the plugin's
++[issues](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle/issues). The full documentation is in its [README](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle#readme).
++
++### Works well with
++
++This plugin is one of five made to work together; each also works on its own:
++
++- [Reporting extras]({% link _store/{{ page.lang }}/falisedotcom-reporting-graphs-bundle.md %}): quarterly reports, charts on the user reports, a summary report and dashboard widgets.
++- [Short time entries]({% link _store/{{ page.lang }}/falisedotcom-short-time-entries-bundle.md %}): type 945 for 9:45 or 10 for ten minutes in Kimai's time and duration fields.
++- [Inline timesheet editing]({% link _store/{{ page.lang }}/falisedotcom-inline-timesheet-edit-bundle.md %}): edit your own records right in the record list.
++- [Timesheet extras]({% link _store/{{ page.lang }}/falisedotcom-timesheet-extras-bundle.md %}): collapsible days in the record list and closable search filters.
+diff --git a/_includes/store/falisedotcom-reporting-graphs-bundle.md b/_includes/store/falisedotcom-reporting-graphs-bundle.md
+new file mode 100644
+index 0000000..4c625f0
+--- /dev/null
++++ b/_includes/store/falisedotcom-reporting-graphs-bundle.md
+@@ -0,0 +1,37 @@
++Additions to Kimai's **Reporting** section and dashboard.
++
++- **Quarterly views** for one user and for all users, in the style of Kimai's yearly views,
++  with a quarter picker that steps a quarter back or forward.
++- The **weekly, monthly, quarterly and yearly report for one user** get a bar chart of the
++  hours per day (or month), stacked by project, and a doughnut chart with the total time in
++  its centre. In the table, projects are indented under their customer, names link to their
++  detail pages, and the table sorts by customer or total. Buttons next to the period picker
++  switch between the four views.
++- A **Summary** report shows any period on one page: totals, a bar chart over time, a
++  doughnut chart, and a breakdown per project, customer, activity or user down to each
++  description.
++- Two **dashboard widgets**: your working hours by project per week, and an hours overview
++  that separates your own hours from everyone's.
++
++The charts use the Chart.js build that Kimai ships.
++
++### Permissions
++
++The plugin adds no permissions of its own. The reports follow Kimai's: `view_reporting` for
++the summary report, `report:user` and `report:other` for the views for one user and for all
++users, and `view_rate_own_timesheet` and `view_rate_other_timesheet` for amounts. Team leads
++only see their team members.
++
++### Support
++
++Report problems and ideas in the plugin's
++[issues](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle/issues). The full documentation is in its [README](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle#readme).
++
++### Works well with
++
++This plugin is one of five made to work together; each also works on its own:
++
++- [Quick start bar]({% link _store/{{ page.lang }}/falisedotcom-quick-timer-bar-bundle.md %}): start and stop time recording from one bar below the top bar of every page.
++- [Short time entries]({% link _store/{{ page.lang }}/falisedotcom-short-time-entries-bundle.md %}): type 945 for 9:45 or 10 for ten minutes in Kimai's time and duration fields.
++- [Inline timesheet editing]({% link _store/{{ page.lang }}/falisedotcom-inline-timesheet-edit-bundle.md %}): edit your own records right in the record list.
++- [Timesheet extras]({% link _store/{{ page.lang }}/falisedotcom-timesheet-extras-bundle.md %}): collapsible days in the record list and closable search filters.
+diff --git a/_includes/store/falisedotcom-short-time-entries-bundle.md b/_includes/store/falisedotcom-short-time-entries-bundle.md
+new file mode 100644
+index 0000000..76eccfd
+--- /dev/null
++++ b/_includes/store/falisedotcom-short-time-entries-bundle.md
+@@ -0,0 +1,32 @@
++Times and durations can be typed in short form. They are completed as soon as the field is
++left, so Kimai's own calculations keep working. This works in the record dialog and on
++**Weekly hours**.
++
++| You type | Time field | Duration field |
++| -------- | ---------- | -------------- |
++| `9`      | 9:00       | 0:09           |
++| `945`    | 9:45       | 9:45           |
++| `1330`   | 13:30      | 13:30          |
++| `10`     |            | 0:10           |
++| `90`     |            | 1:30           |
++
++Times also accept `9.45`, `9h45` and `945p`, and follow the user's 12- or 24-hour format.
++Every other format Kimai supports is passed on unchanged.
++
++### Permissions
++
++The plugin adds no permissions and needs no configuration.
++
++### Support
++
++Report problems and ideas in the plugin's
++[issues](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle/issues). The full documentation is in its [README](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle#readme).
++
++### Works well with
++
++This plugin is one of five made to work together; each also works on its own:
++
++- [Quick start bar]({% link _store/{{ page.lang }}/falisedotcom-quick-timer-bar-bundle.md %}): start and stop time recording from one bar below the top bar of every page.
++- [Reporting extras]({% link _store/{{ page.lang }}/falisedotcom-reporting-graphs-bundle.md %}): quarterly reports, charts on the user reports, a summary report and dashboard widgets.
++- [Inline timesheet editing]({% link _store/{{ page.lang }}/falisedotcom-inline-timesheet-edit-bundle.md %}): edit your own records right in the record list.
++- [Timesheet extras]({% link _store/{{ page.lang }}/falisedotcom-timesheet-extras-bundle.md %}): collapsible days in the record list and closable search filters.
+diff --git a/_includes/store/falisedotcom-timesheet-extras-bundle.md b/_includes/store/falisedotcom-timesheet-extras-bundle.md
+new file mode 100644
+index 0000000..00378d7
+--- /dev/null
++++ b/_includes/store/falisedotcom-timesheet-extras-bundle.md
+@@ -0,0 +1,26 @@
++Improvements to Kimai's record lists.
++
++- **Collapsible days:** with Kimai's **Show daily stats in timesheet** preference on, each
++  day's total row moves to the top of the day on **My times** and **All times**. Click it to
++  collapse the day to just that row. One button collapses or expands all days, and the
++  browser remembers which days are collapsed.
++- **Closable filters:** on all of Kimai's lists, the filter menu next to the search field
++  closes on a click outside it and gets a **Close** button.
++
++### Permissions
++
++The plugin adds no permissions and needs no configuration.
++
++### Support
++
++Report problems and ideas in the plugin's
++[issues](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle/issues). The full documentation is in its [README](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle#readme).
++
++### Works well with
++
++This plugin is one of five made to work together; each also works on its own:
++
++- [Quick start bar]({% link _store/{{ page.lang }}/falisedotcom-quick-timer-bar-bundle.md %}): start and stop time recording from one bar below the top bar of every page.
++- [Reporting extras]({% link _store/{{ page.lang }}/falisedotcom-reporting-graphs-bundle.md %}): quarterly reports, charts on the user reports, a summary report and dashboard widgets.
++- [Short time entries]({% link _store/{{ page.lang }}/falisedotcom-short-time-entries-bundle.md %}): type 945 for 9:45 or 10 for ten minutes in Kimai's time and duration fields.
++- [Inline timesheet editing]({% link _store/{{ page.lang }}/falisedotcom-inline-timesheet-edit-bundle.md %}): edit your own records right in the record list.
+diff --git a/collections/_store/falisedotcom-inline-timesheet-edit-bundle.md b/collections/_store/falisedotcom-inline-timesheet-edit-bundle.md
+new file mode 100644
+index 0000000..c0f7b7f
+--- /dev/null
++++ b/collections/_store/falisedotcom-inline-timesheet-edit-bundle.md
+@@ -0,0 +1,6 @@
++---
++title: Inline timesheet editing
++type: plugin
++---
++
++{% include store/falisedotcom-inline-timesheet-edit-bundle.md %}
+diff --git a/collections/_store/falisedotcom-quick-timer-bar-bundle.md b/collections/_store/falisedotcom-quick-timer-bar-bundle.md
+new file mode 100644
+index 0000000..69761d1
+--- /dev/null
++++ b/collections/_store/falisedotcom-quick-timer-bar-bundle.md
+@@ -0,0 +1,6 @@
++---
++title: Quick start bar
++type: plugin
++---
++
++{% include store/falisedotcom-quick-timer-bar-bundle.md %}
+diff --git a/collections/_store/falisedotcom-reporting-graphs-bundle.md b/collections/_store/falisedotcom-reporting-graphs-bundle.md
+new file mode 100644
+index 0000000..6f86eb7
+--- /dev/null
++++ b/collections/_store/falisedotcom-reporting-graphs-bundle.md
+@@ -0,0 +1,6 @@
++---
++title: Reporting extras
++type: plugin
++---
++
++{% include store/falisedotcom-reporting-graphs-bundle.md %}
+diff --git a/collections/_store/falisedotcom-short-time-entries-bundle.md b/collections/_store/falisedotcom-short-time-entries-bundle.md
+new file mode 100644
+index 0000000..e0bf773
+--- /dev/null
++++ b/collections/_store/falisedotcom-short-time-entries-bundle.md
+@@ -0,0 +1,6 @@
++---
++title: Short time entries
++type: plugin
++---
++
++{% include store/falisedotcom-short-time-entries-bundle.md %}
+diff --git a/collections/_store/falisedotcom-timesheet-extras-bundle.md b/collections/_store/falisedotcom-timesheet-extras-bundle.md
+new file mode 100644
+index 0000000..b5e7d58
+--- /dev/null
++++ b/collections/_store/falisedotcom-timesheet-extras-bundle.md
+@@ -0,0 +1,6 @@
++---
++title: Timesheet extras
++type: plugin
++---
++
++{% include store/falisedotcom-timesheet-extras-bundle.md %}
+-- 
+2.56.0.windows.3
+

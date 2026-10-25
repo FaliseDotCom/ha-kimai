@@ -150,6 +150,11 @@ AI coding assistants working on this repository should apply the `php`, `phpstan
 changes, JavaScript and CSS for the plugins' scripts and stylesheets. The plugins' Twig
 templates follow the same formatting rules: two-space indentation and spaces inside braces.
 
+Every change to a plugin in `kimai/bundles/` raises that plugin's `version` in its
+`composer.json` in the same commit (the last number for fixes, the middle one for features),
+next to the app version and changelog entry described in [Releasing](.docs/releasing.md).
+The **Publish plugins** workflow then releases it to the plugin's own repository on push.
+
 ## License
 
 The files in this repository are released under the [MIT License](LICENSE), except for

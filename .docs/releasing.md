@@ -112,8 +112,9 @@ hour, with `scripts/plugin-pull-requests.sh`:
    keeps its commits and their author, on a `plugin-pr/<mirror>-<number>` branch here. The
    workflow opens a pull request here for it, labels the original `imported`, and comments
    there with a link.
-2. Review the pull request here and merge it with **Rebase and merge** or **Create a merge
-   commit**, so the commits keep their author. A squash merge makes you the author.
+2. Review the pull request here and merge it. Squash merging is turned off for this
+   repository, because it would make you the author of the contributor's work: **Create a
+   merge commit** and **Rebase and merge** keep their commits and authorship.
 3. Closing it, merged or not, closes the original with a comment and deletes the branch. A
    merge reaches the mirror through the **Publish plugins** workflow; raise the plugin's
    version to release it.

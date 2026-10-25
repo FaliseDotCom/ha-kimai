@@ -20,6 +20,7 @@ jobs:
   import:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
         with:
@@ -43,6 +44,7 @@ jobs:
   finish:
     if: github.event_name == 'pull_request' && startsWith( github.head_ref, 'plugin-pr/' )
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
         with:
