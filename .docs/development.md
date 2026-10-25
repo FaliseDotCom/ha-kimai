@@ -203,6 +203,10 @@ Each plugin folder is also published on its own, to a mirror repository with its
 self-contained: its own `LICENSE`, and links in its `README.md` to files outside the folder as
 full GitHub URLs.
 
+Each plugin's `services.yaml` must also register its bundle class as a service: Kimai lists
+plugins under **System** > **Plugins** from the services tagged with its `PluginInterface`, so
+a bundle class excluded from `services.yaml` still loads but is missing from that list.
+
 Both declare `"require": 26700` (Kimai 2.67.0) in `composer.json`, the version they were
 tested with. Raise it when a plugin starts using newer Kimai features.
 

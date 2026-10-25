@@ -16,7 +16,6 @@ services:
       - '../../Odt/TemplateData.php'
       - '../../Odt/TemplateKind.php'
       - '../../Export/OdtExportRenderer.php'
-      - '../../OdtTemplatesBundle.php'
 
   KimaiPlugin\OdtTemplatesBundle\Controller\:
     resource: '../../Controller'

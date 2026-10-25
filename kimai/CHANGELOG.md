@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.38
+
+- ODT templates: the extra now shows in Kimai's plugin list under **System** > **Plugins**.
+  It already worked, but was missing from that list.
+
 ## 2.67.0.37
 
 - ODT templates: upload templates in Kimai, on the new **ODT templates** page under
