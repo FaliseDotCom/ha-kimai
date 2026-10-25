@@ -17,6 +17,7 @@ readonly KIMAI_DATA_DIR=/data/kimai/data
 readonly KIMAI_WEB_USER=www-data
 readonly APP_CONFIG_DIR=/config
 readonly BUNDLED_PLUGINS_DIR=/opt/kimai-bundles
+readonly TEMPLATE_EXAMPLES_DIR=OdtTemplatesBundle/Resources/examples
 readonly CONSOLE_ENV_FILE=/run/kimai-app/console.env
 readonly MIN_PASSWORD_LENGTH=8
 
@@ -90,8 +91,9 @@ configure_timezone()
   log "Time zone: $TZ"
 }
 
-# Points Kimai's data folder at persistent storage, links the plugins, and loads
-# an optional local.yaml from the app configuration folder.
+# Points Kimai's data folder at persistent storage, links the plugins and the
+# template folders, and loads an optional local.yaml from the app configuration
+# folder.
 prepare_storage()
 {
   mkdir -p "$KIMAI_DATA_DIR"
@@ -101,6 +103,8 @@ prepare_storage()
   ln -s "$KIMAI_DATA_DIR" "$KIMAI_DIR/var/data"
 
   link_plugins
+  link_template_folder export
+  link_template_folder invoices
 
   if [ -f "$APP_CONFIG_DIR/local.yaml" ]
   then
@@ -137,6 +141,37 @@ link_plugins()
     ln -sfn "${plugin%/}" "$plugins_dir/$(basename "$plugin")"
   done
   shopt -u nullglob
+}
+
+# Replaces one of Kimai's template folders (var/export or var/invoices) with a link
+# to the same folder in the app configuration folder, so templates survive updates
+# and can be edited over Samba. A new folder gets the ODT examples, unless the ODT
+# templates plugin is turned off.
+link_template_folder()
+{
+  local name=$1
+  local target="$APP_CONFIG_DIR/$name"
+  local link="$KIMAI_DIR/var/$name"
+  local examples="$KIMAI_DIR/var/plugins/$TEMPLATE_EXAMPLES_DIR/$name"
+
+  if [ ! -d "$target" ]
+  then
+    mkdir -p "$target"
+    if [ -d "$examples" ]
+    then
+      cp "$examples"/* "$target/"
+    fi
+  fi
+
+  # Keeps anything Kimai stored in the folder itself, such as uploaded invoice documents.
+  if [ -d "$link" ] && [ ! -L "$link" ]
+  then
+    cp -an "$link/." "$target/"
+  fi
+
+  rm -rf "$link"
+  ln -s "$target" "$link"
+  chown -R "$KIMAI_WEB_USER:$KIMAI_WEB_USER" "$target"
 }
 
 start_database()

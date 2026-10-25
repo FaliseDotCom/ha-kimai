@@ -190,9 +190,9 @@ Never expose port 8001 directly to the internet without HTTPS.
 
 ## Extras in this app
 
-The app adds five Kimai plugins, made for this app and maintained in the same repository:
-a quick start bar, reporting extras, short time entries, inline timesheet editing and
-timesheet extras.
+The app adds six Kimai plugins, made for this app and maintained in the same repository:
+a quick start bar, reporting extras, short time entries, inline timesheet editing,
+timesheet extras and ODT templates.
 
 ### Quick start bar
 
@@ -434,6 +434,48 @@ collapsed days.
 click anywhere outside it, and has a **Close** button next to **Search**. Kimai's own filter
 menu only closes with the filter button.
 
+### ODT templates
+
+Exports and invoices from your own LibreOffice Writer documents (`.odt`), laid out the way
+you want: your own fonts, logo, columns and table style.
+
+**Exports.** Every `.odt` file in the `export` folder of the app's configuration folder (see
+[Customising Kimai](#customising-kimai)) shows up in the **Export** menu on **My times** and
+**All times**, named after the file. Filter the list, for example on one project and last
+quarter, open **Export** and pick your template: the download holds exactly the records the
+list shows, oldest first. On Kimai's **Export** page, the templates sit under the **ODT**
+button. The folder starts with an example, `Timesheet.odt`.
+
+**Invoices.** Every `.odt` file in the `invoices` folder can be chosen as the **Invoice
+document** of an invoice template, under **Invoices** > **Templates**. Kimai's upload button
+does not accept ODT files, so copy them into the folder yourself. The folder starts with an
+example, `Invoice.odt`.
+
+**Making a template.** Open an example in LibreOffice Writer, change it, and save it under
+a new name in the same folder. A new or changed template is used straight away.
+
+- Type placeholders such as `${entry.date}` where Kimai's values go. Formatting you apply to
+  a placeholder, such as bold, applies to its value.
+- The table row that holds an `${entry.…}` placeholder repeats once per record. A row with
+  only other placeholders, such as a total, appears once.
+- Useful record values: `${entry.date}`, `${entry.begin_time}`, `${entry.end_time}`,
+  `${entry.duration_format}` (2:30), `${entry.duration_decimal}` (2.50),
+  `${entry.description}`, `${entry.activity}`, `${entry.project}`,
+  `${entry.user_display}`, `${entry.tags}`, `${entry.rate}`, `${entry.total}`, and
+  `${entry.meta.name}` for a custom field with the internal name `name`.
+- In exports: `${export.begin}` and `${export.end}` (the period), `${export.duration}`,
+  `${export.duration_decimal}`, `${export.total}`, `${export.count}`,
+  `${export.customers}`, `${export.projects}`, `${export.activities}`, `${export.users}`,
+  `${export.author}` and `${export.date}` (today).
+- In invoices: the same placeholders as Kimai's Word invoices, such as `${invoice.number}`,
+  `${invoice.total}` and `${customer.company}`; see
+  [Kimai's invoice template documentation](https://www.kimai.org/documentation/invoice-templates.html).
+- A misspelled placeholder stays in the document as written, so you can spot it.
+
+Users who may not see rates get empty amounts in exports, as in Kimai's own exports. The
+[plugin's documentation](https://github.com/FaliseDotCom/kimai-odt-templates-bundle#readme)
+lists all export placeholders.
+
 ### Turning an extra off
 
 Create a folder with the extra's name inside the `plugins` folder of the app's
@@ -446,6 +488,7 @@ configuration folder, put an empty file named `.disabled` in it, and restart the
 - `plugins/InlineTimesheetEditBundle/.disabled` turns off inline editing for everyone; to
   turn it off for one user only, see [Inline timesheet editing](#inline-timesheet-editing).
 - `plugins/TimesheetExtrasBundle/.disabled` turns off the timesheet extras.
+- `plugins/OdtTemplatesBundle/.disabled` turns off the ODT templates.
 
 Remove the folder and restart to turn the extra back on.
 
@@ -472,6 +515,20 @@ app's configuration folder, so that you end up with, for example,
 `plugins/ExamplePluginBundle/`. Then restart the app; Kimai rebuilds its cache on every start
 and picks the plugin up. Some plugins also need an install command, described in the
 plugin's own documentation; see [Running Kimai commands](#running-kimai-commands).
+
+### Export and invoice templates
+
+Kimai's own template folders live in the app's configuration folder, so templates survive
+updates and you can edit them there:
+
+- `export` holds export templates: ODT files for the [ODT templates](#odt-templates), and
+  Kimai's own Twig templates (`.html.twig` and `.pdf.twig`) as described in
+  [Kimai's export documentation](https://www.kimai.org/documentation/export.html).
+- `invoices` holds invoice documents: ODT files, and the Word and Excel documents you upload
+  in Kimai under **Invoices** > **Templates**.
+
+The app creates both folders when they do not exist yet, with an example in each. Kimai
+picks up new ODT files straight away; restart the app after adding a Twig template.
 
 ### Running Kimai commands
 

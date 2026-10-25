@@ -4,6 +4,17 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.36
+
+- New extra, ODT templates: exports and invoices from your own LibreOffice Writer documents.
+  Each `.odt` file in the new `export` folder of the app's configuration folder appears in
+  the **Export** menu of **My times** and **All times**, and exports the filtered records into
+  your own layout. `.odt` files in the new `invoices` folder can be chosen as invoice
+  documents. Both folders start with an example; see the documentation for the placeholders.
+- Export and invoice templates now live in the app's configuration folder, so they are kept
+  across updates and included in backups. Before, invoice documents uploaded in Kimai and
+  Twig export templates were lost when the app was updated or rebuilt.
+
 ## 2.67.0.35
 
 - Reporting extras: the quarterly views now sit between the monthly and yearly views in the

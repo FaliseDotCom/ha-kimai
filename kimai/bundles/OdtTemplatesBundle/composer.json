@@ -1,0 +1,34 @@
+{
+  "name": "falisedotcom/kimai-odt-templates-bundle",
+  "description": "Exports and invoices from OpenDocument text templates (.odt), made in LibreOffice Writer",
+  "homepage": "https://github.com/FaliseDotCom/kimai-odt-templates-bundle",
+  "support":
+  {
+    "issues": "https://github.com/FaliseDotCom/kimai-odt-templates-bundle/issues",
+    "source": "https://github.com/FaliseDotCom/kimai-odt-templates-bundle"
+  },
+  "type": "kimai-plugin",
+  "version": "1.0.0",
+  "keywords": [ "kimai", "kimai-plugin", "odt", "opendocument", "libreoffice", "export", "invoice" ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sander Falise"
+    }
+  ],
+  "extra":
+  {
+    "kimai":
+    {
+      "require": 26700,
+      "name": "ODT templates"
+    }
+  },
+  "autoload":
+  {
+    "psr-4":
+    {
+      "KimaiPlugin\\OdtTemplatesBundle\\": ""
+    }
+  }
+}

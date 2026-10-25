@@ -15,6 +15,7 @@ MariaDB database, so it works on its own with no other apps required.
 - Quicker time entry: type `945` for 9:45, or `10` for a ten-minute duration.
 - Inline editing: click a record in the list and change it right there.
 - Collapsible days in the record list, with each day's total at the top.
+- Exports and invoices from your own LibreOffice Writer templates.
 - Creates the first administrator account for you.
 - Keeps all data in Home Assistant backups.
 - Supports Kimai plugins and `local.yaml` customisation.

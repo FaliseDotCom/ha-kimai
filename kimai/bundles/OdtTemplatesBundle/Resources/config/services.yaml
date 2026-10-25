@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  KimaiPlugin\OdtTemplatesBundle\:
+    resource: '../../*'
+    exclude:
+      - '../../Resources/'
+      - '../../DependencyInjection/'
+      - '../../Odt/'
+      - '../../Export/OdtExportRenderer.php'
+      - '../../OdtTemplatesBundle.php'
+
+  KimaiPlugin\OdtTemplatesBundle\Export\ExportTemplateFinder:
+    arguments:
+      $directories: '%kimai.export.documents%'
+      $projectDirectory: '%kernel.project_dir%'

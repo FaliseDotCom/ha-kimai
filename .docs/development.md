@@ -23,6 +23,7 @@ kimai/
     ShortTimeEntriesBundle/     Short time and duration entry in Kimai's forms
     InlineTimesheetEditBundle/  Editing records directly in the record list
     TimesheetExtrasBundle/      Improvements to the record lists, such as collapsible days
+    OdtTemplatesBundle/         Exports and invoices from LibreOffice Writer templates
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
@@ -51,7 +52,9 @@ On start, `run.sh`:
 4. Rebuilds Kimai's `var/plugins` folder from links: one to each plugin bundled in
    `/opt/kimai-bundles`, then one to each folder in `/config/plugins`. A user's folder with
    the same name replaces the bundled plugin, which is also how users turn a bundled plugin
-   off (a folder holding only a `.disabled` file).
+   off (a folder holding only a `.disabled` file). Then replaces Kimai's `var/export` and
+   `var/invoices` with links to `/config/export` and `/config/invoices`, creating those with
+   the ODT templates plugin's examples when they do not exist yet.
 5. Starts MariaDB on `127.0.0.1:3306` with its data in `/data/mysql`, initialising the data
    directory on first start and running `mariadb-upgrade` on every start. MariaDB runs in
    its own session (`setsid`), so a stop signal sent to the whole process group cannot
@@ -98,6 +101,8 @@ so files it creates in Kimai's cache keep the right owner.
 | `/data/options.json`  | App options, written by the Supervisor    | Yes        |
 | `/config/local.yaml`  | Optional Kimai configuration override     | Yes        |
 | `/config/plugins`     | Kimai plugins                             | Yes        |
+| `/config/export`      | Kimai export templates (`var/export`)     | Yes        |
+| `/config/invoices`    | Kimai invoice documents (`var/invoices`)  | Yes        |
 
 `/config` is the app configuration folder (`map: app_config:rw`), which users can reach
 through the `app_configs` Samba share. `backup: cold` stops the app during a backup so the
@@ -142,11 +147,18 @@ They only use Kimai's extension points and services:
 | `ShortTimeEntriesBundle` | `ThemeEvent::JAVASCRIPT` on every page | Kimai's form markup: `input[data-timepicker]` and `input.duration-input` |
 | `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
 | `TimesheetExtrasBundle` | `ThemeEvent::JAVASCRIPT` on every page for the filters; `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists, when the user has `daily_stats` on | The list markup (`tr.summary` day rows, the `col_date` cell class), the table buttons in the page header, and the search filter dropdown (`.search-dropdown`) |
+| `OdtTemplatesBundle` | A configurator on `ServiceExport` that adds an export per template file; Kimai's invoice `RendererInterface` for `.odt` documents | `InvoiceModelFactory`, `DefaultCalculator` and `DefaultInvoiceFormatter` for the record values, the `kimai.export.documents` folders, and PHP's `zip` and `dom` extensions |
 
 One exception: `ReportingEvent` can only append reports, so `ReportingSubscriber` rewrites the
 event's private `reports` property with reflection to place the quarterly reports between
 Kimai's monthly and yearly ones. When the property no longer exists it leaves the list alone
 and the reports stay at the end; check the reporting overview after upgrading Kimai.
+
+Kimai only registers export renderers as services while it builds its container, and ODT
+templates are files that come and go. `ExportRendererPass` therefore sets
+`ExportRendererRegistrar` as the configurator of Kimai's `ServiceExport`, which reads the
+export folders every time the service is created. It skips this when the service already
+has a configurator; check the export menu on **My times** after upgrading Kimai.
 
 The quick start bar is rendered at the top of the page content and hides Kimai's own start
 button (`.ticktac`). Its script moves it into a row at the start of `.page-wrapper`, directly
