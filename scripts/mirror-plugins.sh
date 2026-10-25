@@ -2,14 +2,16 @@
 # Publishes the bundled Kimai plugins to their own GitHub repositories. Each
 # repository mirrors one folder in kimai/bundles/: this script extracts the
 # folder's history with git subtree split and pushes it to the mirror's main
-# branch. Code only flows this way; the mirrors keep their own issues. When the version in the plugin's composer.json has no
-# tag in the mirror yet, it tags that version and, with the GitHub CLI (gh),
-# creates a release with a zip that unzips straight into Kimai's var/plugins/.
+# branch. Code only flows this way; the mirrors keep their own issues, and
+# scripts/plugin-pull-requests.sh brings their pull requests here. When the
+# version in the plugin's composer.json has no tag in the mirror yet, it tags
+# that version and, with the GitHub CLI (gh), creates a release with a zip that
+# unzips straight into Kimai's var/plugins/.
 #
-# Mirrors are named after the package in composer.json, under the owner of
-# this repository: falisedotcom/kimai-quick-timer-bar-bundle becomes
-# github.com/<owner>/kimai-quick-timer-bar-bundle. Create each one empty on GitHub
-# before its first run. Pushes use your normal Git login.
+# Mirrors are named after the package in composer.json (see plugin-repos.sh).
+# Create each one empty on GitHub before its first run. Pushes use your normal
+# Git login. The Publish plugins workflow runs this script on every change to
+# kimai/bundles/ on main.
 #
 # Usage: scripts/mirror-plugins.sh [bundle...]
 #   bundle  Folder name in kimai/bundles/, such as QuickTimerBarBundle. Defaults to all.
@@ -24,28 +26,19 @@ readonly CHANGELOG_URL_PATH=blob/main/kimai/CHANGELOG.md
 readonly VERSION_PATTERN='^[0-9]+\.[0-9]+\.[0-9]+$'
 readonly GH_WINDOWS='/c/Program Files/GitHub CLI/gh.exe'
 
+# shellcheck source-path=SCRIPTDIR source=plugin-repos.sh
+source "$REPO_ROOT/scripts/plugin-repos.sh"
+
 fatal()
 {
   echo "ERROR: $*" >&2
   exit 1
 }
 
-# The GitHub owner of this repository, from the origin remote.
-repo_owner()
-{
-  git -C "$REPO_ROOT" remote get-url origin | sed -n 's|.*github\.com[:/]\([^/]*\)/.*|\1|p'
-}
-
 # The GitHub address of this repository, for links in release notes.
 repo_url()
 {
   git -C "$REPO_ROOT" remote get-url origin | sed 's|^git@github\.com:|https://github.com/|; s|\.git$||'
-}
-
-# Reads a top-level string field from a plugin's composer.json.
-composer_field()
-{
-  sed -n "s|^  \"$2\": *\"\([^\"]*\)\".*|\1|p" "$REPO_ROOT/$BUNDLES_DIR/$1/composer.json" | head -n 1
 }
 
 # The commit a tag points to in a remote repository, or nothing.
@@ -109,15 +102,15 @@ mirror_bundle()
 
   [ -f "$REPO_ROOT/$prefix/composer.json" ] || fatal "$prefix/composer.json not found."
 
-  local package version title
-  package=$(composer_field "$bundle" name)
+  local version title
   version=$(composer_field "$bundle" version)
   # The display name sits in the "kimai" block under "extra".
   title=$(sed -n '/"kimai":/,/}/ s|^ *"name": *"\([^"]*\)".*|\1|p' "$REPO_ROOT/$prefix/composer.json" | head -n 1)
 
   [[ "$version" =~ $VERSION_PATTERN ]] || fatal "$bundle: version '$version' in composer.json is not like 1.2.0."
 
-  local repo="$owner/${package#*/}"
+  local repo
+  repo=$(plugin_repo "$bundle" "$owner")
   local url="https://github.com/$repo.git"
 
   echo "$bundle -> $repo"
@@ -166,11 +159,7 @@ main()
   local bundles=( "$@" )
   if [ ${#bundles[@]} -eq 0 ]
   then
-    local dir
-    for dir in "$BUNDLES_DIR"/*/
-    do
-      bundles+=( "$(basename "$dir")" )
-    done
+    mapfile -t bundles < <(plugin_folders)
   fi
 
   local bundle

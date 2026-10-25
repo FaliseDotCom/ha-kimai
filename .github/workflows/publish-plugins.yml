@@ -1,0 +1,37 @@
+# Publishes the plugins in kimai/bundles/ to their own repositories whenever
+# they change on main, with scripts/mirror-plugins.sh. See .docs/releasing.md.
+name: Publish plugins
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'kimai/bundles/**' ]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-plugins
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # git subtree split needs the full history.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Publish to the plugin repositories
+        env:
+          GH_TOKEN: ${{ secrets.PLUGIN_REPOS_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]
+          then
+            echo "::error::The PLUGIN_REPOS_TOKEN secret is missing; see .docs/releasing.md."
+            exit 1
+          fi
+          gh auth setup-git
+          scripts/mirror-plugins.sh

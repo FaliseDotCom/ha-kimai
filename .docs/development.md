@@ -26,8 +26,11 @@ kimai/
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
-scripts/mirror-plugins.sh    Publishes each plugin to its own read-only mirror repository
+scripts/mirror-plugins.sh    Publishes each plugin to its own mirror repository
+scripts/plugin-pull-requests.sh  Brings the mirrors' pull requests into this repository
+scripts/plugin-repos.sh      Shared helpers for the two scripts above
 scripts/check-plugins.sh     Fails when a plugin controller has no permission check
+.github/workflows/           Runs the two plugin scripts above on GitHub Actions
 ```
 
 ## How the app works

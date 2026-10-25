@@ -73,45 +73,79 @@ merging a pull request there: the next publish would refuse to overwrite it.
 
 1. When a plugin changes, raise its `version` in `composer.json` (`1.2.0` to `1.3.0` for new
    features, `1.2.1` for fixes) in the same release as the app.
-2. After pushing the app release, run from the repository root, in Git Bash:
+2. Push. The **Publish plugins** workflow (`.github/workflows/publish-plugins.yml`) runs
+   `scripts/mirror-plugins.sh` on every push to `main` that changes `kimai/bundles/`.
 
-   ```bash
-   scripts/mirror-plugins.sh                  # all plugins
-   scripts/mirror-plugins.sh QuickTimerBarBundle   # one plugin
-   ```
+For each plugin, the script uses `git subtree split` to extract the folder's history, pushes
+it to the mirror's `main` branch, and tags the `composer.json` version when the mirror does
+not have it yet. With the [GitHub CLI](https://cli.github.com/) it also creates a GitHub
+release for a new version, with a zip whose top folder is the plugin's folder name, so it
+unzips straight into Kimai's `var/plugins/`. It stops when `scripts/check-plugins.sh` finds a
+controller without a permission check. When a plugin changed since its last tag but its
+version was not raised, the script pushes `main` and points out that the changes are not
+released yet.
 
-   For each plugin, the script uses `git subtree split` to extract the folder's history,
-   pushes it to the mirror's `main` branch, and tags the `composer.json` version when the
-   mirror does not have it yet. Only committed work is published; the script stops when
-   `kimai/bundles/` has uncommitted changes, or when `scripts/check-plugins.sh` finds a
-   controller without a permission check.
-3. With the [GitHub CLI](https://cli.github.com/) installed and logged in
-   (`winget install GitHub.cli`, then `gh auth login`), the script also creates a GitHub
-   release for a new version, with a zip whose top folder is the plugin's folder name, so it
-   unzips straight into Kimai's `var/plugins/`. Without it the script only pushes and tags;
-   run it again once `gh` is set up to add the missing releases.
+To publish by hand, start the workflow from the **Actions** tab, or run the script from the
+repository root in Git Bash, with `gh` installed and logged in (`winget install GitHub.cli`,
+then `gh auth login`). By hand, only committed work is published; the script stops when
+`kimai/bundles/` has uncommitted changes.
 
-When a plugin changed since its last tag but its version was not raised, the script pushes
-`main` and points out that the changes are not released yet.
+```bash
+scripts/mirror-plugins.sh                       # all plugins
+scripts/mirror-plugins.sh QuickTimerBarBundle   # one plugin
+```
 
 A new plugin needs an empty repository on GitHub, named after its `composer.json` package,
-with issues turned on, before its first publish. Each plugin folder carries its own
-`LICENSE`, and its `README.md` must work on its own in the mirror: link to files outside the
-folder with full GitHub URLs. The README ends with an **Other plugins** section listing the
-other plugins; add a new plugin to that list in every README.
+with issues turned on, before its first publish, and the workflows' token needs access to it
+(see [The plugin repositories token](#the-plugin-repositories-token)). Each plugin folder
+carries its own `LICENSE`, and its `README.md` must work on its own in the mirror: link to
+files outside the folder with full GitHub URLs. The README ends with an **Other plugins**
+section listing the other plugins; add a new plugin to that list in every README.
 
 ### Pull requests on a mirror
 
-Apply a mirror's pull request here instead of merging it there. `gh pr diff --patch` gives
-the commits with their authors and messages, and `git am --directory` places them in the
-plugin's folder:
+A mirror's pull request is applied here instead of merged there. The **Plugin pull
+requests** workflow (`.github/workflows/plugin-pull-requests.yml`) checks the mirrors every
+hour, with `scripts/plugin-pull-requests.sh`:
+
+1. A new pull request on a mirror is applied to the plugin's folder with `git am`, which
+   keeps its commits and their author, on a `plugin-pr/<mirror>-<number>` branch here. The
+   workflow opens a pull request here for it, labels the original `imported`, and comments
+   there with a link.
+2. Review the pull request here and merge it with **Rebase and merge** or **Create a merge
+   commit**, so the commits keep their author. A squash merge makes you the author.
+3. Closing it, merged or not, closes the original with a comment and deletes the branch. A
+   merge reaches the mirror through the **Publish plugins** workflow; raise the plugin's
+   version to release it.
+
+A pull request that does not apply to the current folder gets the `import-failed` label, a
+comment, and a failed workflow run, which GitHub reports by email. Apply it by hand, then
+close it with a link to the commit:
 
 ```bash
 gh pr diff 12 --patch --repo FaliseDotCom/kimai-quick-timer-bar-bundle \
-  | git am --directory=kimai/bundles/QuickTimerBarBundle
+  | git am --3way --directory=kimai/bundles/QuickTimerBarBundle
 ```
 
-Release as usual, then close the pull request with a link to the release that contains it.
+GitHub turns off scheduled workflows after 60 days without activity in the repository;
+enable it again on the **Actions** tab.
+
+### The plugin repositories token
+
+Both workflows push to and comment on the mirrors, which the workflow's own token cannot.
+They use a fine-grained personal access token in the `PLUGIN_REPOS_TOKEN` repository
+secret:
+
+1. On GitHub, open **Settings** > **Developer settings** > **Personal access tokens** >
+   **Fine-grained tokens** > **Generate new token**.
+2. **Repository access:** **Only select repositories**: this repository and every mirror.
+3. **Permissions:** **Contents**, **Issues** and **Pull requests**, all **Read and write**.
+4. Store it, in Git Bash: `gh secret set PLUGIN_REPOS_TOKEN --repo FaliseDotCom/ha-kimai`
+   and paste the token.
+
+GitHub emails a week before the token expires. Generate a new one the same way, or use
+**Regenerate token** on its page, and store it again. Without the secret, the publish
+workflow fails and the hourly check skips with a warning.
 
 ## Changes to watch for
 

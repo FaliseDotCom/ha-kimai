@@ -1,0 +1,58 @@
+# Brings pull requests on the plugin repositories into this repository, and
+# closes them when their copy here is closed, with
+# scripts/plugin-pull-requests.sh. See .docs/releasing.md.
+name: Plugin pull requests
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  pull_request:
+    types: [ closed ]
+
+concurrency:
+  group: plugin-pull-requests
+
+permissions:
+  contents: read
+
+jobs:
+  import:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Import new pull requests
+        env:
+          GH_TOKEN: ${{ secrets.PLUGIN_REPOS_TOKEN }}
+        run: |
+          # Skipped rather than failed, so a missing token does not send an email every hour.
+          if [ -z "$GH_TOKEN" ]
+          then
+            echo "::warning::The PLUGIN_REPOS_TOKEN secret is missing; see .docs/releasing.md."
+            exit 0
+          fi
+          gh auth setup-git
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          scripts/plugin-pull-requests.sh import
+
+  finish:
+    if: github.event_name == 'pull_request' && startsWith( github.head_ref, 'plugin-pr/' )
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Close the original pull request
+        env:
+          GH_TOKEN: ${{ secrets.PLUGIN_REPOS_TOKEN }}
+          BRANCH: ${{ github.head_ref }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          URL: ${{ github.event.pull_request.html_url }}
+        run: scripts/plugin-pull-requests.sh finish "$BRANCH" "$MERGED" "$URL"
