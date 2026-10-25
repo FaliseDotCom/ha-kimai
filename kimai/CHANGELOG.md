@@ -4,6 +4,13 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.37
+
+- ODT templates: upload templates in Kimai, on the new **ODT templates** page under
+  **Invoices** > **Templates**, instead of copying them over Samba. Choose whether a template
+  is for exports or invoices; the list below shows all ODT templates to download or delete.
+  Kimai's own upload does not accept ODT files.
+
 ## 2.67.0.36
 
 - New extra, ODT templates: exports and invoices from your own LibreOffice Writer documents.

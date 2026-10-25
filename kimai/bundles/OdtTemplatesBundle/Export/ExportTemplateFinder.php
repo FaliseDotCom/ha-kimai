@@ -12,6 +12,11 @@ use KimaiPlugin\OdtTemplatesBundle\Odt\OdtDocument;
 final class ExportTemplateFinder
 {
   /**
+   * Kimai's own export template folder, which takes no uploads.
+   */
+  private const BUILT_IN_DIRECTORY = 'templates/export/renderer/';
+
+  /**
    * Creates the finder.
    *
    * @param array<int, string> $directories Kimai's export template folders, absolute or
@@ -51,6 +56,26 @@ final class ExportTemplateFinder
     ksort( $templates );
 
     return array_values( $templates );
+  }
+
+  /**
+   * Returns the absolute path of the folder for new templates: `var/export/` unless configured
+   * otherwise. Kimai lists its default folders last, so the last folder that is not Kimai's
+   * own is used, as Kimai does for invoice documents.
+   *
+   * @return string
+   */
+  public function getUploadDirectory() : string
+  {
+    foreach ( array_reverse( $this->directories ) as $directory )
+    {
+      if ( $directory !== self::BUILT_IN_DIRECTORY )
+      {
+        return $this->resolve( $directory );
+      }
+    }
+
+    return '';
   }
 
   /**

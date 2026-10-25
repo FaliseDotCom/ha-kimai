@@ -23,16 +23,36 @@ there is no need to rebuild Kimai's cache.
 ## Invoices
 
 Every `.odt` file in Kimai's invoice document folder, `var/invoices/`, can be chosen as the
-**Invoice document** of an invoice template, under **Invoices** > **Templates**. Kimai's
-upload form only accepts DOCX, ODS and XLSX files, so copy ODT files into the folder
-yourself. Invoices use the same placeholders as Kimai's own Word documents, listed in
+**Invoice document** of an invoice template, under **Invoices** > **Templates**. Invoices
+use the same placeholders as Kimai's own Word documents, listed in
 [Kimai's invoice template documentation](https://www.kimai.org/documentation/invoice-templates.html).
+
+## Uploading templates
+
+Kimai's own upload only accepts DOCX, ODS and XLSX files, so the plugin has its own page:
+**Invoices** > **Templates** > **ODT templates**. It needs the same permission as Kimai's
+upload, `upload_invoice_template`, which only the super admin has by default.
+
+- Choose the file and whether it is for **Export** or **Invoice**, and press **Upload**.
+  The file must be an OpenDocument text file of at most 2 MB, PHP's upload limit in the
+  Kimai images.
+- The file name becomes ASCII letters, digits, dashes and underscores, with spaces as
+  dashes: `Uren MediaWise.odt` is stored as `Uren-MediaWise.odt` and shows as **Uren
+  MediaWise** in the export menu.
+- A template with the same name is only replaced when **Replace a template with the same
+  name** is ticked. An invoice document may not share its name with another invoice
+  document, such as Kimai's own `invoice.html.twig` for `invoice.odt`, because Kimai would
+  then use only one of them.
+- The list below the form shows all ODT templates, to download or delete. An invoice
+  document that an invoice template uses cannot be deleted, as in Kimai's own list.
+
+Templates can also be copied into the folders directly.
 
 ## Writing a template
 
 Start from one of the examples in [`Resources/examples/`](Resources/examples/): a timesheet
-export and an invoice. Open it in LibreOffice Writer, change it, and save it as ODF Text
-Document (`.odt`) in the folder above.
+export and an invoice. Open it in LibreOffice Writer, change it, save it as ODF Text
+Document (`.odt`), and upload it.
 
 - **Placeholders** are written as `${name}`, for example `${export.projects}`. Formatting
   applied to the placeholder, such as bold or a font, carries over to the value.
@@ -120,6 +140,15 @@ lists every file in the invoice folders.
 The rest of the package is copied unchanged, including the uncompressed `mimetype` entry
 that must come first.
 
+The upload page is `TemplateController`, at `/invoice/odt-templates`, guarded by
+`#[IsGranted( 'upload_invoice_template' )]`. `TemplateLibrary` lists, stores and deletes
+the files. Uploads go to the last configured folder that is not Kimai's own, as Kimai does
+for invoice documents: `var/export/` and `var/invoices/` by default. An upload is only
+stored when it has the `.odt` extension and is a zip archive whose `mimetype` entry names
+the ODT type, with a `content.xml`. `ActionsSubscriber` adds the page's button to Kimai's
+invoice templates page (`actions.invoice_templates`), and the download and delete buttons
+to its list. Delete links carry a CSRF token and ask for confirmation first.
+
 ## Requirements and installation
 
 Kimai 2.67.0 or later, with PHP's `zip` and `dom` extensions, which the official Kimai
@@ -130,14 +159,15 @@ images include.
    unzip it into `var/plugins/` in your Kimai installation, so the plugin ends up in
    `var/plugins/OdtTemplatesBundle/`.
 2. Rebuild Kimai's cache: `bin/console kimai:reload --env=prod`.
-3. Create `var/export/` and `var/invoices/` if they do not exist, and copy your templates
-   into them.
+3. Upload your templates on the **ODT templates** page, or copy them into `var/export/` and
+   `var/invoices/`.
 
 There are no database changes.
 
 ## Translations
 
-The **ODT** button label, in English and Dutch, in `Resources/translations/messages.*.xlf`.
+English and Dutch: the upload page in `Resources/translations/odt_templates.*.xlf`, and
+the **ODT** button label on the export page in `Resources/translations/messages.*.xlf`.
 
 ## Other plugins
 

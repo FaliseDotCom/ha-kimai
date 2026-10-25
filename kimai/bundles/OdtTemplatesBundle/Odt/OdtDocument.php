@@ -50,6 +50,26 @@ final class OdtDocument
   }
 
   /**
+   * Checks whether the file is an OpenDocument text package: a zip archive whose `mimetype`
+   * entry names the ODT type, with a body to fill.
+   *
+   * @return bool
+   */
+  public function isTextDocument() : bool
+  {
+    $zip = new \ZipArchive();
+    if ( $zip->open( $this->templatePath, \ZipArchive::RDONLY ) !== true )
+    {
+      return false;
+    }
+
+    $isText = $zip->getFromName( 'mimetype' ) === self::CONTENT_TYPE && $zip->locateName( self::PARTS[ 0 ] ) !== false;
+    $zip->close();
+
+    return $isText;
+  }
+
+  /**
    * Renders the template and returns it as a download that is removed once sent.
    *
    * @param TemplateData $data The values to fill in.

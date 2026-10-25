@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="en" datatype="plaintext" original="none">
+    <body>
+      <trans-unit id="odt.title" resname="odt.title">
+        <source>odt.title</source>
+        <target>ODT templates</target>
+      </trans-unit>
+      <trans-unit id="odt.document" resname="odt.document">
+        <source>odt.document</source>
+        <target>Template</target>
+      </trans-unit>
+      <trans-unit id="odt.document.help" resname="odt.document.help">
+        <source>odt.document.help</source>
+        <target>An OpenDocument text file (.odt) of at most 2 MB, made in LibreOffice Writer. Exports are named after the file.</target>
+      </trans-unit>
+      <trans-unit id="odt.kind" resname="odt.kind">
+        <source>odt.kind</source>
+        <target>Use for</target>
+      </trans-unit>
+      <trans-unit id="odt.kind.export" resname="odt.kind.export">
+        <source>odt.kind.export</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="odt.kind.invoice" resname="odt.kind.invoice">
+        <source>odt.kind.invoice</source>
+        <target>Invoice</target>
+      </trans-unit>
+      <trans-unit id="odt.replace" resname="odt.replace">
+        <source>odt.replace</source>
+        <target>Replace a template with the same name</target>
+      </trans-unit>
+      <trans-unit id="odt.list" resname="odt.list">
+        <source>odt.list</source>
+        <target>Templates</target>
+      </trans-unit>
+      <trans-unit id="odt.empty" resname="odt.empty">
+        <source>odt.empty</source>
+        <target>There are no ODT templates yet.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.type" resname="odt.error.type">
+        <source>odt.error.type</source>
+        <target>This is not an OpenDocument text file (.odt). Save it in LibreOffice Writer as ODF Text Document.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.name" resname="odt.error.name">
+        <source>odt.error.name</source>
+        <target>The file name needs at least one letter or digit.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.exists" resname="odt.error.exists">
+        <source>odt.error.exists</source>
+        <target>A template named %name% already exists. Tick “Replace a template with the same name” to overwrite it.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.taken" resname="odt.error.taken">
+        <source>odt.error.taken</source>
+        <target>Another invoice document already has the name of %name%, with a different extension. Rename the file and upload it again.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

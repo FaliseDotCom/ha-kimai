@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="nl" datatype="plaintext" original="none">
+    <body>
+      <trans-unit id="odt.title" resname="odt.title">
+        <source>odt.title</source>
+        <target>ODT-sjablonen</target>
+      </trans-unit>
+      <trans-unit id="odt.document" resname="odt.document">
+        <source>odt.document</source>
+        <target>Sjabloon</target>
+      </trans-unit>
+      <trans-unit id="odt.document.help" resname="odt.document.help">
+        <source>odt.document.help</source>
+        <target>Een OpenDocument-tekstbestand (.odt) van hoogstens 2 MB, gemaakt in LibreOffice Writer. Exports krijgen de naam van het bestand.</target>
+      </trans-unit>
+      <trans-unit id="odt.kind" resname="odt.kind">
+        <source>odt.kind</source>
+        <target>Gebruiken voor</target>
+      </trans-unit>
+      <trans-unit id="odt.kind.export" resname="odt.kind.export">
+        <source>odt.kind.export</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="odt.kind.invoice" resname="odt.kind.invoice">
+        <source>odt.kind.invoice</source>
+        <target>Factuur</target>
+      </trans-unit>
+      <trans-unit id="odt.replace" resname="odt.replace">
+        <source>odt.replace</source>
+        <target>Vervang een sjabloon met dezelfde naam</target>
+      </trans-unit>
+      <trans-unit id="odt.list" resname="odt.list">
+        <source>odt.list</source>
+        <target>Sjablonen</target>
+      </trans-unit>
+      <trans-unit id="odt.empty" resname="odt.empty">
+        <source>odt.empty</source>
+        <target>Er zijn nog geen ODT-sjablonen.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.type" resname="odt.error.type">
+        <source>odt.error.type</source>
+        <target>Dit is geen OpenDocument-tekstbestand (.odt). Sla het in LibreOffice Writer op als ODF-tekstdocument.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.name" resname="odt.error.name">
+        <source>odt.error.name</source>
+        <target>De bestandsnaam moet minstens één letter of cijfer bevatten.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.exists" resname="odt.error.exists">
+        <source>odt.error.exists</source>
+        <target>Er bestaat al een sjabloon met de naam %name%. Vink “Vervang een sjabloon met dezelfde naam” aan om het te overschrijven.</target>
+      </trans-unit>
+      <trans-unit id="odt.error.taken" resname="odt.error.taken">
+        <source>odt.error.taken</source>
+        <target>Een ander factuurdocument heeft al de naam van %name%, met een andere extensie. Geef het bestand een andere naam en upload het opnieuw.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

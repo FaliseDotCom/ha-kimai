@@ -447,12 +447,20 @@ list shows, oldest first. On Kimai's **Export** page, the templates sit under th
 button. The folder starts with an example, `Timesheet.odt`.
 
 **Invoices.** Every `.odt` file in the `invoices` folder can be chosen as the **Invoice
-document** of an invoice template, under **Invoices** > **Templates**. Kimai's upload button
-does not accept ODT files, so copy them into the folder yourself. The folder starts with an
-example, `Invoice.odt`.
+document** of an invoice template, under **Invoices** > **Templates**. The folder starts
+with an example, `Invoice.odt`.
 
-**Making a template.** Open an example in LibreOffice Writer, change it, and save it under
-a new name in the same folder. A new or changed template is used straight away.
+**Uploading.** Kimai's own upload button does not accept ODT files, so the extra has its
+own page: **Invoices** > **Templates** > **ODT templates**. Choose the file, choose
+**Export** or **Invoice**, and press **Upload**. Tick **Replace a template with the same
+name** to upload a new version of a template. The list below shows all ODT templates, to
+download or delete; a document that an invoice template uses cannot be deleted. Like
+Kimai's upload, the page is only for the super admin, and files can be at most 2 MB. You can
+also copy templates into the folders over Samba.
+
+**Making a template.** Download an example from the list, open it in LibreOffice Writer,
+change it, save it under a new name and upload it. A new or changed template is used
+straight away.
 
 - Type placeholders such as `${entry.date}` where Kimai's values go. Formatting you apply to
   a placeholder, such as bold, applies to its value.

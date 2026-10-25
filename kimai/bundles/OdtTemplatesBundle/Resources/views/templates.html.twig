@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/widgets.html.twig' as widgets %}
+
+{% block status %}
+  {% from 'macros/status.html.twig' import status_count %}
+  {{ status_count( templates|length ) }}
+{% endblock %}
+
+{% block main %}
+  {% embed '@theme/embeds/card.html.twig' %}
+    {% form_theme form 'form/horizontal.html.twig' %}
+    {% block box_title %}
+      {{ 'upload'|trans }}
+    {% endblock %}
+    {% block box_before %}
+      {{ form_start( form ) }}
+    {% endblock %}
+    {% block box_after %}
+      {{ form_end( form ) }}
+    {% endblock %}
+    {% block box_body %}
+      {{ form_rest( form ) }}
+    {% endblock %}
+    {% block box_footer %}
+      <button type="submit" class="btn btn-primary">{{ icon( 'upload', true ) }} {{ 'upload'|trans }}</button>
+    {% endblock %}
+  {% endembed %}
+
+  {% embed '@theme/embeds/card.html.twig' with { templates: templates, fullsize: true } %}
+    {% import 'macros/widgets.html.twig' as widgets %}
+    {% block box_title %}
+      {{ 'odt.list'|trans( {}, 'odt_templates' ) }}
+    {% endblock %}
+    {% block box_body %}
+      {% if templates is empty %}
+        <div class="card-body">{{ 'odt.empty'|trans( {}, 'odt_templates' ) }}</div>
+      {% else %}
+        <table class="table table-hover dataTable">
+          <thead>
+            <tr>
+              <th>{{ 'file'|trans }}</th>
+              <th>{{ 'odt.kind'|trans( {}, 'odt_templates' ) }}</th>
+              <th>{{ 'updated_at'|trans }}</th>
+              <th>{{ 'template'|trans }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for template in templates %}
+              <tr>
+                <td>{{ template.fileName }}</td>
+                <td>{{ template.kind.label|trans( {}, 'odt_templates' ) }}</td>
+                <td>{{ template.lastChange|date }}</td>
+                <td>{{ template.usedBy }}</td>
+                <td class="actions">
+                  {% set event = actions( app.user, 'odt_template', 'index', { template: template } ) %}
+                  {{ widgets.table_actions( event.actions ) }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    {% endblock %}
+  {% endembed %}
+{% endblock %}

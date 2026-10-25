@@ -8,7 +8,7 @@
     "source": "https://github.com/FaliseDotCom/kimai-odt-templates-bundle"
   },
   "type": "kimai-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": [ "kimai", "kimai-plugin", "odt", "opendocument", "libreoffice", "export", "invoice" ],
   "license": "MIT",
   "authors": [

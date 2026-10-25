@@ -125,7 +125,9 @@ Exports and invoices from your own LibreOffice Writer documents (`.odt`). Put pl
 such as `${entry.date}` in a table row, and the row repeats for every record. Each template
 in the app's `export` folder shows up in the **Export** menu of **My times** and **All
 times**, so a filtered list exports straight into your own layout. Templates in the
-`invoices` folder can be chosen for invoices. Examples for both are included.
+`invoices` folder can be chosen for invoices. Templates are uploaded on their own page next
+to Kimai's invoice templates, as Kimai's upload does not take ODT files. Examples for both
+are included.
 
 [How it works](kimai/bundles/OdtTemplatesBundle/README.md) ·
 [Repository and issues](https://github.com/FaliseDotCom/kimai-odt-templates-bundle)
