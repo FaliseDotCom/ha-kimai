@@ -3,7 +3,7 @@ repo: kimai/www.kimai.org
 branch: falisedotcom-plugins
 title: Add five plugins by FaliseDotCom to the store
 patch: 2026-10-25-kimai-store-plugins.patch
-url:
+url: https://github.com/kimai/www.kimai.org/pull/799
 ---
 
 This adds five free plugins to the store, with a developer entry for me (`falisedotcom`).
