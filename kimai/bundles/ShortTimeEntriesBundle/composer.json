@@ -1,7 +1,12 @@
 {
   "name": "falisedotcom/kimai-short-time-entries-bundle",
   "description": "Quicker time and duration entry in Kimai's forms: type 945 for 9:45 or 90 for an hour and a half",
-  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "homepage": "https://github.com/FaliseDotCom/kimai-short-time-entries-bundle",
+  "support":
+  {
+    "issues": "https://github.com/FaliseDotCom/kimai-short-time-entries-bundle/issues",
+    "source": "https://github.com/FaliseDotCom/kimai-short-time-entries-bundle"
+  },
   "type": "kimai-plugin",
   "version": "1.0.1",
   "keywords": [ "kimai", "kimai-plugin" ],

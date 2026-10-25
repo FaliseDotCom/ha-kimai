@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Publishes the bundled Kimai plugins to their own GitHub repositories. Each
-# repository is a read-only mirror of one folder in kimai/bundles/: this script
-# extracts the folder's history with git subtree split and pushes it to the
-# mirror's main branch. When the version in the plugin's composer.json has no
+# repository mirrors one folder in kimai/bundles/: this script extracts the
+# folder's history with git subtree split and pushes it to the mirror's main
+# branch. Code only flows this way; the mirrors keep their own issues. When the version in the plugin's composer.json has no
 # tag in the mirror yet, it tags that version and, with the GitHub CLI (gh),
 # creates a release with a zip that unzips straight into Kimai's var/plugins/.
 #

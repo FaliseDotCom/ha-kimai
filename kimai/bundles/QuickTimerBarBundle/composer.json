@@ -1,7 +1,12 @@
 {
   "name": "falisedotcom/kimai-quick-timer-bar-bundle",
   "description": "Quick start bar for Kimai: type what you are working on, pick a project and press start",
-  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "homepage": "https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle",
+  "support":
+  {
+    "issues": "https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle/issues",
+    "source": "https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle"
+  },
   "type": "kimai-plugin",
   "version": "1.2.3",
   "keywords": [ "kimai", "kimai-plugin" ],

@@ -553,5 +553,12 @@ from the app itself start with `[kimai-app]`.
 ## Support
 
 - Problems with this app: [open an issue](https://github.com/FaliseDotCom/ha-kimai/issues).
+- Problems with one of the [extras](#extras-in-this-app): open an issue in its own
+  repository:
+  [quick start bar](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle/issues),
+  [reporting extras](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle/issues),
+  [short time entries](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle/issues),
+  [inline timesheet editing](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle/issues)
+  or [timesheet extras](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle/issues).
 - Questions about using Kimai: [Kimai documentation](https://www.kimai.org/documentation/)
   and [Kimai discussions](https://github.com/kimai/kimai/discussions).

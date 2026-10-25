@@ -63,7 +63,8 @@ the bar too.
 It replaces Kimai's own start button and sits on its own row directly below the top bar of
 every page.
 
-[How it works](kimai/bundles/QuickTimerBarBundle/README.md)
+[How it works](kimai/bundles/QuickTimerBarBundle/README.md) ·
+[Repository and issues](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle)
 
 ### Reporting extras
 
@@ -85,7 +86,8 @@ Additions to Kimai's **Reporting** section:
 - Two **dashboard widgets**: your working hours by project per week, in the same chart style,
   and an hours overview that separates your own hours from everyone's.
 
-[How it works](kimai/bundles/ReportingGraphsBundle/README.md)
+[How it works](kimai/bundles/ReportingGraphsBundle/README.md) ·
+[Repository and issues](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle)
 
 ### Short time entries
 
@@ -93,7 +95,8 @@ Times and durations can be typed in short form and are completed as soon as you 
 field: `945` becomes 9:45 as a start or end time, and `10` becomes ten minutes as a
 duration. This works in the record dialog and on **Weekly hours**.
 
-[How it works](kimai/bundles/ShortTimeEntriesBundle/README.md)
+[How it works](kimai/bundles/ShortTimeEntriesBundle/README.md) ·
+[Repository and issues](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle)
 
 ### Inline timesheet editing
 
@@ -101,7 +104,8 @@ Your own records on **My times** and **All times** can be edited right in the li
 record, Tab between its fields, and press Enter to save. Each user can turn this off in their
 preferences.
 
-[How it works](kimai/bundles/InlineTimesheetEditBundle/README.md)
+[How it works](kimai/bundles/InlineTimesheetEditBundle/README.md) ·
+[Repository and issues](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle)
 
 ### Timesheet extras
 
@@ -111,14 +115,17 @@ row. One button collapses or expands all days, and the browser remembers which d
 collapsed. On all of Kimai's lists, the filter menu closes on a click outside it and gets a
 close button.
 
-[How it works](kimai/bundles/TimesheetExtrasBundle/README.md)
+[How it works](kimai/bundles/TimesheetExtrasBundle/README.md) ·
+[Repository and issues](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle)
 
 The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use the plugins,
 and how to turn them off.
 
 ## Contributing
 
-Bug reports and pull requests are welcome. [Development](.docs/development.md) explains how
+Bug reports and pull requests are welcome. Problems with one of the plugins can also be
+reported in that plugin's own repository, linked from its section under
+[Plugins](#plugins). [Development](.docs/development.md) explains how
 the app and the plugins work and how to test changes, and [Releasing](.docs/releasing.md)
 covers updating to a new Kimai version.
 

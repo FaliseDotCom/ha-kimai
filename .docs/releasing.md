@@ -53,9 +53,11 @@ For a change to the app itself without a new Kimai release, add a fourth version
 ## Publishing the plugins
 
 The plugins in `kimai/bundles/` are developed only in this repository. Each one is also
-published to its own GitHub repository, a read-only mirror of its folder, so it can be
-installed in any Kimai installation and listed in the
-[Kimai Store](https://www.kimai.org/documentation/store.html):
+published to its own GitHub repository, a mirror of its folder, so it can be installed in
+any Kimai installation and listed in the
+[Kimai Store](https://www.kimai.org/documentation/store.html). Each mirror has its own issue
+tracker, and accepts pull requests that are then applied here (see
+[Pull requests on a mirror](#pull-requests-on-a-mirror)):
 
 | Folder | Mirror |
 | --- | --- |
@@ -65,8 +67,9 @@ installed in any Kimai installation and listed in the
 | `InlineTimesheetEditBundle` | [kimai-inline-timesheet-edit-bundle](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle) |
 | `TimesheetExtrasBundle` | [kimai-timesheet-extras-bundle](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle) |
 
-The mirror's name is the package name in the plugin's `composer.json`. Never commit to a
-mirror: the next publish would refuse to overwrite it.
+The mirror's name is the package name in the plugin's `composer.json`, which also points
+its `homepage` and `support` links at the mirror. Never commit to a mirror, also not by
+merging a pull request there: the next publish would refuse to overwrite it.
 
 1. When a plugin changes, raise its `version` in `composer.json` (`1.2.0` to `1.3.0` for new
    features, `1.2.1` for fixes) in the same release as the app.
@@ -92,8 +95,23 @@ When a plugin changed since its last tag but its version was not raised, the scr
 `main` and points out that the changes are not released yet.
 
 A new plugin needs an empty repository on GitHub, named after its `composer.json` package,
-before its first publish. Each plugin folder carries its own `LICENSE`, and its `README.md`
-must work on its own in the mirror: link to files outside the folder with full GitHub URLs.
+with issues turned on, before its first publish. Each plugin folder carries its own
+`LICENSE`, and its `README.md` must work on its own in the mirror: link to files outside the
+folder with full GitHub URLs. The README ends with an **Other plugins** section listing the
+other plugins; add a new plugin to that list in every README.
+
+### Pull requests on a mirror
+
+Apply a mirror's pull request here instead of merging it there. `gh pr diff --patch` gives
+the commits with their authors and messages, and `git am --directory` places them in the
+plugin's folder:
+
+```bash
+gh pr diff 12 --patch --repo FaliseDotCom/kimai-quick-timer-bar-bundle \
+  | git am --directory=kimai/bundles/QuickTimerBarBundle
+```
+
+Release as usual, then close the pull request with a link to the release that contains it.
 
 ## Changes to watch for
 

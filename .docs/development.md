@@ -183,9 +183,10 @@ Under a persistent worker runtime, such as FrankenPHP's worker mode or RoadRunne
 would carry over to other users' requests; reset it after the dashboard is rendered before
 moving to such a runtime.
 
-Each plugin folder is also published on its own, to a read-only mirror repository (see
-[Releasing](releasing.md#publishing-the-plugins)). Keep a plugin's folder self-contained: its
-own `LICENSE`, and links in its `README.md` to files outside the folder as full GitHub URLs.
+Each plugin folder is also published on its own, to a mirror repository with its own issues
+(see [Releasing](releasing.md#publishing-the-plugins)). Keep a plugin's folder
+self-contained: its own `LICENSE`, and links in its `README.md` to files outside the folder as
+full GitHub URLs.
 
 Both declare `"require": 26700` (Kimai 2.67.0) in `composer.json`, the version they were
 tested with. Raise it when a plugin starts using newer Kimai features.
