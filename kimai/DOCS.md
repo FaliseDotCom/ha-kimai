@@ -192,7 +192,7 @@ Never expose port 8001 directly to the internet without HTTPS.
 
 The app adds seven Kimai plugins, made for this app and maintained in the same repository:
 a quick start bar, reporting extras, short time entries, inline timesheet editing,
-timesheet extras, ODT templates and export improvements.
+timesheet extras, ODT templates and export extras.
 
 ### Quick start bar
 
@@ -484,7 +484,7 @@ Users who may not see rates get empty amounts in exports, as in Kimai's own expo
 [plugin's documentation](https://github.com/FaliseDotCom/kimai-odt-templates-bundle#readme)
 lists all export placeholders.
 
-### Export improvements
+### Export extras
 
 **Column order of export templates.** On the **Export** page, search for records; below the
 preview, the **+** button creates an export template and the pencil next to a template edits
@@ -510,7 +510,7 @@ configuration folder, put an empty file named `.disabled` in it, and restart the
   turn it off for one user only, see [Inline timesheet editing](#inline-timesheet-editing).
 - `plugins/TimesheetExtrasBundle/.disabled` turns off the timesheet extras.
 - `plugins/OdtTemplatesBundle/.disabled` turns off the ODT templates.
-- `plugins/ExportImprovementsBundle/.disabled` turns off the export improvements.
+- `plugins/ExportExtrasBundle/.disabled` turns off the export extras.
 
 Remove the folder and restart to turn the extra back on.
 

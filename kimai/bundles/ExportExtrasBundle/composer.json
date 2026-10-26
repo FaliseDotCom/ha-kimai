@@ -1,11 +1,11 @@
 {
-  "name": "falisedotcom/kimai-export-improvements-bundle",
+  "name": "falisedotcom/kimai-export-extras-bundle",
   "description": "Improvements to Kimai's exports: export templates keep their column order, and columns can be dragged into a new order",
-  "homepage": "https://github.com/FaliseDotCom/kimai-export-improvements-bundle",
+  "homepage": "https://github.com/FaliseDotCom/kimai-export-extras-bundle",
   "support":
   {
-    "issues": "https://github.com/FaliseDotCom/kimai-export-improvements-bundle/issues",
-    "source": "https://github.com/FaliseDotCom/kimai-export-improvements-bundle"
+    "issues": "https://github.com/FaliseDotCom/kimai-export-extras-bundle/issues",
+    "source": "https://github.com/FaliseDotCom/kimai-export-extras-bundle"
   },
   "type": "kimai-plugin",
   "version": "1.0.0",
@@ -21,14 +21,14 @@
     "kimai":
     {
       "require": 26700,
-      "name": "Export improvements"
+      "name": "Export extras"
     }
   },
   "autoload":
   {
     "psr-4":
     {
-      "KimaiPlugin\\ExportImprovementsBundle\\": ""
+      "KimaiPlugin\\ExportExtrasBundle\\": ""
     }
   }
 }

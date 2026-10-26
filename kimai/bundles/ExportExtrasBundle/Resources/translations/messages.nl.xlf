@@ -2,8 +2,8 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file source-language="en" target-language="nl" datatype="plaintext" original="none">
     <body>
-      <trans-unit id="export_improvements.columns_help" resname="export_improvements.columns_help">
-        <source>export_improvements.columns_help</source>
+      <trans-unit id="export_extras.columns_help" resname="export_extras.columns_help">
+        <source>export_extras.columns_help</source>
         <target>De export gebruikt deze volgorde. Sleep een kolom om hem te verplaatsen.</target>
       </trans-unit>
     </body>

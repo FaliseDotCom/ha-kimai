@@ -24,7 +24,7 @@ kimai/
     InlineTimesheetEditBundle/  Editing records directly in the record list
     TimesheetExtrasBundle/      Improvements to the record lists, such as collapsible days
     OdtTemplatesBundle/         Exports and invoices from LibreOffice Writer templates
-    ExportImprovementsBundle/   Improvements to exports, such as the column order of templates
+    ExportExtrasBundle/         Improvements to exports, such as the column order of templates
 .devcontainer/, .vscode/     Home Assistant development environment
 .docs/                       Documentation for contributors
 scripts/update-kimai.sh      Bumps the app to a new Kimai release
@@ -149,7 +149,7 @@ They only use Kimai's extension points and services:
 | `InlineTimesheetEditBundle` | `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists; `UserPreferenceEvent` | The list markup (`tr[data-href]` with its `modal-ajax-form` class, `col_*` cell classes), `TimesheetService` (validate, save), the tracking mode, and project, activity and tag queries |
 | `TimesheetExtrasBundle` | `ThemeEvent::JAVASCRIPT` on every page for the filters; `ThemeEvent::JAVASCRIPT` and `ThemeEvent::STYLESHEET` on the record lists, when the user has `daily_stats` on | The list markup (`tr.summary` day rows, the `col_date` cell class), the table buttons in the page header, and the search filter dropdown (`.search-dropdown`) |
 | `OdtTemplatesBundle` | A configurator on `ServiceExport` that adds an export per template file; Kimai's invoice `RendererInterface` for `.odt` documents; an upload page with a button on Kimai's invoice templates page (`actions.invoice_templates`) | `InvoiceModelFactory`, `DefaultCalculator` and `DefaultInvoiceFormatter` for the record values, the `kimai.export.documents` folders, and PHP's `zip` and `dom` extensions |
-| `ExportImprovementsBundle` | A form type extension on `ExportColumnsType`; `ThemeEvent::JAVASCRIPT` on the `export` and `export_template_*` routes | Kimai's `order` option of its select boxes (Tom Select's `drag_drop` plugin), and the select box's Tom Select instance (`select.tomselect`) |
+| `ExportExtrasBundle` | A form type extension on `ExportColumnsType`; `ThemeEvent::JAVASCRIPT` on the `export` and `export_template_*` routes | Kimai's `order` option of its select boxes (Tom Select's `drag_drop` plugin), and the select box's Tom Select instance (`select.tomselect`) |
 
 One exception: `ReportingEvent` can only append reports, so `ReportingSubscriber` rewrites the
 event's private `reports` property with reflection to place the quarterly reports between

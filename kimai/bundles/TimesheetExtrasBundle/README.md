@@ -83,7 +83,7 @@ English and Dutch, in `Resources/translations/timesheet_extras.*.xlf`.
 This plugin is one of seven Kimai plugins made to work together: the quick start bar starts
 and stops records, short time entries and inline timesheet editing make correcting them
 quick, timesheet extras keep the record list tidy, reporting extras show where the time
-went, and ODT templates and export improvements turn the records into your own documents.
+went, and ODT templates and export extras turn the records into your own documents.
 Each one also works on its own. The other six:
 
 - [Quick start bar](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle): start and stop time recording from one bar below the top bar, and start a record again with its play button.
@@ -91,7 +91,7 @@ Each one also works on its own. The other six:
 - [Short time entries](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle): type `945` for 9:45 or `10` for ten minutes in Kimai's forms.
 - [Inline timesheet editing](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle): edit your own records right in the record list.
 - [ODT templates](https://github.com/FaliseDotCom/kimai-odt-templates-bundle): exports and invoices from your own LibreOffice Writer templates.
-- [Export improvements](https://github.com/FaliseDotCom/kimai-export-improvements-bundle): export templates that keep their column order, with columns you drag into place.
+- [Export extras](https://github.com/FaliseDotCom/kimai-export-extras-bundle): export templates that keep their column order, with columns you drag into place.
 
 ## Issues and contributing
 

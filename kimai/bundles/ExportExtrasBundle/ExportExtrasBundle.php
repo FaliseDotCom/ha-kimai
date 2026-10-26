@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\ExportImprovementsBundle;
+namespace KimaiPlugin\ExportExtrasBundle;
 
 use App\Plugin\PluginInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 /**
  * Improvements to Kimai's exports, such as export templates that keep their column order.
  */
-final class ExportImprovementsBundle extends Bundle implements PluginInterface
+final class ExportExtrasBundle extends Bundle implements PluginInterface
 {
   public const ASSET_DIRECTORY = __DIR__ . '/Resources/public';
 

@@ -6,7 +6,7 @@ version the app contains; see the
 
 ## 2.67.0.39
 
-- New extra, export improvements. Export templates now keep their column order: the form
+- New extra, export extras. Export templates now keep their column order: the form
   shows the columns in the order the export uses, and you can drag a column to move it.
   Before, opening and saving a template put its columns back in Kimai's own order.
 

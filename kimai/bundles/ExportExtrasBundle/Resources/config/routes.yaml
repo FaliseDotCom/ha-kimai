@@ -1,5 +1,5 @@
-export_improvements_controllers:
-  resource: '@ExportImprovementsBundle/Controller/'
+export_extras_controllers:
+  resource: '@ExportExtrasBundle/Controller/'
   type: attribute
   prefix: /{_locale}
   requirements:

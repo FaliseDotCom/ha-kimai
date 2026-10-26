@@ -2,11 +2,11 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\ExportImprovementsBundle\EventSubscriber;
+namespace KimaiPlugin\ExportExtrasBundle\EventSubscriber;
 
 use App\Event\ThemeEvent;
-use KimaiPlugin\ExportImprovementsBundle\Controller\AssetController;
-use KimaiPlugin\ExportImprovementsBundle\ExportImprovementsBundle;
+use KimaiPlugin\ExportExtrasBundle\Controller\AssetController;
+use KimaiPlugin\ExportExtrasBundle\ExportExtrasBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -84,7 +84,7 @@ final class ScriptSubscriber implements EventSubscriberInterface
 
     $url = $this->urlGenerator->generate( AssetController::ROUTE, [
       'name' => self::COLUMNS_SCRIPT,
-      'v' => ExportImprovementsBundle::getAssetVersion(),
+      'v' => ExportExtrasBundle::getAssetVersion(),
     ] );
     $event->addContent( '<script type="module" src="' . htmlspecialchars( $url, ENT_QUOTES ) . '"></script>' );
   }

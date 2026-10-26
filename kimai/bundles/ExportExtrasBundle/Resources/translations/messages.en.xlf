@@ -2,8 +2,8 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file source-language="en" target-language="en" datatype="plaintext" original="none">
     <body>
-      <trans-unit id="export_improvements.columns_help" resname="export_improvements.columns_help">
-        <source>export_improvements.columns_help</source>
+      <trans-unit id="export_extras.columns_help" resname="export_extras.columns_help">
+        <source>export_extras.columns_help</source>
         <target>The export uses this order. Drag a column to move it.</target>
       </trans-unit>
     </body>

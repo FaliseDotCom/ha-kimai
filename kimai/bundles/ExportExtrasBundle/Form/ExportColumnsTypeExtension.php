@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace KimaiPlugin\ExportImprovementsBundle\Form;
+namespace KimaiPlugin\ExportExtrasBundle\Form;
 
 use App\Form\Type\ExportColumnsType;
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -32,7 +32,7 @@ final class ExportColumnsTypeExtension extends AbstractTypeExtension
    *
    * @var string
    */
-  private const HELP_MESSAGE = 'export_improvements.columns_help';
+  private const HELP_MESSAGE = 'export_extras.columns_help';
 
   /**
    * Returns the form types this extension applies to.

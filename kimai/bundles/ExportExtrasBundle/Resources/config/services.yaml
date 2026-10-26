@@ -4,11 +4,11 @@ services:
     autoconfigure: true
     public: false
 
-  KimaiPlugin\ExportImprovementsBundle\:
+  KimaiPlugin\ExportExtrasBundle\:
     resource: '../../*'
     exclude:
       - '../../Resources/'
 
-  KimaiPlugin\ExportImprovementsBundle\Controller\:
+  KimaiPlugin\ExportExtrasBundle\Controller\:
     resource: '../../Controller'
     tags: [ 'controller.service_arguments' ]
