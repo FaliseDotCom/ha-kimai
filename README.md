@@ -15,11 +15,12 @@ else to set up.
 - Kimai with a bundled database; no separate database app needed.
 - The first administrator is created from the app options.
 - All data is included in Home Assistant backups.
-- Six extra [plugins](#plugins): a **quick start bar** for starting and stopping time
+- Seven extra [plugins](#plugins): a **quick start bar** for starting and stopping time
   recording, **reporting extras** with charts on Kimai's reports, **short time entries** such
   as typing `945` for 9:45, **inline timesheet editing** right in the record list,
-  **timesheet extras** such as collapsible days and closable filters, and **ODT templates**
-  for exports and invoices laid out in LibreOffice Writer.
+  **timesheet extras** such as collapsible days and closable filters, **ODT templates**
+  for exports and invoices laid out in LibreOffice Writer, and **export improvements** such
+  as export templates that keep their column order.
 - Kimai plugins and `local.yaml` customisation through the app configuration folder.
 - Uses the Home Assistant time zone.
 - Opens from the app page, the Home Assistant Companion app, or a sidebar dashboard.
@@ -46,7 +47,7 @@ Assistant.
 
 ## Plugins
 
-The app ships with six Kimai plugins, written for this app. All are optional: each can be
+The app ships with seven Kimai plugins, written for this app. All are optional: each can be
 turned off without affecting the rest of Kimai.
 
 ### Quick start bar
@@ -131,6 +132,16 @@ are included.
 
 [How it works](kimai/bundles/OdtTemplatesBundle/README.md) ·
 [Repository and issues](https://github.com/FaliseDotCom/kimai-odt-templates-bundle)
+
+### Export improvements
+
+Improvements to Kimai's exports. Kimai exports the columns of an export template in the order
+they were picked, but its form lists them in its own order, and saving the form again stores
+that order. With this plugin the form shows the saved order, and columns can be dragged into
+a new one.
+
+[How it works](kimai/bundles/ExportImprovementsBundle/README.md) ·
+[Repository and issues](https://github.com/FaliseDotCom/kimai-export-improvements-bundle)
 
 The [app documentation](kimai/DOCS.md#extras-in-this-app) explains how to use the plugins,
 and how to turn them off.

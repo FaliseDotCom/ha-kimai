@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  KimaiPlugin\ExportImprovementsBundle\:
+    resource: '../../*'
+    exclude:
+      - '../../Resources/'
+
+  KimaiPlugin\ExportImprovementsBundle\Controller\:
+    resource: '../../Controller'
+    tags: [ 'controller.service_arguments' ]

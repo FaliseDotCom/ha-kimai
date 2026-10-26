@@ -132,17 +132,18 @@ English and Dutch, in `Resources/translations/`. Error messages use Kimai's
 
 ## Other plugins
 
-This plugin is one of six Kimai plugins made to work together: the quick start bar starts
+This plugin is one of seven Kimai plugins made to work together: the quick start bar starts
 and stops records, short time entries and inline timesheet editing make correcting them
 quick, timesheet extras keep the record list tidy, reporting extras show where the time
-went, and ODT templates turn the records into your own documents. Each one also works on its
-own. The other five:
+went, and ODT templates and export improvements turn the records into your own documents.
+Each one also works on its own. The other six:
 
 - [Reporting extras](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle): quarterly reports, charts on the user reports, a summary report and dashboard widgets.
 - [Short time entries](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle): type `945` for 9:45 or `10` for ten minutes in Kimai's forms.
 - [Inline timesheet editing](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle): edit your own records right in the record list.
 - [Timesheet extras](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle): collapsible days in the record list and closable search filters.
 - [ODT templates](https://github.com/FaliseDotCom/kimai-odt-templates-bundle): exports and invoices from your own LibreOffice Writer templates.
+- [Export improvements](https://github.com/FaliseDotCom/kimai-export-improvements-bundle): export templates that keep their column order, with columns you drag into place.
 
 ## Issues and contributing
 

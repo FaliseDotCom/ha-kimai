@@ -16,6 +16,7 @@ MariaDB database, so it works on its own with no other apps required.
 - Inline editing: click a record in the list and change it right there.
 - Collapsible days in the record list, with each day's total at the top.
 - Exports and invoices from your own LibreOffice Writer templates.
+- Export templates keep their column order, and columns can be dragged into place.
 - Creates the first administrator account for you.
 - Keeps all data in Home Assistant backups.
 - Supports Kimai plugins and `local.yaml` customisation.

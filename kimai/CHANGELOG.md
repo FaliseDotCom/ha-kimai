@@ -4,6 +4,12 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.67.0.39
+
+- New extra, export improvements. Export templates now keep their column order: the form
+  shows the columns in the order the export uses, and you can drag a column to move it.
+  Before, opening and saving a template put its columns back in Kimai's own order.
+
 ## 2.67.0.38
 
 - ODT templates: the extra now shows in Kimai's plugin list under **System** > **Plugins**.

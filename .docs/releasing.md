@@ -67,6 +67,7 @@ tracker, and accepts pull requests that are then applied here (see
 | `InlineTimesheetEditBundle` | [kimai-inline-timesheet-edit-bundle](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle) |
 | `TimesheetExtrasBundle` | [kimai-timesheet-extras-bundle](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle) |
 | `OdtTemplatesBundle` | [kimai-odt-templates-bundle](https://github.com/FaliseDotCom/kimai-odt-templates-bundle) |
+| `ExportImprovementsBundle` | [kimai-export-improvements-bundle](https://github.com/FaliseDotCom/kimai-export-improvements-bundle) |
 
 The mirror's name is the package name in the plugin's `composer.json`, which also points
 its `homepage` and `support` links at the mirror. Never commit to a mirror, also not by
