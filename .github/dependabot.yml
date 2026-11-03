@@ -1,0 +1,22 @@
+# Weekly update pull requests for the Kimai base image and the GitHub Actions
+# used by the workflows. See .docs/releasing.md.
+version: 2
+
+updates:
+  # Only signals a new Kimai release: the app version, README badge and
+  # changelog also change, so apply it with scripts/update-kimai.sh.
+  - package-ecosystem: docker
+    directory: /kimai
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 1
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: [ '*' ]

@@ -8,6 +8,12 @@ in Home Assistant.
 This repository does not contain Kimai's source code. The app is built from the official
 Kimai Docker image, so updating Kimai means pointing the app at a newer image tag.
 
+Dependabot (`.github/dependabot.yml`) checks every Monday and opens a pull request when a new
+Kimai image is out. Don't merge that pull request: it changes only the `FROM` line. Update
+with the script below instead. Once that commit is pushed, Dependabot sees the image is up to
+date and closes its pull request. Dependabot's pull requests for GitHub Actions
+versions can be merged as they are.
+
 ### With the update script
 
 From the repository root, in Git Bash or any other Bash shell, with Docker running:
