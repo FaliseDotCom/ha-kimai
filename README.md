@@ -1,7 +1,7 @@
 # Kimai for Home Assistant
 
 [![Add repository to Home Assistant][repository-badge]][repository-url]
-![Kimai 2.67.0][kimai-shield]
+![Kimai 2.71.0][kimai-shield]
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
 [![License: MIT][license-shield]](LICENSE)
@@ -193,7 +193,7 @@ remain under the Kimai project's terms.
 
 [repository-badge]: https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg
 [repository-url]: https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FFaliseDotCom%2Fha-kimai
-[kimai-shield]: https://img.shields.io/badge/Kimai-2.67.0-blue.svg
+[kimai-shield]: https://img.shields.io/badge/Kimai-2.71.0-blue.svg
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [license-shield]: https://img.shields.io/badge/license-MIT-green.svg

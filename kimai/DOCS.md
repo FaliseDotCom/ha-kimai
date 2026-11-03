@@ -101,7 +101,7 @@ Example configuration:
 ```yaml
 admin_email: you@example.com
 admin_password: a-long-random-password
-trusted_hosts: homeassistant\.local|192\.168\.1\.10|kimai\.example\.com
+trusted_hosts: homeassistant.local|192.168.1.10|kimai.example.com
 trusted_proxies: 127.0.0.1,172.30.32.0/23
 ```
 
@@ -119,17 +119,22 @@ users. See [First start](#first-start).
 
 ### Option: `trusted_hosts`
 
-A regular expression listing every host name you use to reach Kimai. Kimai rejects requests
-for any other host name with an *Untrusted Host* error (HTTP 400). This protects against
-host header attacks, for example on password reset links.
-
-Leave it empty to accept every host name, which is convenient while you are testing on your
-home network. Set it before you make Kimai reachable from the internet. Escape dots with a
-backslash and separate host names with `|`:
+Every host name you use to reach Kimai, separated by `|`. Kimai rejects requests for any
+other host name with an *Untrusted Host* error (HTTP 400). This protects against host header
+attacks, for example on password reset links.
 
 ```yaml
-trusted_hosts: homeassistant\.local|192\.168\.1\.10|kimai\.example\.com
+trusted_hosts: homeassistant.local|192.168.1.10|kimai.example.com
 ```
+
+Each name matches exactly, and also its subdomains: `example.com` accepts
+`kimai.example.com`. Start a name with `^` to accept only that name. A value with any other
+regular expression syntax, such as escaped dots (`kimai\.example\.com`), is used as a
+regular expression as it is, which also matches longer host names that contain it.
+
+Leave it empty to accept every host name, which is convenient while you are testing on your
+home network. Kimai then turns password reset off, because its reset links could point at
+any host. Set it before you make Kimai reachable from the internet.
 
 ### Option: `trusted_proxies`
 
@@ -179,7 +184,7 @@ http://<your-home-assistant-ip>:8001
 Then:
 
 1. Add the public host name to [`trusted_hosts`](#option-trusted_hosts), for example
-   `kimai\.example\.com`.
+   `kimai.example.com`.
 2. Make sure the proxy's address is in [`trusted_proxies`](#option-trusted_proxies). If
    Kimai redirects you to `http://` addresses or shows the proxy's IP address as the
    visitor's, the proxy is not trusted yet.

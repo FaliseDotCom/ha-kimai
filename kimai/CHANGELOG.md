@@ -4,6 +4,21 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.71.0
+
+- Kimai 2.71.0. See the release notes of
+  [2.68.0](https://github.com/kimai/kimai/releases/tag/2.68.0),
+  [2.69.0](https://github.com/kimai/kimai/releases/tag/2.69.0),
+  [2.70.0](https://github.com/kimai/kimai/releases/tag/2.70.0) and
+  [2.71.0](https://github.com/kimai/kimai/releases/tag/2.71.0), which include several
+  security fixes.
+- `trusted_hosts` now takes plain host names: `homeassistant.local|kimai.example.com`
+  matches those names exactly, and their subdomains. Values with escaped dots still work as
+  before, but plain names are stricter; see the documentation.
+- Password reset only works when `trusted_hosts` is set.
+- Kimai turned off the old API passwords. Apps that use Kimai's API need an API token, made
+  on the **API Access** tab of the user's profile.
+
 ## 2.67.0.39
 
 - New extra, export extras. Export templates now keep their column order: the form

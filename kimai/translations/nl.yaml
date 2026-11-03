@@ -12,8 +12,9 @@ configuration:
   trusted_hosts:
     name: Vertrouwde hostnamen
     description: >-
-      Reguliere expressie met de hostnamen waarop Kimai bereikbaar is, bijvoorbeeld
-      homeassistant\.local|192\.168\.1\.10|kimai\.example\.com. Laat leeg om elke hostnaam te accepteren.
+      De hostnamen waarop Kimai bereikbaar is, gescheiden door |, bijvoorbeeld
+      homeassistant.local|192.168.1.10|kimai.example.com. Laat leeg om elke hostnaam te accepteren;
+      wachtwoord herstellen blijft dan uit.
   trusted_proxies:
     name: Vertrouwde proxy's
     description: >-

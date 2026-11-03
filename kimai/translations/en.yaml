@@ -12,8 +12,9 @@ configuration:
   trusted_hosts:
     name: Trusted hosts
     description: >-
-      Regular expression of the host names Kimai may be reached on, for example
-      homeassistant\.local|192\.168\.1\.10|kimai\.example\.com. Leave empty to accept any host name.
+      The host names Kimai may be reached on, separated by |, for example
+      homeassistant.local|192.168.1.10|kimai.example.com. Leave empty to accept any host name;
+      password reset then stays off.
   trusted_proxies:
     name: Trusted proxies
     description: >-
