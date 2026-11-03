@@ -17,6 +17,9 @@ With this plugin:
 - The form shows the columns in the template's saved order, so saving it keeps that order.
 - Drag a column to another place to change the order. A line below the columns says so.
 
+Kimai 2.69.0 and later keep the column order themselves, with drag and drop. On those
+versions the plugin turns its column order off and leaves the form to Kimai.
+
 ## How it works
 
 `ExportColumnsTypeExtension` is a form type extension on Kimai's `ExportColumnsType`, the
@@ -36,6 +39,10 @@ The script is added through Kimai's `ThemeEvent::JAVASCRIPT` on the `export`,
 `export_template_create` and `export_template_edit` routes, for users with Kimai's
 `create_export_template` permission. The plugin serves it itself; browsers keep it for a day,
 and a release changes the version in its address.
+
+`ExportExtrasBundle::hasNativeColumnOrder()` compares Kimai's `Constants::VERSION_ID` with
+26900 (2.69.0). When Kimai is that version or later, the form extension changes no options
+and adds no attribute, and the script is not added.
 
 ## Requirements and installation
 

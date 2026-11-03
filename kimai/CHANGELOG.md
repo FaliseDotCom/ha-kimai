@@ -18,6 +18,8 @@ version the app contains; see the
 - Password reset only works when `trusted_hosts` is set.
 - Kimai turned off the old API passwords. Apps that use Kimai's API need an API token, made
   on the **API Access** tab of the user's profile.
+- Export templates keep their column order in Kimai itself now, with drag and drop, so the
+  export extras turn their own column order off. Nothing changes in how it works.
 
 ## 2.67.0.39
 

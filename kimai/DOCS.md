@@ -494,9 +494,10 @@ lists all export placeholders.
 **Column order of export templates.** On the **Export** page, search for records; below the
 preview, the **+** button creates an export template and the pencil next to a template edits
 it. The export puts the **Table columns** in the order shown in the form. Drag a column to
-move it; the order is kept when you open and save the template again. Without this extra,
-Kimai shows the columns in the order of its own list, and saving the template again exports
-them in that order.
+move it; the order is kept when you open and save the template again. Kimai does this itself
+since version 2.69, which this app contains, so the extra turns its own column order off. It
+adds it on older Kimai versions, where the form lists the columns in Kimai's own order and
+saving the template again exports them in that order.
 
 An export template only shows up in the **Export** menu of **My times** and **All times**
 when **Allow access for all users** is on. Without it, the template is only on the

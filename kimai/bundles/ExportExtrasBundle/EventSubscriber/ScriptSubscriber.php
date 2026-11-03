@@ -14,7 +14,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Adds the column order script to the pages that show the export template form: Kimai's
- * export page, which opens the form in a dialog, and the form's own pages.
+ * export page, which opens the form in a dialog, and the form's own pages. Not on Kimai
+ * 2.69.0 and later, which keep the column order themselves.
  */
 final class ScriptSubscriber implements EventSubscriberInterface
 {
@@ -76,6 +77,11 @@ final class ScriptSubscriber implements EventSubscriberInterface
    */
   public function onJavascript( ThemeEvent $event ) : void
   {
+    if ( ExportExtrasBundle::hasNativeColumnOrder() )
+    {
+      return;
+    }
+
     $route = $this->requestStack->getMainRequest()?->attributes->get( '_route' );
     if ( !in_array( $route, self::ROUTES, true ) || !$this->authorizationChecker->isGranted( self::TEMPLATE_PERMISSION ) )
     {

@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace KimaiPlugin\ExportExtrasBundle\Form;
 
 use App\Form\Type\ExportColumnsType;
+use KimaiPlugin\ExportExtrasBundle\ExportExtrasBundle;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -17,6 +18,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * its select box shows the picked columns in the order of its own list, and saving the form
  * again stores that order. This turns on Kimai's drag and drop for the columns, and gives the
  * select box the stored order, which `export-columns.js` restores once the box is set up.
+ *
+ * Kimai 2.69.0 and later do this themselves, so there the extension changes nothing.
  */
 final class ExportColumnsTypeExtension extends AbstractTypeExtension
 {
@@ -52,6 +55,11 @@ final class ExportColumnsTypeExtension extends AbstractTypeExtension
    */
   public function configureOptions( OptionsResolver $resolver ) : void
   {
+    if ( ExportExtrasBundle::hasNativeColumnOrder() )
+    {
+      return;
+    }
+
     $resolver->setDefaults( [
       'order' => true,
       'help' => self::HELP_MESSAGE,
@@ -68,6 +76,11 @@ final class ExportColumnsTypeExtension extends AbstractTypeExtension
    */
   public function buildView( FormView $view, FormInterface $form, array $options ) : void
   {
+    if ( ExportExtrasBundle::hasNativeColumnOrder() )
+    {
+      return;
+    }
+
     $columns = $form->getData();
     if ( !is_array( $columns ) )
     {

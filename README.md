@@ -138,7 +138,7 @@ are included.
 Improvements to Kimai's exports. Kimai exports the columns of an export template in the order
 they were picked, but its form lists them in its own order, and saving the form again stores
 that order. With this plugin the form shows the saved order, and columns can be dragged into
-a new one.
+a new one. Kimai 2.69 and later do this themselves, so there the plugin turns it off.
 
 [How it works](kimai/bundles/ExportExtrasBundle/README.md) ·
 [Repository and issues](https://github.com/FaliseDotCom/kimai-export-extras-bundle)
