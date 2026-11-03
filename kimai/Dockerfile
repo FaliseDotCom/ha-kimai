@@ -2,7 +2,7 @@
 #
 # The upstream image is pinned to an exact release. Bump this tag and the
 # `version` in config.yaml together (see .docs/releasing.md).
-FROM kimai/kimai2:2.67.0
+FROM kimai/kimai2:2.71.0
 
 # jq reads the app options from /data/options.json; mariadb-server provides
 # the database that runs next to Kimai inside this container.
