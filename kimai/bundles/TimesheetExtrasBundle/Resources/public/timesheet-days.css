@@ -10,11 +10,21 @@
   display: none;
 }
 
-/* The day's button sits before the date and points right while the day is collapsed. */
+/* The day's button sits in the checkbox column, or before the date when the list has no
+   checkboxes, and points right while the day is collapsed. */
 .timesheet-days-toggle
 {
   margin-inline-end: 0.25rem;
   vertical-align: baseline;
+}
+
+/* In the checkbox column the button is as wide as the checkboxes, so the arrow lines up with them. */
+.col_id > .timesheet-days-toggle
+{
+  width: 1.25rem;
+  min-width: 1.25rem;
+  margin-inline-end: 0;
+  padding-inline: 0;
 }
 
 .timesheet-days-toggle > i

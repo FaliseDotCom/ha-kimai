@@ -4,6 +4,11 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.71.0.1
+
+- Timesheet extras: the arrow that collapses a day now sits in the checkbox column, in line
+  with the record checkboxes, instead of before the date.
+
 ## 2.71.0
 
 - Kimai 2.71.0. See the release notes of

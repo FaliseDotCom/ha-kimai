@@ -11,13 +11,16 @@ With Kimai's **Show daily stats in timesheet** preference on, **My times** and *
 show a row per day with the day's total duration (and amounts). Kimai puts that row below
 the day's records; this plugin moves it to the top, so it reads as the day's heading.
 
-- Click a day row, or the arrow before its date, to collapse the day to just that row; click
+- Click a day row, or the arrow at its start, to collapse the day to just that row; click
   again to expand it.
 - A button next to the list's own buttons (before **Customize display**) collapses all days,
   or expands them all when none is expanded.
 - The browser remembers which days are collapsed, separately for **My times** and **All
   times** and for each user. **Collapse all** and **Expand all** also apply to days on other pages and days
   still to come: after **Collapse all**, a new day starts collapsed.
+
+The arrow sits in the checkbox column, in line with the record checkboxes; when the list has
+no checkboxes (the user may not change records in a batch), it sits before the date.
 
 Without the daily stats preference there are no day rows, and the plugin adds nothing.
 

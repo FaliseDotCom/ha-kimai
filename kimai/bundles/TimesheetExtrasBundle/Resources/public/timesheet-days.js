@@ -55,6 +55,14 @@ const SUMMARY_SELECTOR = 'tr.summary';
 const DATE_CELL_SELECTOR = 'td.col_date';
 
 /**
+ * Selector of the cell in a day row below the record checkboxes, in the column Kimai adds
+ * when the user may change records in a batch.
+ *
+ * @type {string}
+ */
+const CHECKBOX_CELL_SELECTOR = 'td.col_id';
+
+/**
  * Selector of the list's own buttons in the page header, which the toggle joins.
  *
  * @type {string}
@@ -280,7 +288,8 @@ function prepareDays( table )
 }
 
 /**
- * Moves one day row above its records and adds its toggle button.
+ * Moves one day row above its records and adds its toggle button: below the record
+ * checkboxes when the list has them, otherwise before the date.
  *
  * @param {HTMLTableRowElement} row The day row.
  * @param {?HTMLTableRowElement} firstRecord The day's first record row, if any.
@@ -299,7 +308,7 @@ function prepareDay( row, firstRecord )
   button.className = 'btn btn-sm btn-icon btn-ghost-secondary ' + DAY_TOGGLE_CLASS;
   button.append( createIcon( ICONS.day ) );
 
-  const cell = row.querySelector( DATE_CELL_SELECTOR ) ?? row.cells[ 0 ];
+  const cell = row.querySelector( CHECKBOX_CELL_SELECTOR ) ?? row.querySelector( DATE_CELL_SELECTOR ) ?? row.cells[ 0 ];
   cell?.prepend( button );
 }
 

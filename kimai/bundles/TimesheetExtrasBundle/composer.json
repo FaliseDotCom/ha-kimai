@@ -8,7 +8,7 @@
     "source": "https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle"
   },
   "type": "kimai-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [
