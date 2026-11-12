@@ -39,14 +39,29 @@ fatal()
   exit 1
 }
 
+# Runs a gh command that is safe to repeat, and retries it twice when it fails:
+# the GitHub API now and then answers with a passing 5xx error, and the hourly
+# run should not fail and send a notification for that.
+gh_retry()
+{
+  local attempt
+  for attempt in 1 2
+  do
+    gh "$@" && return 0
+    echo "  gh $1 $2 failed; retrying in $(( attempt * 15 )) seconds." >&2
+    sleep $(( attempt * 15 ))
+  done
+  gh "$@"
+}
+
 # Creates the two labels in a plugin repository, or updates them.
 ensure_labels()
 {
   local app
   app=$(this_repo)
-  gh label create "$LABEL_IMPORTED" --repo "$1" --force --color 0e8a16 \
+  gh_retry label create "$LABEL_IMPORTED" --repo "$1" --force --color 0e8a16 \
     --description "Applied in $app" > /dev/null
-  gh label create "$LABEL_FAILED" --repo "$1" --force --color d93f0b \
+  gh_retry label create "$LABEL_FAILED" --repo "$1" --force --color d93f0b \
     --description "Could not be applied in $app automatically" > /dev/null
 }
 
@@ -74,7 +89,7 @@ mark_failed()
   local repo="$1"
   local number="$2"
 
-  gh pr edit "$number" --repo "$repo" --add-label "$LABEL_FAILED" > /dev/null
+  gh_retry pr edit "$number" --repo "$repo" --add-label "$LABEL_FAILED" > /dev/null
   gh pr comment "$number" --repo "$repo" --body "Thanks! This plugin is developed in [$(this_repo)](https://github.com/$(this_repo)), where this pull request could not be applied automatically. It will be taken over by hand." > /dev/null
 }
 
@@ -93,8 +108,18 @@ import_pull_request()
     return 0
   fi
 
+  # Fetched first, so an API error fails the run without labelling the pull
+  # request import-failed. Checked by hand: set -e does not apply here, because
+  # import_all calls this function with ||.
+  local patch
+  if ! patch=$(gh_retry pr diff "$number" --repo "$repo" --patch)
+  then
+    echo "  #$number: could not fetch its commits; it is tried again on the next run." >&2
+    return 1
+  fi
+
   git -C "$REPO_ROOT" switch --quiet --force-create "$branch" "origin/$BRANCH"
-  if ! gh pr diff "$number" --repo "$repo" --patch | git -C "$REPO_ROOT" am --quiet --directory="$BUNDLES_DIR/$bundle"
+  if ! printf '%s\n' "$patch" | git -C "$REPO_ROOT" am --quiet --directory="$BUNDLES_DIR/$bundle"
   then
     git -C "$REPO_ROOT" am --abort 2> /dev/null || true
     mark_failed "$repo" "$number"
@@ -105,14 +130,14 @@ import_pull_request()
   git -C "$REPO_ROOT" push --quiet origin "$branch"
 
   local title url author description created
-  title=$(gh pr view "$number" --repo "$repo" --json title --jq .title)
-  url=$(gh pr view "$number" --repo "$repo" --json url --jq .url)
-  author=$(gh pr view "$number" --repo "$repo" --json author --jq .author.login)
-  description=$(gh pr view "$number" --repo "$repo" --json body --jq .body)
+  title=$(gh_retry pr view "$number" --repo "$repo" --json title --jq .title)
+  url=$(gh_retry pr view "$number" --repo "$repo" --json url --jq .url)
+  author=$(gh_retry pr view "$number" --repo "$repo" --json author --jq .author.login)
+  description=$(gh_retry pr view "$number" --repo "$repo" --json body --jq .body)
   created=$(gh pr create --repo "$(this_repo)" --base "$BRANCH" --head "$branch" --title "$title" \
     --body "$(import_body "$url" "$author" "$description" "$bundle")")
 
-  gh pr edit "$number" --repo "$repo" --add-label "$LABEL_IMPORTED" > /dev/null
+  gh_retry pr edit "$number" --repo "$repo" --add-label "$LABEL_IMPORTED" > /dev/null
   gh pr comment "$number" --repo "$repo" --body "Thanks! This plugin is developed in [$(this_repo)](https://github.com/$(this_repo)), so this pull request continues in $created, with your commits and authorship. This one is closed when that one is." > /dev/null
   echo "  #$number: $created"
 }
@@ -130,13 +155,19 @@ import_all()
   git -C "$REPO_ROOT" fetch --quiet origin "$BRANCH"
 
   local failed=0
-  local bundle repo number
+  local bundle repo numbers number
   for bundle in $(plugin_folders)
   do
     repo=$(plugin_repo "$bundle" "$owner")
     echo "$repo"
+    # A separate assignment, so a failing request stops the run instead of
+    # looking like a repository without pull requests.
+    numbers=$(gh_retry pr list --repo "$repo" --state open --search "-label:$LABEL_IMPORTED -label:$LABEL_FAILED" --json number --jq '.[].number')
+    # The labels are only needed to mark a pull request, which keeps the
+    # hourly run to one request per repository.
+    [ -n "$numbers" ] || continue
     ensure_labels "$repo"
-    for number in $(gh pr list --repo "$repo" --state open --search "-label:$LABEL_IMPORTED -label:$LABEL_FAILED" --json number --jq '.[].number')
+    for number in $numbers
     do
       import_pull_request "$repo" "$bundle" "$number" || failed=1
     done
@@ -167,7 +198,7 @@ finish()
   local repo
   repo="$(repo_owner)/$name"
   # The author may have closed the original already.
-  if [ "$(gh pr view "$number" --repo "$repo" --json state --jq .state)" = OPEN ]
+  if [ "$(gh_retry pr view "$number" --repo "$repo" --json state --jq .state)" = OPEN ]
   then
     gh pr close "$number" --repo "$repo" --comment "$message" > /dev/null
     echo "Closed $repo#$number."

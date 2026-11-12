@@ -136,6 +136,10 @@ gh pr diff 12 --patch --repo FaliseDotCom/kimai-quick-timer-bar-bundle \
   | git am --3way --directory=kimai/bundles/QuickTimerBarBundle
 ```
 
+The script tries a failing GitHub API request twice more, 15 and 30 seconds later, so a
+passing 5xx error does not fail the hourly run. A failed run without the `import-failed` label
+is an error that persisted; the next run tries again by itself.
+
 GitHub turns off scheduled workflows after 60 days without activity in the repository;
 enable it again on the **Actions** tab.
 
