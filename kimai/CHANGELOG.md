@@ -4,6 +4,15 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.72.0
+
+- Kimai 2.72.0. See the [Kimai 2.72.0 release notes](https://github.com/kimai/kimai/releases/tag/2.72.0),
+  which include several security fixes.
+- Kimai now runs on PHP 8.5.
+- Password reset links now expire after half an hour.
+- Invoice history can be searched by invoice number, and unpaid invoices stand out in the
+  lists.
+
 ## 2.71.0.1
 
 - Timesheet extras: the arrow that collapses a day now sits in the checkbox column, in line
