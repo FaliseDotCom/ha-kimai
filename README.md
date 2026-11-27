@@ -76,12 +76,16 @@ Additions to Kimai's **Reporting** section:
   with a quarter picker that steps a quarter back or forward. On the reporting overview they
   sit between the monthly and yearly views, and every period view's icon carries its period
   letter.
-- The **weekly, monthly, quarterly and yearly report for one user** get a bar chart of the
+- A **period view for one user**: the same report for any date range, with a column per day
+  or per month.
+- A **date range on the project report**, starting with the project's own start and end date,
+  that limits its figures to that period.
+- The **weekly, monthly, quarterly, yearly and period report for one user** get a bar chart of the
   hours per day (or month), stacked by project, and a doughnut chart with a legend and the
   total time in its centre, above Kimai's table. In the table, projects are indented under
   their customer, customer and project names link to their detail pages, and the table sorts
   by customer or total. The hours in the legend open the records, like the table's totals.
-  Buttons next to the period picker switch between the four views.
+  Buttons next to the period picker switch between the five views.
 - A **Summary** report shows any period on one page: totals, a bar chart over time, a
   doughnut chart, and a breakdown per project, customer, activity or user down to each
   description.
@@ -114,7 +118,8 @@ preferences.
 Improvements to **My times** and **All times**. With Kimai's daily stats turned on, each day's
 total row moves to the top of the day and can be clicked to collapse the day to just that
 row. One button collapses or expands all days, and the browser remembers which days are
-collapsed. On all of Kimai's lists, the filter menu closes on a click outside it and gets a
+collapsed. The time range and project filters sit next to the search field and apply
+straight away. On all of Kimai's lists, the filter menu closes on a click outside it and gets a
 close button.
 
 [How it works](kimai/bundles/TimesheetExtrasBundle/README.md) ·

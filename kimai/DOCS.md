@@ -292,19 +292,35 @@ filters and the same download. The arrows next to the quarter step to the previo
 quarter; the menu between them picks one of the last twelve. Quarters follow the calendar,
 January to March and so on. They are listed between the monthly and yearly views.
 
-**Reporting overview.** On the **Reporting** page, the icons of the weekly, monthly,
-quarterly and yearly views carry a letter for their period (**W**, **M**, **Q**, **Y**), and
-the period in their name is bold, so the views are easier to tell apart.
+**Period view for one user.** **Reporting** > **Period view for one user** is the same report
+for any period you pick with the date field, which offers this week, recent months, quarters
+and years, or type your own dates. The arrows next to it move one period back or forward. Up
+to 62 days it has a column per day, like the monthly view; a longer period has a column per
+month, like the yearly view. **Total period** covers everything from your first to your last
+record. It opens on the current month and is listed after the yearly view.
 
-**Weekly, monthly, quarterly and yearly view for one user.** These reports under
+**Reporting overview.** On the **Reporting** page, the icons of the weekly, monthly,
+quarterly, yearly and period views carry a letter for their period (**W**, **M**, **Q**, **Y**,
+**P**), and the period in their name is bold, so the views are easier to tell apart.
+
+**Period on the project report.** **Reporting** > **Projects** gets a date field next to the
+project picker. The report then counts only the records in that period: the totals, the
+yearly cards and the user and activity tabs, and the **Not exported** and **Not invoiced**
+links open that period. The field starts with the project's own start and end date when the
+project has both, and is empty otherwise; empty means all time. The budget bars always count
+all records, as a budget is not tied to a period.
+
+**Weekly, monthly, quarterly, yearly and period view for one user.** These reports under
 **Reporting** get two charts above their table: a bar chart of the hours per day (per month
 in the quarterly and yearly view), stacked by project, and a doughnut chart of each project's
 share. They follow the period and user picked in the report. In the table below the charts,
 projects are indented under their customer and activities under their project, and customer
 and project names link to their detail pages if you may open those. Buttons next to the
-period picker switch to the other views for the same user, for example **Week**, **Month**
-and **Quarter** in the yearly view. The new view shows the period with today in it when the
-current one contains today, and otherwise the start of the current period.
+period picker switch to the other views for the same user, for example **Week**, **Month**,
+**Quarter** and **Period** in the yearly view. **Period** opens on exactly the period you are
+looking at, so you can widen or narrow it from there. The other views show the period with
+today in it when the current one contains today, and otherwise the start of the current
+period.
 
 Select **Customer** or **Total** at the top of the table to sort it by name or by hours, and
 select it again to reverse the order. Projects and activities are sorted within their
@@ -434,6 +450,12 @@ your name, then **Preferences**) to get a row per day with the day's total on **
 
 Selecting all records with the checkbox at the top of the list also selects the records in
 collapsed days.
+
+**Quick filters.** On **My times** and **All times**, the time range and project filters sit
+next to the search field instead of in the filter menu. A change applies straight away: the
+list reloads with the new filter. The time range keeps its menu of preset periods, and picking
+a customer in the filter menu still limits the projects on offer. To pick several projects,
+add them one after another; the list reloads after each one.
 
 **Closable filters.** The filter menu next to the search field on Kimai's lists closes when you
 click anywhere outside it, and has a **Close** button next to **Search**. Kimai's own filter

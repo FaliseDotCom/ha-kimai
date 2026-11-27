@@ -4,6 +4,17 @@ All notable changes to this app are documented here. The version number is the K
 version the app contains; see the
 [Kimai releases](https://github.com/kimai/kimai/releases) for changes in Kimai itself.
 
+## 2.72.0.1
+
+- Reporting extras: new **Period view for one user**, the user report for any date range,
+  with the same charts and download. The weekly, monthly, quarterly and yearly views get a
+  **Period** button that opens it on the period you are looking at.
+- Reporting extras: **Reporting** > **Projects** gets a date field next to the project
+  picker, which limits the report to a period. It starts with the project's own start and
+  end date.
+- Timesheet extras: the time range and project filters of **My times** and **All times** sit
+  next to the search field, and apply straight away.
+
 ## 2.72.0
 
 - Kimai 2.72.0. See the [Kimai 2.72.0 release notes](https://github.com/kimai/kimai/releases/tag/2.72.0),
