@@ -1,0 +1,52 @@
+/* Quick filters next to the search field of Kimai's record lists. */
+
+/* The search form holds the search field and the quick filters side by side, wrapping on
+   narrow screens. */
+.timesheet-quick-filter-form
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.timesheet-quick-filter
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* Wide enough for a period in any of Kimai's date formats. */
+.timesheet-quick-filter-daterange
+{
+  width: 16rem;
+}
+
+.timesheet-quick-filter-projects
+{
+  width: 16rem;
+}
+
+/* The preset periods open above the list's sticky header, as Kimai does for its search menu. */
+.timesheet-quick-filter .dropdown-menu
+{
+  z-index: 1021;
+}
+
+/* Kimai sizes its select box from the field's data-width, which is 100% of the menu. */
+.timesheet-quick-filter-projects .ts-wrapper
+{
+  width: 100%;
+}
+
+@media ( max-width: 575.98px )
+{
+  .timesheet-quick-filter,
+  .timesheet-quick-filter-daterange,
+  .timesheet-quick-filter-projects
+  {
+    width: 100%;
+  }
+}

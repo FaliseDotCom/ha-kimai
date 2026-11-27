@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Adds the closable search filters script to every page, and the collapsible days script and
- * stylesheet to the record lists when the user has Kimai's daily stats turned on, because the
- * day rows only exist then.
+ * Adds the closable search filters script to every page, the quick filters to the record
+ * lists, and the collapsible days script and stylesheet to the record lists when the user has
+ * Kimai's daily stats turned on, because the day rows only exist then.
  */
 final class ScriptSubscriber implements EventSubscriberInterface
 {
@@ -55,6 +55,20 @@ final class ScriptSubscriber implements EventSubscriberInterface
    * @var string
    */
   private const DAYS_STYLESHEET = 'timesheet-days.css';
+
+  /**
+   * The script that moves the time range and project filters next to the search field.
+   *
+   * @var string
+   */
+  private const QUICK_FILTER_SCRIPT = 'quick-filter.js';
+
+  /**
+   * The stylesheet of the quick filters.
+   *
+   * @var string
+   */
+  private const QUICK_FILTER_STYLESHEET = 'quick-filter.css';
 
   /**
    * Kimai's preference "Show daily stats in timesheet", which adds a total row per day.
@@ -115,8 +129,8 @@ final class ScriptSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the search filters script to every page, and the collapsible days script to the
-   * record lists.
+   * Adds the search filters script to every page, and the quick filters and collapsible days
+   * scripts to the record lists.
    *
    * @param ThemeEvent $event The event that collects scripts for the end of the page.
    * @return void
@@ -132,6 +146,11 @@ final class ScriptSubscriber implements EventSubscriberInterface
     $event->addContent( $this->renderScript( self::FILTER_SCRIPT, [
       'close' => $this->translator->trans( self::CLOSE_MESSAGE ),
     ] ) );
+
+    if ( $this->getList() !== '' )
+    {
+      $event->addContent( $this->renderScript( self::QUICK_FILTER_SCRIPT, [] ) );
+    }
 
     $list = $this->getDaysList( $event );
     if ( $list === '' )
@@ -166,19 +185,48 @@ final class ScriptSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the collapsible days stylesheet to the record lists.
+   * Adds the quick filters stylesheet to the record lists, and the collapsible days stylesheet
+   * when they show day rows.
    *
    * @param ThemeEvent $event The event that collects stylesheets for the page head.
    * @return void
    */
   public function onStylesheet( ThemeEvent $event ) : void
   {
-    if ( $this->getDaysList( $event ) === '' )
+    if ( !$event->getUser() instanceof User || $this->getList() === '' )
     {
       return;
     }
 
-    $event->addContent( '<link rel="stylesheet" href="' . htmlspecialchars( $this->getAssetUrl( self::DAYS_STYLESHEET ), ENT_QUOTES ) . '">' );
+    $event->addContent( $this->renderStylesheet( self::QUICK_FILTER_STYLESHEET ) );
+
+    if ( $this->getDaysList( $event ) !== '' )
+    {
+      $event->addContent( $this->renderStylesheet( self::DAYS_STYLESHEET ) );
+    }
+  }
+
+  /**
+   * Returns the tag of a stylesheet.
+   *
+   * @param string $name The file name of the stylesheet.
+   * @return string
+   */
+  private function renderStylesheet( string $name ) : string
+  {
+    return '<link rel="stylesheet" href="' . htmlspecialchars( $this->getAssetUrl( $name ), ENT_QUOTES ) . '">';
+  }
+
+  /**
+   * Returns the name of the record list on the page, or an empty string on other pages.
+   *
+   * @return string
+   */
+  private function getList() : string
+  {
+    $route = $this->requestStack->getMainRequest()?->attributes->get( '_route' );
+
+    return is_string( $route ) ? ( self::LIST_ROUTES[ $route ] ?? '' ) : '';
   }
 
   /**
@@ -196,9 +244,7 @@ final class ScriptSubscriber implements EventSubscriberInterface
       return '';
     }
 
-    $route = $this->requestStack->getMainRequest()?->attributes->get( '_route' );
-
-    return is_string( $route ) ? ( self::LIST_ROUTES[ $route ] ?? '' ) : '';
+    return $this->getList();
   }
 
   /**

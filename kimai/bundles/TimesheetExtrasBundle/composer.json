@@ -1,6 +1,6 @@
 {
   "name": "falisedotcom/kimai-timesheet-extras-bundle",
-  "description": "Improvements to Kimai's record lists: day rows at the top of each day, collapsible days and a collapse all button",
+  "description": "Improvements to Kimai's record lists: collapsible days with a collapse all button, quick filters for the period and project, and closable search filters",
   "homepage": "https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle",
   "support":
   {

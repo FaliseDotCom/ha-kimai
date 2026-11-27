@@ -8,7 +8,8 @@ use App\Plugin\PluginInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Improvements to Kimai's record lists, such as collapsible days and closable search filters.
+ * Improvements to Kimai's record lists, such as collapsible days, closable search filters and
+ * quick filters next to the search field.
  */
 final class TimesheetExtrasBundle extends Bundle implements PluginInterface
 {
@@ -23,6 +24,8 @@ final class TimesheetExtrasBundle extends Bundle implements PluginInterface
     'timesheet-days.js' => 'text/javascript',
     'timesheet-days.css' => 'text/css',
     'search-filter.js' => 'text/javascript',
+    'quick-filter.js' => 'text/javascript',
+    'quick-filter.css' => 'text/css',
   ];
 
   /**

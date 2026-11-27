@@ -1,7 +1,7 @@
 # Timesheet extras for Kimai
 
-Improvements to [Kimai](https://www.kimai.org/)'s record lists: collapsible days and
-closable search filters. It ships with the
+Improvements to [Kimai](https://www.kimai.org/)'s record lists: collapsible days, quick
+filters for the period and project, and closable search filters. It ships with the
 [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md),
 but works in any Kimai installation.
 
@@ -28,6 +28,19 @@ Selecting all records with the checkbox in the table header also selects the rec
 collapsed days, as Kimai's batch actions work on the whole page. Kimai's confirmation shows
 how many records are selected.
 
+## Quick filters
+
+On **My times** and **All times**, the time range and project filters sit in the toolbar,
+next to the search field, instead of in the filter menu. A change applies straight away: the
+list reloads with the new filter, starting on its first page. The time range keeps Kimai's
+button of preset periods (this week, last month, a quarter and so on), and the project picker
+keeps Kimai's search and its customer groups. Picking a customer in the filter menu still
+limits the projects on offer.
+
+They are Kimai's own fields, moved out of the menu, so there is one set of filters: the
+menu's **Search** button, the number on the filter button, and a search saved as default all
+include them. On a narrow screen they take the full width, below the search field.
+
 ## Closable filters
 
 Kimai's filter menu next to the search field on its lists (records, customers, projects and
@@ -49,6 +62,15 @@ identified by the text of its `col_date` cell; when the date column is hidden, d
 be collapsed but are not remembered. When the list is not sorted by date, the same day can
 appear more than once; those parts collapse together.
 
+On the same routes, whatever the daily stats preference, `quick-filter.js` and
+`quick-filter.css` are added. The script runs before Kimai sets up its pickers on the page's
+`load` event: it moves the `daterange` field (with its input group of presets) and the
+`projects` field, each with its label (kept for screen readers), out of the filter menu into
+a bar after the search field, inside the same search form, and removes their rows from the
+menu. Kimai then builds its date picker and select box in the new place. A change to either
+field sets the hidden page number to 1 and submits the form, as the menu's **Search** button
+does.
+
 The filters script, `search-filter.js`, is added to every page for logged-in users, because
 most of Kimai's lists have a filter menu; it does nothing on pages without one. It finds
 Kimai's menu (`.search-dropdown`) and closes it through its own Bootstrap toggle button, and
@@ -62,7 +84,7 @@ dropped first). Kimai reloads the list after changes by replacing the page conte
 dispatching `kimai.reloadedContent`; the script then prepares the new rows. The collapse all
 button sits in the page header, which a reload keeps.
 
-The plugin serves its own script and stylesheet; browsers keep them for a day, and a release
+The plugin serves its own scripts and stylesheets; browsers keep them for a day, and a release
 changes the version in their address.
 
 ## Requirements and installation
